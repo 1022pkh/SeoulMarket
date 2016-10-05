@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="10dp"
+    android:background="#80000000">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/wd_room"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="95dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="날짜"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:textColor="#60B0CC"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="300dp"
+            android:padding="10dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="10"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/startDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4.5"
+                    android:text=""
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textSize="14sp"
+                    android:textColor="#60B0CC"
+                    />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text=" ~ "
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textSize="14sp"
+                    android:textColor="#60B0CC"
+                    />
+                <TextView
+                    android:id="@+id/endDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4.5"
+                    android:text=""
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textSize="14sp"
+                    android:textColor="#60B0CC"
+                    />
+            </LinearLayout>
+
+            <me.nlmartian.silkcal.DayPickerView
+                xmlns:calendar="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/calendar_view"
+                android:layout_marginTop="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:background="@android:color/white"
+                calendar:drawRoundRect="false"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/sendPerson"
+                android:layout_width="190dp"
+                android:layout_height="34dp"
+                android:textColor="#000000"
+                android:textSize="15sp"
+                android:padding="5dp"
+                android:text="검색"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>

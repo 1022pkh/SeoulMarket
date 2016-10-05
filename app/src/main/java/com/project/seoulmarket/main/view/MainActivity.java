@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.project.seoulmarket.R;
+import com.project.seoulmarket.dialog.DialogDate;
 import com.project.seoulmarket.dialog.DialogLocation;
 import com.project.seoulmarket.main.model.MarketData;
 import com.project.seoulmarket.main.presenter.CardViewAdapter;
@@ -28,7 +29,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,MainView {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity
     LinearLayoutManager mLayoutManager;
 
     DialogLocation dialog_location;
+    DialogDate dialog_date;
 
     //Back 키 두번 클릭 여부 확인
     private final long FINSH_INTERVAL_TIME = 2000;
@@ -53,6 +55,8 @@ public class MainActivity extends AppCompatActivity
 
     //요청한 검색 값
     String chooseAddress = "";
+    String startDate = "";
+    String endDate = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +120,22 @@ public class MainActivity extends AppCompatActivity
         dialog_location.show();
     }
 
+    @OnClick(R.id.findDateBtn)
+    public void findDate(){
+
+        WindowManager.LayoutParams params;
+
+        dialog_date = new DialogDate(MainActivity.this,this,getDateEvent);
+
+        params = dialog_date.getWindow().getAttributes();
+
+        // Dialog 사이즈 조절 하기
+        params.width = WindowManager.LayoutParams.MATCH_PARENT;
+        params.height = WindowManager.LayoutParams.MATCH_PARENT;
+        dialog_date.getWindow().setAttributes(params);
+
+        dialog_date.show();
+    }
 
     private View.OnClickListener getLocationEvent = new View.OnClickListener() {
         public void onClick(View v) {
@@ -131,6 +151,19 @@ public class MainActivity extends AppCompatActivity
                 dialog_location.dismiss();
 
             }
+        }
+
+    };
+
+    private View.OnClickListener getDateEvent = new View.OnClickListener() {
+        public void onClick(View v) {
+
+            startDate = dialog_date.getStartDate();
+            endDate = dialog_date.getEndDate();
+
+            Toast.makeText(getApplicationContext(),startDate + " ~ "+endDate,Toast.LENGTH_SHORT).show();
+            dialog_date.dismiss();
+
         }
 
     };
@@ -202,5 +235,25 @@ public class MainActivity extends AppCompatActivity
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void checkDate() {
+        Toast.makeText(getApplicationContext(),"날짜를 다시 선택해주세요",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void prevousStart() {
+        Toast.makeText(getApplicationContext(),"선택 날짜는 현재 날짜보다 과거일 수 없습니다.",Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void prevousEnd() {
+        Toast.makeText(getApplicationContext(),"마지막 날짜는 시작 날짜보다 과거일 수 없습니다.",Toast.LENGTH_SHORT).show();
+    }
+    @Override
+    public void nextEnd() {
+        Toast.makeText(getApplicationContext(),"시작 날짜는 마지막 날짜보다 미래일 수 없습니다.",Toast.LENGTH_SHORT).show();
     }
 }
