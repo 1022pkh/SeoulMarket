@@ -1,5 +1,7 @@
 package com.project.seoulmarket.main.view;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +42,12 @@ public class MainActivity extends AppCompatActivity
     NavigationView navigationView;
     @BindView(R.id.main_toolbar_title)
     TextView toolbar_title;
+    @BindView(R.id.nav_myPage)
+    LinearLayout myPageNav;
+    @BindView(R.id.nav_noitfyMarket)
+    LinearLayout notifyMarketNav;
+    @BindView(R.id.nav_recruitSeller)
+    LinearLayout recruitSellerNav;
 
     @BindView(R.id.my_recyclerView)
     RecyclerView recyclerView;
@@ -62,6 +71,10 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (Build.VERSION.SDK_INT >= 21) {   //상태바 색
+            getWindow().setStatusBarColor(Color.parseColor("#F6D03F"));
+        }
 
         ButterKnife.bind(this);
 
@@ -94,14 +107,39 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setAdapter(mAdapter);
 
 
-
+        /**
+         * 임시로 데이터 삽입
+         * todo 서버에서 데이터 받아오기 ( 아직 서버 구축 전 )
+         */
         //MarketData(int id, String name, String location, String imgUrl, String date)
         itemDatas.add(new MarketData(1,"프리마켓1","건대입구역","imgUrl","D-10"));
         itemDatas.add(new MarketData(2,"프리마켓2","건대입구역","imgUrl","D-20"));
         itemDatas.add(new MarketData(323,"프리마켓3","건대입구역","imgUrl","D-30"));
         itemDatas.add(new MarketData(44,"프리마켓4","건대입구역","imgUrl","D-40"));
         itemDatas.add(new MarketData(5,"프리마켓5","건대입구역","imgUrl","D-50"));
+
+
     }
+
+    @OnClick(R.id.nav_myPage)
+    public void moveMyPage(){
+        Toast.makeText(getApplicationContext(),"나의 마켓 관리",Toast.LENGTH_SHORT).show();
+        drawer.closeDrawer(GravityCompat.START);
+    }
+
+    @OnClick(R.id.nav_noitfyMarket)
+    public void moveNoitfyMarket(){
+        Toast.makeText(getApplicationContext(),"마켓 제보",Toast.LENGTH_SHORT).show();
+        drawer.closeDrawer(GravityCompat.START);
+    }
+
+    @OnClick(R.id.nav_recruitSeller)
+    public void moveRecruitSeller(){
+        Toast.makeText(getApplicationContext(),"셀러 모집",Toast.LENGTH_SHORT).show();
+        drawer.closeDrawer(GravityCompat.START);
+    }
+
+
 
     @OnClick(R.id.findLocationBtn)
     public void findLocation(){
@@ -218,21 +256,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
