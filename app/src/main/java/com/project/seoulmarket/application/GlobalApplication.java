@@ -7,6 +7,8 @@ package com.project.seoulmarket.application;
 import android.app.Activity;
 import android.app.Application;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.kakao.auth.KakaoSDK;
 import com.project.seoulmarket.login.adapter.KakaoSDKAdapter;
 
@@ -26,6 +28,10 @@ public class GlobalApplication extends Application {
         super.onCreate();
         instance = this;
 
+        //facebook
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
+        //kakao
         KakaoSDK.init(new KakaoSDKAdapter());
     }
 
