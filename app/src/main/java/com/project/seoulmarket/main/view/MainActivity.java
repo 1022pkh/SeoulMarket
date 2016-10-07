@@ -1,5 +1,6 @@
 package com.project.seoulmarket.main.view;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,9 +20,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.dialog.DialogDate;
 import com.project.seoulmarket.dialog.DialogLocation;
+import com.project.seoulmarket.login.LoginActivity;
 import com.project.seoulmarket.main.model.MarketData;
 import com.project.seoulmarket.main.presenter.CardViewAdapter;
 
@@ -123,13 +127,27 @@ public class MainActivity extends AppCompatActivity
 
     @OnClick(R.id.nav_myPage)
     public void moveMyPage(){
-        Toast.makeText(getApplicationContext(),"나의 마켓 관리",Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(),"나의 마켓 관리",Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
         drawer.closeDrawer(GravityCompat.START);
     }
 
     @OnClick(R.id.nav_noitfyMarket)
     public void moveNoitfyMarket(){
-        Toast.makeText(getApplicationContext(),"마켓 제보",Toast.LENGTH_SHORT).show();
+
+        //로그아웃
+        UserManagement.requestLogout(new LogoutResponseCallback() {
+            @Override
+            public void onCompleteLogout() {
+//                Intent intent = new Intent(getApplicationContext(), SplashAcitivty.class);
+//                startActivity(intent);
+            }
+        });
+//
+//    Toast.makeText(getApplicationContext(),"마켓 제보",Toast.LENGTH_SHORT).show();
         drawer.closeDrawer(GravityCompat.START);
     }
 
