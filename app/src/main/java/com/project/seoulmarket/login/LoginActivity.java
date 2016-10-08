@@ -79,6 +79,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onSuccess(LoginResult loginResult) {
                 // App code
                 Log.i("myTag","face-success");
+                Log.i("myTag", "token"+String.valueOf(loginResult.getAccessToken().getToken()));
+
                 GraphRequest request = GraphRequest.newMeRequest(
                         loginResult.getAccessToken(),
                         new GraphRequest.GraphJSONObjectCallback() {

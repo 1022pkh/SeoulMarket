@@ -5,7 +5,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.kakao.auth.ApiResponseCallback;
+import com.kakao.auth.AuthService;
 import com.kakao.auth.ErrorCode;
+import com.kakao.auth.network.response.AccessTokenInfoResponse;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.MeResponseCallback;
@@ -24,6 +27,7 @@ public class KakaoSignupActivity extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestMe();
+        requestAccessTokenInfo();
     }
 
     /**
@@ -57,6 +61,7 @@ public class KakaoSignupActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(UserProfile userProfile) {  //성공 시 userProfile 형태로 반환
+
                 Log.i("myTag", String.valueOf(userProfile.getId()));
                 Log.i("myTag", String.valueOf(userProfile.getNickname()));
                 Logger.d("UserProfile : " + userProfile);
@@ -65,6 +70,36 @@ public class KakaoSignupActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void requestAccessTokenInfo() {
+        AuthService.requestAccessTokenInfo(new ApiResponseCallback<AccessTokenInfoResponse>() {
+            @Override
+            public void onSessionClosed(ErrorResult errorResult) {
+//                redirectLoginActivity(self);
+            }
+
+            @Override
+            public void onNotSignedUp() {
+                // not happened
+            }
+
+            @Override
+            public void onFailure(ErrorResult errorResult) {
+                Logger.e("failed to get access token info. msg=" + errorResult);
+            }
+
+            @Override
+            public void onSuccess(AccessTokenInfoResponse accessTokenInfoResponse) {
+                long userId = accessTokenInfoResponse.getUserId();
+                Logger.d("this access token is for userId=" + userId);
+                Log.i("myTag kakao Token", String.valueOf(accessTokenInfoResponse));
+
+                long expiresInMilis = accessTokenInfoResponse.getExpiresInMillis();
+                Logger.d("this access token expires after " + expiresInMilis + " milliseconds.");
+            }
+        });
+    }
+
 
     private void redirectMainActivity() {
         Log.i("myTag", "main");
