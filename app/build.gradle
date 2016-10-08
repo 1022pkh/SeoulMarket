@@ -33,8 +33,6 @@ dependencies {
     compile 'me.nlmartian.silkcal:library:0.1.1'
     //
 
-//    compile 'com.google.firebase:firebase-auth:9.0.0'
-
     compile group: 'com.kakao.sdk', name: 'kakaolink', version: project.KAKAO_SDK_VERSION
     // 카카오스토리 sdk를 사용하기 위해 필요.
     compile group: 'com.kakao.sdk', name: 'kakaostory', version: project.KAKAO_SDK_VERSION
@@ -45,6 +43,15 @@ dependencies {
 
     //
     compile 'com.facebook.android:facebook-android-sdk:4.1.0'
+
+    //FCM
+    compile 'com.google.firebase:firebase-core:9.0.0'
+    compile 'com.google.firebase:firebase-messaging:9.0.0'
+
+    //서버로 데이터를 보낼때 okhttp를 사용한다면 추가
+    compile 'com.squareup.okhttp3:okhttp:3.2.0'
+
+
 
     //
     compile 'com.jakewharton:butterknife:8.1.0'
