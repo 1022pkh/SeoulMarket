@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,7 @@ import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.dialog.DialogDate;
 import com.project.seoulmarket.dialog.DialogLocation;
+import com.project.seoulmarket.dialog.DialogName;
 import com.project.seoulmarket.login.LoginActivity;
 import com.project.seoulmarket.main.model.MarketData;
 import com.project.seoulmarket.main.presenter.CardViewAdapter;
@@ -57,12 +59,17 @@ public class MainActivity extends AppCompatActivity
 
     @BindView(R.id.my_recyclerView)
     RecyclerView recyclerView;
+
+
+
     RecyclerView.Adapter mAdapter;
     ArrayList<MarketData> itemDatas;
     LinearLayoutManager mLayoutManager;
 
     DialogLocation dialog_location;
     DialogDate dialog_date;
+    DialogName dialog_name;
+
 
     //Back 키 두번 클릭 여부 확인
     private final long FINSH_INTERVAL_TIME = 2000;
@@ -72,6 +79,9 @@ public class MainActivity extends AppCompatActivity
     String chooseAddress = "";
     String startDate = "";
     String endDate = "";
+
+    Boolean searchNameArea = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -237,6 +247,16 @@ public class MainActivity extends AppCompatActivity
 
     };
 
+    private View.OnClickListener getNameEvent = new View.OnClickListener() {
+        public void onClick(View v) {
+
+            Toast.makeText(getApplicationContext(),"검색 : " + dialog_name.getName(),Toast.LENGTH_SHORT).show();
+            dialog_name.dismiss();
+
+        }
+
+    };
+
     @Override
     public void onBackPressed() {
         long tempTime        = System.currentTimeMillis();
@@ -275,9 +295,38 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
+        if (id == R.id.findNameBtn) {
+            Log.i("myTag","search");
+
+
+//            if(searchNameArea == false){
+//                searchNameArea = true;
+
+                WindowManager.LayoutParams params;
+
+                dialog_name = new DialogName(MainActivity.this, getNameEvent);
+
+                params = dialog_name.getWindow().getAttributes();
+
+                // Dialog 사이즈 조절 하기
+                params.width = WindowManager.LayoutParams.MATCH_PARENT;
+                params.height = WindowManager.LayoutParams.MATCH_PARENT;
+
+
+                dialog_name.getWindow().setAttributes(params);
+
+                dialog_name.show();
+//            }
+//            else{
+//
+//                searchNameArea = false;
+//                dialog_name.dismiss();
+//            }
+
+
+
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
