@@ -21,6 +21,7 @@ import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.helper.log.Logger;
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.application.GlobalApplication;
+import com.project.seoulmarket.main.view.MainActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -198,10 +199,20 @@ public class JoinActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(),nickNameArea.getText(),Toast.LENGTH_SHORT).show();
     }
 
+    @OnClick(R.id.completeNickname)
     public void complete(){
-
+        // TODO: 2016. 10. 18. 서버로 닉네임 업데이트 해줘야 함.
         GlobalApplication.editor.putString("nickname", String.valueOf(nickNameArea.getText()));
         GlobalApplication.editor.commit();
+
+        Toast.makeText(getApplicationContext(),"회원가입 및 닉네임 변경 성공!",Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
     }
 
 }
