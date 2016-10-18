@@ -21,11 +21,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.facebook.login.LoginManager;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.project.seoulmarket.R;
+import com.project.seoulmarket.application.GlobalApplication;
+import com.project.seoulmarket.detail.review.RegisterReviewActivity;
 import com.project.seoulmarket.dialog.DialogDate;
 import com.project.seoulmarket.dialog.DialogLocation;
 import com.project.seoulmarket.dialog.DialogName;
@@ -38,6 +42,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,MainView {
@@ -56,10 +61,12 @@ public class MainActivity extends AppCompatActivity
     LinearLayout notifyMarketNav;
     @BindView(R.id.nav_recruitSeller)
     LinearLayout recruitSellerNav;
-
     @BindView(R.id.my_recyclerView)
     RecyclerView recyclerView;
-
+    @BindView(R.id.profile_image)
+    CircleImageView profile;
+    @BindView(R.id.userNickName)
+    TextView userNickName;
 
 
     RecyclerView.Adapter mAdapter;
@@ -94,6 +101,10 @@ public class MainActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
+
+        /**
+         * toolbar 설정
+         */
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);
         //타이틀 설정
@@ -106,6 +117,10 @@ public class MainActivity extends AppCompatActivity
 
         navigationView.setNavigationItemSelectedListener(this);
 
+        /**
+         * 로그인 유무 체크
+         */
+        loginCheck();
 
         /**
          * FCM
@@ -148,34 +163,71 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        loginCheck();
+    }
+
+
     @OnClick(R.id.nav_myPage)
     public void moveMyPage(){
 //        Toast.makeText(getApplicationContext(),"나의 마켓 관리",Toast.LENGTH_SHORT).show();
 
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        if(GlobalApplication.loginInfo.getBoolean("Login_check", false)) {
+            Toast.makeText(getApplicationContext(),"현재 로그인 상태",Toast.LENGTH_SHORT).show();
+        }
+        else{
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
+
+
+
+
         drawer.closeDrawer(GravityCompat.START);
     }
 
     @OnClick(R.id.nav_noitfyMarket)
     public void moveNoitfyMarket(){
 
-        //로그아웃
-        UserManagement.requestLogout(new LogoutResponseCallback() {
-            @Override
-            public void onCompleteLogout() {
-//                Intent intent = new Intent(getApplicationContext(), SplashAcitivty.class);
-//                startActivity(intent);
+
+
+        if(GlobalApplication.loginInfo.getBoolean("Login_check", false)) {
+            if(GlobalApplication.loginInfo.getString("method", "").equals("kakao")){
+                //kakao 로그아웃
+                UserManagement.requestLogout(new LogoutResponseCallback() {
+                    @Override
+                    public void onCompleteLogout() {
+                    }
+                });
             }
-        });
-//
+            else{
+                LoginManager.getInstance().logOut();
+            }
+
+            GlobalApplication.editor.putBoolean("Login_check", false);
+            GlobalApplication.editor.commit();
+
+            loginCheck();
+
+        }
+        else{
+            Toast.makeText(getApplicationContext(),"현재 로그인 아웃 상태",Toast.LENGTH_SHORT).show();
+        }
+
+
+
 //    Toast.makeText(getApplicationContext(),"마켓 제보",Toast.LENGTH_SHORT).show();
         drawer.closeDrawer(GravityCompat.START);
     }
 
     @OnClick(R.id.nav_recruitSeller)
     public void moveRecruitSeller(){
+        Intent intent = new Intent(getApplicationContext(), RegisterReviewActivity.class);
+        startActivity(intent);
+
         Toast.makeText(getApplicationContext(),"셀러 모집",Toast.LENGTH_SHORT).show();
         drawer.closeDrawer(GravityCompat.START);
     }
@@ -256,6 +308,25 @@ public class MainActivity extends AppCompatActivity
         }
 
     };
+
+
+    public void loginCheck(){
+        //login
+        if(GlobalApplication.loginInfo.getBoolean("Login_check", false)){
+
+            Glide.with(this)
+                    .load(GlobalApplication.loginInfo.getString("thumbnail", ""))
+                    .into(profile);
+
+            profile.setVisibility(View.VISIBLE);
+            userNickName.setText(GlobalApplication.loginInfo.getString("nickname", ""));
+
+        }
+        else{
+            profile.setVisibility(View.INVISIBLE);
+            userNickName.setText("로그인 후 이용해 주세요");
+        }
+    }
 
     @Override
     public void onBackPressed() {

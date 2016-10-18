@@ -18,7 +18,8 @@ import com.kakao.auth.Session;
 import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
 import com.project.seoulmarket.R;
-import com.project.seoulmarket.main.view.MainActivity;
+import com.project.seoulmarket.application.GlobalApplication;
+import com.project.seoulmarket.join.JoinActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.login_with_facebook)
     LoginButton facebookBtn;
 
-    String loginMethod = "kakao";
+    String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,11 +94,21 @@ public class LoginActivity extends AppCompatActivity {
 
                                     String id = (String) response.getJSONObject().get("id");//페이스북 아이디값
                                     String name = (String) response.getJSONObject().get("name");//페이스북 이름
-                                    String email = (String) response.getJSONObject().get("email");//이메일
 
-                                    Log.i("myTag",id);
-                                    Log.i("myTag",name);
-                                    Log.i("myTag",email);
+                                    String thumnailImg = "http://graph.facebook.com/"+ id +"/picture?type=large";
+
+//                                    Log.i("myTag",id);
+//                                    Log.i("myTag",name);
+
+                                    /**
+                                     * 페이스북 로그인 성공에 따른 정보 업데이트
+                                     */
+                                    GlobalApplication.editor.putBoolean("Login_check", true);
+                                    GlobalApplication.editor.putString("method", "facebook");
+                                    GlobalApplication.editor.putString("nickname", name);
+                                    GlobalApplication.editor.putString("thumbnail", thumnailImg);
+                                    GlobalApplication.editor.commit();
+
 
                                 } catch (JSONException e) {
                                     // TODO Auto-generated catch block
@@ -113,11 +124,8 @@ public class LoginActivity extends AppCompatActivity {
                 request.setParameters(parameters);
                 request.executeAsync();
 
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
-                finish();
+
+                redirectJoinActivity();
             }
 
             @Override
@@ -177,6 +185,19 @@ public class LoginActivity extends AppCompatActivity {
 
     protected void redirectSignupActivity() {       //세션 연결 성공 시 SignupActivity로 넘김
         final Intent intent = new Intent(this, KakaoSignupActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(intent);
+        finish();
+    }
+
+    private void redirectJoinActivity() {
+        /**
+         * 연동을 성공하는 순간, 회원가입은 된 것.
+         * 앱에서 사용할 닉네임만 따로 수정할 수 있도록 이동하는 것
+         */
+
+        Intent intent = new Intent(this, JoinActivity.class);
+        intent.putExtra("login","facebook");
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
         finish();

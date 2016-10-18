@@ -6,6 +6,7 @@ package com.project.seoulmarket.application;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.SharedPreferences;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
@@ -22,6 +23,10 @@ public class GlobalApplication extends Application {
     private static volatile GlobalApplication instance = null;
     private static volatile Activity currentActivity = null;
 
+    public static SharedPreferences loginInfo;
+    public static SharedPreferences.Editor editor;
+
+
 
     @Override
     public void onCreate() {
@@ -33,6 +38,13 @@ public class GlobalApplication extends Application {
         AppEventsLogger.activateApp(this);
         //kakao
         KakaoSDK.init(new KakaoSDKAdapter());
+
+        /**
+         * SharedPreference 설정
+         */
+        loginInfo = getSharedPreferences("login_info", 0);
+        editor= loginInfo.edit();
+
     }
 
     public static Activity getCurrentActivity() {

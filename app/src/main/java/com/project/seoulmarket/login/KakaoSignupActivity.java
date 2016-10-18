@@ -14,6 +14,8 @@ import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.MeResponseCallback;
 import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.helper.log.Logger;
+import com.project.seoulmarket.application.GlobalApplication;
+import com.project.seoulmarket.join.JoinActivity;
 import com.project.seoulmarket.main.view.MainActivity;
 
 public class KakaoSignupActivity extends AppCompatActivity {
@@ -27,7 +29,7 @@ public class KakaoSignupActivity extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestMe();
-        requestAccessTokenInfo();
+//        requestAccessTokenInfo();
     }
 
     /**
@@ -66,7 +68,22 @@ public class KakaoSignupActivity extends AppCompatActivity {
                 Log.i("myTag", String.valueOf(userProfile.getNickname()));
                 Logger.d("UserProfile : " + userProfile);
 
-                redirectMainActivity(); // 로그인 성공시 MainActivity로
+
+
+                GlobalApplication.editor.putBoolean("Login_check", true);
+                GlobalApplication.editor.putString("method", "kakao");
+                GlobalApplication.editor.putString("nickname", userProfile.getNickname());
+                GlobalApplication.editor.putString("thumbnail", userProfile.getProfileImagePath());
+                GlobalApplication.editor.commit();
+
+
+                /**
+                 * 로그인 성공 시
+                 * 닉네임 설정 페이지로 이동한다.
+                 * 프로필 이미지, 카카오 로그인 토큰 전달
+                 */
+                redirectJoinActivity();
+//                redirectMainActivity(); // 로그인 성공시 MainActivity로
             }
         });
     }
@@ -102,13 +119,22 @@ public class KakaoSignupActivity extends AppCompatActivity {
 
 
     private void redirectMainActivity() {
-        Log.i("myTag", "main");
         Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
         finish();
     }
+
+    private void redirectJoinActivity() {
+        Intent intent = new Intent(this, JoinActivity.class);
+        intent.putExtra("login","kakao");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(intent);
+        finish();
+    }
+
     protected void redirectLoginActivity() {
         final Intent intent = new Intent(this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

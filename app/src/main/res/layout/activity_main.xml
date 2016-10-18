@@ -69,7 +69,7 @@
                             android:background="@drawable/ic_account_circle_white_24dp"/>
 
                         <TextView
-                            android:id="@+id/userName"
+                            android:id="@+id/userNickName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
