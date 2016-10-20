@@ -7,5 +7,9 @@ import android.widget.LinearLayout;
  */
 public interface MyPageView {
     void makeLikeView(LinearLayout view);
+    void makeReportView(LinearLayout view);
+    void makeRecruitView(LinearLayout view);
+    void deleteReport(int mId);
+    void deleteRecruit(int mId);
     void sendKakao(int mId);
 }

@@ -11,7 +11,7 @@ import com.project.seoulmarket.mypage.view.MyPageView;
 /**
  * Created by kh on 2016. 10. 5..
  */
-public class MyPageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class MyPageReportViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
 
     private MyPageView myView;
@@ -22,8 +22,9 @@ public class MyPageViewHolder extends RecyclerView.ViewHolder implements View.On
     public TextView mProgress;
     public ImageView mImageView;
     public TextView kakaoBtn;
+    public TextView deleteBtn;
 
-    public MyPageViewHolder(View itemView,MyPageView myView) {
+    public MyPageReportViewHolder(View itemView, MyPageView myView) {
         super(itemView);
 
         this.myView = myView;
@@ -33,12 +34,22 @@ public class MyPageViewHolder extends RecyclerView.ViewHolder implements View.On
         mLocation = (TextView)itemView.findViewById(R.id.marketLocation);
         mProgress = (TextView)itemView.findViewById(R.id.marketDate);
         kakaoBtn = (TextView)itemView.findViewById(R.id.kakaoBtn);
+        deleteBtn = (TextView)itemView.findViewById(R.id.deleteReport);
 
         kakaoBtn.setOnClickListener(this);
+        deleteBtn.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        myView.sendKakao(mId );
+        switch (v.getId()){
+            case R.id.kakaoBtn:
+                myView.sendKakao(mId);
+                break;
+            case R.id.deleteReport:
+                myView.deleteReport(mId);
+
+        }
+
     }
 }

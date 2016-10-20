@@ -23,9 +23,12 @@ import com.matthewtamlin.sliding_intro_screen_library.DotIndicator;
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.application.GlobalApplication;
 import com.project.seoulmarket.main.model.MarketData;
+import com.project.seoulmarket.mypage.model.RecruitSeller;
 import com.project.seoulmarket.mypage.presenter.MyPageAdapter;
 import com.project.seoulmarket.mypage.presenter.MyPagePresenter;
 import com.project.seoulmarket.mypage.presenter.MyPagePresenterImpl;
+import com.project.seoulmarket.mypage.presenter.MyPageRecruitAdapter;
+import com.project.seoulmarket.mypage.presenter.MyPageReportAdapter;
 import com.project.seoulmarket.mypage.presenter.MyPageViewPagerAdapter;
 
 import java.util.ArrayList;
@@ -41,9 +44,18 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
 
     MyPagePresenter presenter;
 
-    MyPageAdapter mAdapter;
-    ArrayList<MarketData> itemDatas;
-    LinearLayoutManager mLayoutManager;
+    MyPageAdapter mLikeAdapter;
+    ArrayList<MarketData> likeItemDatas;
+    LinearLayoutManager mLikeLayoutManager;
+
+    MyPageReportAdapter mReportAdapter;
+    ArrayList<MarketData> reportItemDatas;
+    LinearLayoutManager mReportLayoutManager;
+
+    MyPageRecruitAdapter mRecruitAdapter;
+    ArrayList<RecruitSeller> recruitItemDatas;
+    LinearLayoutManager mRecruitLayoutManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +114,7 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
         /**
          * indicator 초기화
          */
-        indicator.setNumberOfItems(2);
+        indicator.setNumberOfItems(3);
 
 
         /**
@@ -147,14 +159,14 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
         recyclerView.setHasFixedSize(true);
 
         // layoutManager 설정
-        mLayoutManager = new LinearLayoutManager(MyPageActivity.this);
-        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(mLayoutManager);
+        mLikeLayoutManager = new LinearLayoutManager(MyPageActivity.this);
+        mLikeLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(mLikeLayoutManager);
 
         //TODO adpater 설정
-        itemDatas = new ArrayList<MarketData>();
-        mAdapter = new MyPageAdapter(itemDatas, this);
-        recyclerView.setAdapter(mAdapter);
+        likeItemDatas = new ArrayList<MarketData>();
+        mLikeAdapter = new MyPageAdapter(likeItemDatas, this);
+        recyclerView.setAdapter(mLikeAdapter);
 
 
         /**
@@ -162,12 +174,100 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
          * todo 서버에서 데이터 받아오기 ( 아직 서버 구축 전 )
          */
         //MarketData(int id, String name, String location, String imgUrl, String date)
-        itemDatas.add(new MarketData(12,"프리마켓1","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
-        itemDatas.add(new MarketData(22,"프리마켓2","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
-        itemDatas.add(new MarketData(323,"프리마켓3","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
-        itemDatas.add(new MarketData(44,"프리마켓4","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
-        itemDatas.add(new MarketData(51,"프리마켓5","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
+        likeItemDatas.add(new MarketData(12,"프리마켓1","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
+        likeItemDatas.add(new MarketData(22,"프리마켓2","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
+        likeItemDatas.add(new MarketData(323,"프리마켓3","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
+        likeItemDatas.add(new MarketData(44,"프리마켓4","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
+        likeItemDatas.add(new MarketData(51,"프리마켓5","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
     }
+
+
+    @Override
+    public void makeReportView(LinearLayout view) {
+
+        RecyclerView recyclerView = (RecyclerView)view.findViewById(R.id.reportMarketList);
+        TextView nickNameTitle = (TextView)view.findViewById(R.id.userNickName);
+
+        nickNameTitle.setText(GlobalApplication.loginInfo.getString("nickname", ""));
+
+        /**
+         * recyclerview
+         */
+        //각 item의 크기가 일정할 경우 고정
+        recyclerView.setHasFixedSize(true);
+
+        // layoutManager 설정
+        mReportLayoutManager = new LinearLayoutManager(MyPageActivity.this);
+        mReportLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(mReportLayoutManager);
+
+        //TODO adpater 설정
+        reportItemDatas = new ArrayList<MarketData>();
+        mReportAdapter = new MyPageReportAdapter(reportItemDatas, this);
+        recyclerView.setAdapter(mReportAdapter);
+
+
+        /**
+         * 임시로 데이터 삽입
+         * todo 서버에서 데이터 받아오기 ( 아직 서버 구축 전 )
+         */
+        //MarketData(int id, String name, String location, String imgUrl, String date)
+        reportItemDatas.add(new MarketData(12,"프리마켓1","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
+        reportItemDatas.add(new MarketData(22,"프리마켓2","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
+        reportItemDatas.add(new MarketData(323,"프리마켓3","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
+        reportItemDatas.add(new MarketData(44,"프리마켓4","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
+        reportItemDatas.add(new MarketData(51,"프리마켓5","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
+    }
+
+    @Override
+    public void makeRecruitView(LinearLayout view) {
+
+        RecyclerView recyclerView = (RecyclerView)view.findViewById(R.id.recruitMarketList);
+        TextView nickNameTitle = (TextView)view.findViewById(R.id.userNickName);
+
+        nickNameTitle.setText(GlobalApplication.loginInfo.getString("nickname", ""));
+
+        /**
+         * recyclerview
+         */
+        //각 item의 크기가 일정할 경우 고정
+        recyclerView.setHasFixedSize(true);
+
+        // layoutManager 설정
+        mRecruitLayoutManager = new LinearLayoutManager(MyPageActivity.this);
+        mRecruitLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(mRecruitLayoutManager);
+
+        //TODO adpater 설정
+        recruitItemDatas = new ArrayList<RecruitSeller>();
+        mRecruitAdapter = new MyPageRecruitAdapter(recruitItemDatas, this);
+        recyclerView.setAdapter(mRecruitAdapter);
+
+
+        /**
+         * 임시로 데이터 삽입
+         * todo 서버에서 데이터 받아오기 ( 아직 서버 구축 전 )
+         */
+        //MarketData(int id, String name, String location, String imgUrl, String date)
+        recruitItemDatas.add(new RecruitSeller(12,"프리마켓1 셀러모집","2016-10-22","1"));
+        recruitItemDatas.add(new RecruitSeller(22,"프리마켓2 셀러모집","2016-10-22","411"));
+        recruitItemDatas.add(new RecruitSeller(323,"프리마켓3 셀러모집","2016-10-22","24"));
+        recruitItemDatas.add(new RecruitSeller(44,"프리마켓4 셀러모집","2016-10-22","31"));
+        recruitItemDatas.add(new RecruitSeller(51,"프리마켓5 셀러모집","2016-10-22","0"));
+
+    }
+
+    @Override
+    public void deleteReport(int mId) {
+        Toast.makeText(getApplicationContext(),"삭제 구현예정",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void deleteRecruit(int mId) {
+
+        Toast.makeText(getApplicationContext(),"삭제 구현예정",Toast.LENGTH_SHORT).show();
+    }
+
 
     @Override
     public void sendKakao(int marketId) {
