@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.matthewtamlin.sliding_intro_screen_library.DotIndicator;
 import com.project.seoulmarket.R;
+import com.project.seoulmarket.detail.maps.MapActivity;
 import com.project.seoulmarket.detail.model.ReviewData;
 import com.project.seoulmarket.detail.presenter.ViewpagerAdapter;
 
@@ -150,6 +151,14 @@ public class DetailActivity extends AppCompatActivity {
 
 
     }
+
+    @OnClick(R.id.showLocation)
+    public void moveLocationPage(){
+        Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+        startActivity(intent);
+    }
+
+
 
 
     @OnClick(R.id.basicInfo)
