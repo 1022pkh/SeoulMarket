@@ -10,15 +10,20 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.matthewtamlin.sliding_intro_screen_library.DotIndicator;
 import com.project.seoulmarket.R;
+import com.project.seoulmarket.application.GlobalApplication;
 import com.project.seoulmarket.detail.maps.MapsActivity;
 import com.project.seoulmarket.detail.model.ReviewData;
 import com.project.seoulmarket.detail.presenter.ViewpagerAdapter;
 import com.project.seoulmarket.detail.review.RegisterReviewActivity;
+import com.project.seoulmarket.dialog.DialogLogin;
+import com.project.seoulmarket.login.LoginActivity;
 
 import java.util.ArrayList;
 
@@ -36,15 +41,18 @@ public class DetailActivity extends AppCompatActivity {
     LinearLayout basicInfoArea;
     @BindView(R.id.reviewInfo)
     LinearLayout reviewInfoArea;
-
     @BindView(R.id.contentArea)
     LinearLayout inflatedLayout;
+    @BindView(R.id.likehHeart)
+    ImageView likeHeart;
 
+
+    Boolean heartCheck = false;
 
     ArrayList<String> imgUrl;
-
     ArrayList<ReviewData> reviewDatas = null;
 
+    DialogLogin dialog_login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +65,15 @@ public class DetailActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.parseColor("#F6D03F"));
         }
 
+
+
+
+        if(heartCheck == false) {
+            likeHeart.setImageResource(R.drawable.ic_heart_big_blank);
+        }
+        else{
+            likeHeart.setImageResource(R.drawable.ic_heart_big);
+        }
 
 
         /**
@@ -153,6 +170,18 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
+    @OnClick(R.id.likehHeart)
+    public void likeHeartEvent(){
+        if(heartCheck == false) {
+            likeHeart.setImageResource(R.drawable.ic_heart_big);
+            heartCheck = true;
+        }
+        else {
+            likeHeart.setImageResource(R.drawable.ic_heart_big_blank);
+            heartCheck = false;
+        }
+    }
+
     @OnClick(R.id.showLocation)
     public void moveLocationPage(){
         /**
@@ -171,11 +200,43 @@ public class DetailActivity extends AppCompatActivity {
 
     @OnClick(R.id.marketReview)
     public void moveRigisterReview(){
-        Intent intent = new Intent(getApplicationContext(), RegisterReviewActivity.class);
-        startActivity(intent);
+
+        if(GlobalApplication.loginInfo.getBoolean("Login_check", false)) {
+            Intent intent = new Intent(getApplicationContext(), RegisterReviewActivity.class);
+            startActivity(intent);
+        }
+        else{
+            WindowManager.LayoutParams loginParams;
+            dialog_login = new DialogLogin(DetailActivity.this, loginEvent,loginCancelEvent);
+
+            loginParams = dialog_login.getWindow().getAttributes();
+
+            // Dialog 사이즈 조절 하기
+            loginParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+            loginParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+            dialog_login.getWindow().setAttributes(loginParams);
+
+            dialog_login.show();
+        }
+
+
     }
 
+    private View.OnClickListener loginEvent = new View.OnClickListener() {
+        public void onClick(View v) {
+            dialog_login.dismiss();
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+        }
 
+    };
+
+    private View.OnClickListener loginCancelEvent = new View.OnClickListener() {
+        public void onClick(View v) {
+            dialog_login.dismiss();
+        }
+
+    };
 
     @OnClick(R.id.basicInfo)
     public void changeBasicArea(){

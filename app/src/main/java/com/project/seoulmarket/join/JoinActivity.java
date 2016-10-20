@@ -23,7 +23,7 @@ import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.helper.log.Logger;
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.application.GlobalApplication;
-import com.project.seoulmarket.main.view.MainActivity;
+import com.project.seoulmarket.main.view.MainTabActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -226,7 +226,7 @@ public class JoinActivity extends AppCompatActivity {
 
         Toast.makeText(getApplicationContext(),"회원가입 성공!",Toast.LENGTH_SHORT).show();
 
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, MainTabActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);

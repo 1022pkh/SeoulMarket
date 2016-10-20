@@ -24,10 +24,12 @@ import com.project.seoulmarket.application.GlobalApplication;
 import com.project.seoulmarket.detail.DetailActivity;
 import com.project.seoulmarket.dialog.DialogDate;
 import com.project.seoulmarket.dialog.DialogLocation;
+import com.project.seoulmarket.dialog.DialogLogin;
 import com.project.seoulmarket.dialog.DialogName;
 import com.project.seoulmarket.login.LoginActivity;
 import com.project.seoulmarket.main.model.MarketData;
 import com.project.seoulmarket.main.presenter.CardViewAdapter;
+import com.project.seoulmarket.mypage.view.MyPageActivity;
 
 import java.util.ArrayList;
 
@@ -49,7 +51,7 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
     DialogLocation dialog_location;
     DialogDate dialog_date;
     DialogName dialog_name;
-
+    DialogLogin dialog_login;
 
     //Back 키 두번 클릭 여부 확인
     private final long FINSH_INTERVAL_TIME = 2000;
@@ -153,15 +155,27 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
 
     @OnClick(R.id.myPage)
     public void moveMyPage(){
-//        Toast.makeText(getApplicationContext(),"나의 마켓 관리",Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(),"나의 공간",Toast.LENGTH_SHORT).show();
 
         if(GlobalApplication.loginInfo.getBoolean("Login_check", false)) {
-            Toast.makeText(getApplicationContext(),"현재 로그인 상태",Toast.LENGTH_SHORT).show();
-        }
-        else{
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+
+            Intent intent = new Intent(getApplicationContext(), MyPageActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
+        }
+        else{
+            WindowManager.LayoutParams loginParams;
+            dialog_login = new DialogLogin(MainTabActivity.this, loginEvent,loginCancelEvent);
+
+            loginParams = dialog_login.getWindow().getAttributes();
+
+            // Dialog 사이즈 조절 하기
+            loginParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+            loginParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+            dialog_login.getWindow().setAttributes(loginParams);
+
+            dialog_login.show();
+
         }
 
 
@@ -275,6 +289,23 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
         }
 
     };
+
+    private View.OnClickListener loginEvent = new View.OnClickListener() {
+        public void onClick(View v) {
+            dialog_login.dismiss();
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+        }
+
+    };
+
+    private View.OnClickListener loginCancelEvent = new View.OnClickListener() {
+        public void onClick(View v) {
+            dialog_login.dismiss();
+        }
+
+    };
+
 
     private View.OnClickListener getDateEvent = new View.OnClickListener() {
         public void onClick(View v) {
