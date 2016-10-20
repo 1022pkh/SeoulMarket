@@ -66,7 +66,16 @@ public class DetailActivity extends AppCompatActivity {
         }
 
 
+        /**
+         * get id
+         */
 
+        Intent intent = getIntent();
+        String marketId = intent.getExtras().getString("marketId");
+
+        /**
+         * id를 토대로 정보를 가져온다!.
+         */
 
         if(heartCheck == false) {
             likeHeart.setImageResource(R.drawable.ic_heart_big_blank);

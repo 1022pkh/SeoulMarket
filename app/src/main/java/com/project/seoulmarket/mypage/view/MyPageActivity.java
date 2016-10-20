@@ -1,5 +1,6 @@
 package com.project.seoulmarket.mypage.view;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -22,6 +23,7 @@ import com.kakao.util.KakaoParameterException;
 import com.matthewtamlin.sliding_intro_screen_library.DotIndicator;
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.application.GlobalApplication;
+import com.project.seoulmarket.detail.DetailActivity;
 import com.project.seoulmarket.main.model.MarketData;
 import com.project.seoulmarket.mypage.model.RecruitSeller;
 import com.project.seoulmarket.mypage.presenter.MyPageAdapter;
@@ -255,6 +257,13 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
         recruitItemDatas.add(new RecruitSeller(44,"프리마켓4 셀러모집","2016-10-22","31"));
         recruitItemDatas.add(new RecruitSeller(51,"프리마켓5 셀러모집","2016-10-22","0"));
 
+    }
+
+    @Override
+    public void moveDetailPage(int mId) {
+        Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+        intent.putExtra("marketId",mId);
+        startActivity(intent);
     }
 
     @Override

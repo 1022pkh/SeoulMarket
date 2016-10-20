@@ -35,10 +35,19 @@ public class MyPageViewHolder extends RecyclerView.ViewHolder implements View.On
         kakaoBtn = (TextView)itemView.findViewById(R.id.kakaoBtn);
 
         kakaoBtn.setOnClickListener(this);
+        itemView.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        myView.sendKakao(mId );
+        switch (v.getId()){
+            case R.id.kakaoBtn:
+                myView.sendKakao(mId);
+                break;
+            default:
+                myView.moveDetailPage(mId);
+                break;
+        }
+
     }
 }

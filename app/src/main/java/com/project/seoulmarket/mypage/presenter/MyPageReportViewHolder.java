@@ -38,6 +38,8 @@ public class MyPageReportViewHolder extends RecyclerView.ViewHolder implements V
 
         kakaoBtn.setOnClickListener(this);
         deleteBtn.setOnClickListener(this);
+
+        itemView.setOnClickListener(this);
     }
 
     @Override
@@ -48,7 +50,9 @@ public class MyPageReportViewHolder extends RecyclerView.ViewHolder implements V
                 break;
             case R.id.deleteReport:
                 myView.deleteReport(mId);
-
+            default:
+                myView.moveDetailPage(mId);
+                break;
         }
 
     }
