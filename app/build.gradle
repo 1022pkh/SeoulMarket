@@ -62,9 +62,9 @@ dependencies {
     //StickyScrollViewItems
     compile 'se.emilsjolander:StickyScrollViewItems:1.1.0'
 
+    // 구글 지도
+    compile 'com.google.android.gms:play-services:9.0.0'
 
-    //네이버지도
-    compile 'com.naver.maps.open:naver-map-api:2.1.2@aar'
 
     //
     compile 'com.jakewharton:butterknife:8.1.0'

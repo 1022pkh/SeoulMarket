@@ -22,7 +22,6 @@ import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.application.GlobalApplication;
 import com.project.seoulmarket.detail.DetailActivity;
-import com.project.seoulmarket.detail.review.RegisterReviewActivity;
 import com.project.seoulmarket.dialog.DialogDate;
 import com.project.seoulmarket.dialog.DialogLocation;
 import com.project.seoulmarket.dialog.DialogName;
@@ -71,8 +70,6 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
         }
 
         ButterKnife.bind(this);
-
-
 
 
         getSupportActionBar().setDisplayShowHomeEnabled(false);
@@ -203,8 +200,6 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
 
     @OnClick(R.id.recruitSeller)
     public void moveRecruitSeller(){
-        Intent intent = new Intent(getApplicationContext(), RegisterReviewActivity.class);
-        startActivity(intent);
 
         Toast.makeText(getApplicationContext(),"셀러 모집",Toast.LENGTH_SHORT).show();
     }

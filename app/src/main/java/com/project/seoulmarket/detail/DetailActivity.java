@@ -15,9 +15,10 @@ import android.widget.TextView;
 
 import com.matthewtamlin.sliding_intro_screen_library.DotIndicator;
 import com.project.seoulmarket.R;
-import com.project.seoulmarket.detail.maps.MapActivity;
+import com.project.seoulmarket.detail.maps.MapsActivity;
 import com.project.seoulmarket.detail.model.ReviewData;
 import com.project.seoulmarket.detail.presenter.ViewpagerAdapter;
+import com.project.seoulmarket.detail.review.RegisterReviewActivity;
 
 import java.util.ArrayList;
 
@@ -154,10 +155,25 @@ public class DetailActivity extends AppCompatActivity {
 
     @OnClick(R.id.showLocation)
     public void moveLocationPage(){
-        Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+        /**
+         * 넘길때
+         * 마켓이름 , 주소 , 위도 , 경도 보내야함
+         */
+
+        Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+        intent.putExtra("name","건대프리마켓");
+        intent.putExtra("address","서울특별시 광진구 능동로 120");
+        intent.putExtra("longitude","127.0793428");
+        intent.putExtra("latitude","37.5407625");
+
         startActivity(intent);
     }
 
+    @OnClick(R.id.marketReview)
+    public void moveRigisterReview(){
+        Intent intent = new Intent(getApplicationContext(), RegisterReviewActivity.class);
+        startActivity(intent);
+    }
 
 
 
