@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,17 +12,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kakao.kakaolink.KakaoLink;
 import com.kakao.kakaolink.KakaoTalkLinkMessageBuilder;
 import com.kakao.util.KakaoParameterException;
+import com.matthewtamlin.sliding_intro_screen_library.DotIndicator;
 import com.project.seoulmarket.R;
+import com.project.seoulmarket.application.GlobalApplication;
 import com.project.seoulmarket.main.model.MarketData;
 import com.project.seoulmarket.mypage.presenter.MyPageAdapter;
 import com.project.seoulmarket.mypage.presenter.MyPagePresenter;
 import com.project.seoulmarket.mypage.presenter.MyPagePresenterImpl;
+import com.project.seoulmarket.mypage.presenter.MyPageViewPagerAdapter;
 
 import java.util.ArrayList;
 
@@ -29,16 +34,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MyPageActivity extends AppCompatActivity implements MyPageView{
+    @BindView(R.id.pager)
+    ViewPager pager;
+    @BindView(R.id.pager_indicator)
+    DotIndicator indicator;
 
-    @BindView(R.id.likeMarketList)
-    RecyclerView recyclerView;
+    MyPagePresenter presenter;
 
     MyPageAdapter mAdapter;
     ArrayList<MarketData> itemDatas;
     LinearLayoutManager mLayoutManager;
-
-
-    MyPagePresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +85,60 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
         getSupportActionBar().setCustomView(mCustomView);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
 
+        /**
+         * viewpager
+         */
 
+        MyPageViewPagerAdapter adapter = new MyPageViewPagerAdapter(getSupportFragmentManager(),this);
+        pager.setAdapter(adapter);
+
+
+        /**
+         * 도트 색 지정
+         */
+        indicator.setSelectedDotColor( Color.parseColor( "#F96332" ) );
+        indicator.setUnselectedDotColor( Color.parseColor( "#CFCFCF" ) );
+
+        /**
+         * indicator 초기화
+         */
+        indicator.setNumberOfItems(2);
+
+
+        /**
+         * 스크롤 등으로 다음 페이지로 넘어갈 때 도트도 옮김
+         */
+        pager.addOnPageChangeListener( new ViewPager.OnPageChangeListener()
+        {
+            @Override
+            public void onPageScrolled( int position, float positionOffset, int positionOffsetPixels )
+            {
+
+            }
+
+            @Override
+            public void onPageSelected( int position )
+            {
+                indicator.setSelectedItem( pager.getCurrentItem(), true );
+            }
+
+            @Override
+            public void onPageScrollStateChanged( int state )
+            {
+
+            }
+        } );
+
+
+    }
+
+    @Override
+    public void makeLikeView(LinearLayout view) {
+
+        RecyclerView recyclerView = (RecyclerView)view.findViewById(R.id.likeMarketList);
+        TextView nickNameTitle = (TextView)view.findViewById(R.id.userNickName);
+
+        nickNameTitle.setText(GlobalApplication.loginInfo.getString("nickname", ""));
 
         /**
          * recyclerview
@@ -89,13 +147,13 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
         recyclerView.setHasFixedSize(true);
 
         // layoutManager 설정
-        mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager = new LinearLayoutManager(MyPageActivity.this);
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(mLayoutManager);
 
         //TODO adpater 설정
         itemDatas = new ArrayList<MarketData>();
-        mAdapter = new MyPageAdapter(itemDatas,this);
+        mAdapter = new MyPageAdapter(itemDatas, this);
         recyclerView.setAdapter(mAdapter);
 
 
@@ -109,9 +167,7 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
         itemDatas.add(new MarketData(323,"프리마켓3","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
         itemDatas.add(new MarketData(44,"프리마켓4","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
         itemDatas.add(new MarketData(51,"프리마켓5","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
-
     }
-
 
     @Override
     public void sendKakao(int marketId) {
@@ -145,4 +201,7 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
 
 
     }
+
+
 }
+

@@ -4,42 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".mypage.view.MyPageActivity"
-    android:orientation="vertical"
-    android:weightSum="10">
+    android:weightSum="10"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingLeft="10dp"
-        android:gravity="center_vertical"
-        android:background="#E7E7E7">
+        android:layout_weight="9"
+        tools:context=".detail.DetailActivity" />
 
-        <TextView
-            android:id="@+id/userNickName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#FDBF2D"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:text="닉네임"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:text=" 님이 좋아하는 마켓"
-            />
-
-    </LinearLayout>
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/likeMarketList"
+    <com.matthewtamlin.sliding_intro_screen_library.DotIndicator
+        android:id="@+id/pager_indicator"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="9">
-
-    </android.support.v7.widget.RecyclerView>
+        android:layout_weight="1"/>
 
 </LinearLayout>
