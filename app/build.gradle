@@ -58,6 +58,9 @@ dependencies {
     //viewpager DotIndicator
     compile 'com.matthew-tamlin:sliding-intro-screen:2.1.2'
 
+    //StickyScrollViewItems
+    compile 'se.emilsjolander:StickyScrollViewItems:1.1.0'
+
     //
     compile 'com.jakewharton:butterknife:8.1.0'
     apt 'com.jakewharton:butterknife-compiler:8.1.0'
