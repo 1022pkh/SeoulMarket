@@ -13,9 +13,11 @@ import com.bumptech.glide.Glide;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
 import com.kakao.auth.ErrorCode;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.kakao.usermgmt.callback.MeResponseCallback;
 import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.helper.log.Logger;
@@ -39,7 +41,7 @@ public class JoinActivity extends AppCompatActivity {
     EditText nickNameArea;
 
     private String usrToken;
-
+    String loginMethod;
     Boolean nickNameCheck = false;
 
     @Override
@@ -52,7 +54,7 @@ public class JoinActivity extends AppCompatActivity {
         Log.i("myTag","In Join");
 
         Intent intent = getIntent();
-        String loginMethod =  intent.getExtras().getString("login");
+        loginMethod =  intent.getExtras().getString("login");
 
 
         Log.i("myTag",loginMethod);
@@ -74,13 +76,30 @@ public class JoinActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);     // 여기서 this는 Activity의 this
 
         // 여기서 부터는 알림창의 속성 설정
-        builder.setTitle("닉네임 설정을 취소하시겠습니까?")        // 메세지 설정
-                .setMessage("취소 시 연동된 앱의 닉네임으로 설정됩니다.")
+        builder.setTitle("회원 가입을 취소하시겠습니까?")        // 메세지 설정
+                //  .setMessage("취소 시 연동된 앱의 닉네임으로 설정됩니다.")
                 .setCancelable(true)        // 뒤로 버튼 클릭시 취소 가능 설정
                 .setPositiveButton("확인", new DialogInterface.OnClickListener(){
                     // 확인 버튼 클릭시 설정
                     public void onClick(DialogInterface dialog, int whichButton){
+
+                        if(GlobalApplication.loginInfo.getString("method", "").equals("kakao")){
+                            //kakao 로그아웃
+                            UserManagement.requestLogout(new LogoutResponseCallback() {
+                                @Override
+                                public void onCompleteLogout() {
+                                }
+                            });
+                        }
+                        else{
+                            LoginManager.getInstance().logOut();
+                        }
+
+                        GlobalApplication.editor.putBoolean("Login_check", false);
+                        GlobalApplication.editor.commit();
+
                         finish();
+
                     }
                 })
                 .setNegativeButton("취소", new DialogInterface.OnClickListener(){
@@ -205,7 +224,7 @@ public class JoinActivity extends AppCompatActivity {
         GlobalApplication.editor.putString("nickname", String.valueOf(nickNameArea.getText()));
         GlobalApplication.editor.commit();
 
-        Toast.makeText(getApplicationContext(),"회원가입 및 닉네임 변경 성공!",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(),"회원가입 성공!",Toast.LENGTH_SHORT).show();
 
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

@@ -1,12 +1,13 @@
 package com.project.seoulmarket.main.presenter;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.project.seoulmarket.R;
+import com.project.seoulmarket.detail.DetailActivity;
 
 /**
  * Created by kh on 2016. 10. 5..
@@ -31,7 +32,9 @@ public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-
-        Log.i("myTag", String.valueOf(mId));
+//        Log.i("myTag", String.valueOf(mId));
+        Intent intent = new Intent(v.getContext(), DetailActivity.class);
+        intent.putExtra("marketId",mId);
+        v.getContext().startActivity(intent);
     }
 }

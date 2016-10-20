@@ -64,12 +64,15 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".detail.DetailActivity" />
+        <activity
+            android:name=".detail.DetailActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".detail.maps.MapActivity" />
         <activity
             android:name=".detail.review.RegisterReviewActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".join.JoinActivity"></activity>
+        <activity android:name=".join.JoinActivity" />
+        <activity android:name=".main.view.MainTabActivity"></activity>
     </application>
 
 </manifest>

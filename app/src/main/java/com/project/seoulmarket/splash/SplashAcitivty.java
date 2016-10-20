@@ -8,7 +8,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
 import com.project.seoulmarket.R;
-import com.project.seoulmarket.main.view.MainActivity;
+import com.project.seoulmarket.main.view.MainTabActivity;
 
 public class SplashAcitivty extends AppCompatActivity {
 
@@ -25,7 +25,7 @@ public class SplashAcitivty extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), MainTabActivity.class);
                 startActivity(intent);
                 finish();
             }

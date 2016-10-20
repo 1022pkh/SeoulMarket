@@ -55,6 +55,8 @@ dependencies {
     //이미지 url을 통해 이미지 뿌려주는 라이브러리
     compile 'com.github.bumptech.glide:glide:3.7.0'
 
+    //viewpager DotIndicator
+    compile 'com.matthew-tamlin:sliding-intro-screen:2.1.2'
 
     //
     compile 'com.jakewharton:butterknife:8.1.0'
