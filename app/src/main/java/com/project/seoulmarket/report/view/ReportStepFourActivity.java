@@ -14,12 +14,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.project.seoulmarket.R;
+import com.project.seoulmarket.dialog.DialogRegister;
+import com.project.seoulmarket.main.view.MainTabActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,6 +49,8 @@ public class ReportStepFourActivity extends AppCompatActivity {
     String[] imgURL = new String[6];
     int imgCount = 0;
 
+
+    private DialogRegister dialog_Register;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +91,44 @@ public class ReportStepFourActivity extends AppCompatActivity {
 
     }
 
+    @OnClick(R.id.registerServer)
+    public void registerServer(){
+        WindowManager.LayoutParams registerParams;
+        dialog_Register = new DialogRegister(ReportStepFourActivity.this, registerEvent,registerCancelEvent);
+
+        registerParams = dialog_Register.getWindow().getAttributes();
+
+        // Dialog 사이즈 조절 하기
+        registerParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        registerParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+        dialog_Register.getWindow().setAttributes(registerParams);
+
+        dialog_Register.show();
+    }
+
+    private View.OnClickListener registerEvent = new View.OnClickListener() {
+        public void onClick(View v) {
+            dialog_Register.dismiss();
+            Toast.makeText(getApplicationContext(),"제보 완료!",Toast.LENGTH_SHORT).show();
+            /**
+             * 성공시 메인페이지로 이동한다.
+             */
+            Intent intent = new Intent(ReportStepFourActivity.this, MainTabActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        }
+
+    };
+
+    private View.OnClickListener registerCancelEvent = new View.OnClickListener() {
+        public void onClick(View v) {
+            dialog_Register.dismiss();
+        }
+
+    };
 
     @OnClick(R.id.imgArea)
     public void getImg(){

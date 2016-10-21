@@ -27,6 +27,7 @@ import com.project.seoulmarket.login.LoginActivity;
 import com.project.seoulmarket.main.model.MarketData;
 import com.project.seoulmarket.main.presenter.CardViewAdapter;
 import com.project.seoulmarket.mypage.view.MyPageActivity;
+import com.project.seoulmarket.recruit.view.RecruitActivity;
 import com.project.seoulmarket.report.view.ReportMarketActivity;
 
 import java.util.ArrayList;
@@ -232,8 +233,9 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
     //셀러 모집
     @OnClick(R.id.recruitSeller)
     public void moveRecruitSeller(){
-
-        Toast.makeText(getApplicationContext(),"셀러 모집",Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getApplicationContext(), RecruitActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
 
