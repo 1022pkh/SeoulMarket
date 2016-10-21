@@ -4,45 +4,86 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.project.seoulmarket.report.view.ReportStepThreeActivity"
-    android:padding="10dp"
     android:orientation="vertical"
-    android:weightSum="10"
     android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:layout_weight="10">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8"
+        android:background="#333">
+
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:id="@+id/TopAddress"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:paddingLeft="60dp"
+            android:background="#80ffffff">
+
+            <TextView
+                android:id="@+id/marketAddress"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:textSize="10sp"
+                android:textColor="#555555"
+                android:text="서울특별시 서교동 홍대입구역"/>
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1.5"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            android:text="*위치 설정 : "/>
+        android:layout_weight="2"
+        android:weightSum="2"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:weightSum="10"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp">
+
+            <EditText
+                android:id="@+id/inputAddress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="7"
+                android:singleLine="true"/>
 
             <Button
-                android:id="@+id/setLocation"
-                android:layout_width="wrap_content"
+                android:id="@+id/requestAddress"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="위치 설정"/>
+                android:layout_weight="3"
+                android:text="검색"/>
 
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/completeAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="위치설정 완료"/>
+        </LinearLayout>
+
+
     </LinearLayout>
-
-
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#999999"/>
-
 
 </LinearLayout>

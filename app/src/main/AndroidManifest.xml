@@ -19,6 +19,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:largeHeap="true"
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.kakao.sdk.AppKey"
@@ -36,13 +37,14 @@
         <activity
             android:name=".splash.SplashAcitivty"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+             <intent-filter>
+             <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
+             <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
         </activity>
-        <activity android:name=".login.LoginActivity"></activity>
+        <activity android:name=".login.LoginActivity" />
         <activity android:name=".login.KakaoSignupActivity" />
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -85,17 +87,12 @@
             android:label="@string/title_activity_maps" />
         <activity android:name=".mypage.view.MyPageActivity" />
         <activity android:name=".report.view.ReportMarketActivity" />
-        <activity android:name=".report.view.ReportStepTwoActivity">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-
+        <activity android:name=".report.view.ReportStepTwoActivity"></activity>
+        <activity
+            android:name=".report.view.ReportStepThreeActivity"
+            android:windowSoftInputMode="adjustPan">
         </activity>
-        <activity android:name=".report.view.ReportStepThreeActivity"></activity>
+        <activity android:name=".report.view.ReportStepFourActivity"></activity>
     </application>
 
 </manifest>
