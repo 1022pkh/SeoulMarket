@@ -292,10 +292,10 @@ public class MainActivity extends AppCompatActivity
     private View.OnClickListener getDateEvent = new View.OnClickListener() {
         public void onClick(View v) {
 
-            startDate = dialog_date.getStartDate();
-            endDate = dialog_date.getEndDate();
-
-            Toast.makeText(getApplicationContext(),startDate + " ~ "+endDate,Toast.LENGTH_SHORT).show();
+//            startDate = dialog_date.getStartDate();
+//            endDate = dialog_date.getEndDate();
+//
+//            Toast.makeText(getApplicationContext(),startDate + " ~ "+endDate,Toast.LENGTH_SHORT).show();
             dialog_date.dismiss();
 
         }

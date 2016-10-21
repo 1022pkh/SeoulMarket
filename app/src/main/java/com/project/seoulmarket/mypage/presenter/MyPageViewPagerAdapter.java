@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.project.seoulmarket.mypage.view.LikeMarketFragment;
+import com.project.seoulmarket.mypage.view.MyPageInfoFragment;
 import com.project.seoulmarket.mypage.view.MyPageView;
 import com.project.seoulmarket.mypage.view.RecruitMarketFragment;
 import com.project.seoulmarket.mypage.view.ReportMarketFragment;
@@ -21,7 +22,7 @@ public class MyPageViewPagerAdapter extends FragmentStatePagerAdapter {
 	 */
 
     private MyPageView myView;
-    Fragment[] fragments = new Fragment[3];
+    Fragment[] fragments = new Fragment[4];
 
     public MyPageViewPagerAdapter(FragmentManager fm,MyPageView myView) {
         super(fm);
@@ -29,6 +30,7 @@ public class MyPageViewPagerAdapter extends FragmentStatePagerAdapter {
         fragments[0] = new LikeMarketFragment(myView);
         fragments[1] = new ReportMarketFragment(myView);
         fragments[2] = new RecruitMarketFragment(myView);
+        fragments[3] = new MyPageInfoFragment(myView);
     }
 
     //아래의 메서드들의 호출 주체는 ViewPager이다.

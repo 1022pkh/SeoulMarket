@@ -9,6 +9,8 @@ public interface MyPageView {
     void makeLikeView(LinearLayout view);
     void makeReportView(LinearLayout view);
     void makeRecruitView(LinearLayout view);
+    void makeInfoView(LinearLayout view);
+
     void moveDetailPage(int mId);
     void deleteReport(int mId);
     void deleteRecruit(int mId);

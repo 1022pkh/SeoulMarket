@@ -12,19 +12,25 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.facebook.login.LoginManager;
 import com.kakao.kakaolink.KakaoLink;
 import com.kakao.kakaolink.KakaoTalkLinkMessageBuilder;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.kakao.util.KakaoParameterException;
 import com.matthewtamlin.sliding_intro_screen_library.DotIndicator;
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.application.GlobalApplication;
 import com.project.seoulmarket.detail.DetailActivity;
 import com.project.seoulmarket.main.model.MarketData;
+import com.project.seoulmarket.main.view.MainTabActivity;
 import com.project.seoulmarket.mypage.model.RecruitSeller;
 import com.project.seoulmarket.mypage.presenter.MyPageAdapter;
 import com.project.seoulmarket.mypage.presenter.MyPagePresenter;
@@ -37,6 +43,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MyPageActivity extends AppCompatActivity implements MyPageView{
     @BindView(R.id.pager)
@@ -116,7 +123,7 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
         /**
          * indicator 초기화
          */
-        indicator.setNumberOfItems(3);
+        indicator.setNumberOfItems(4);
 
 
         /**
@@ -258,6 +265,59 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
         recruitItemDatas.add(new RecruitSeller(51,"프리마켓5 셀러모집","2016-10-22","0"));
 
     }
+
+    @Override
+    public void makeInfoView(LinearLayout view) {
+        CircleImageView thumbnail =  (CircleImageView)view.findViewById(R.id.profile_image);
+        TextView loginMethod = (TextView)view.findViewById(R.id.loginMethod);
+        Button logoutBtn = (Button)view.findViewById(R.id.logoutBtn);
+
+        /**
+         * 사용자 프로필이미지 적용
+         */
+        Glide.with(this)
+                .load(GlobalApplication.loginInfo.getString("thumbnail", ""))
+                .into(thumbnail);
+
+        loginMethod.setText(GlobalApplication.loginInfo.getString("method", ""));
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logoutEvent();
+            }
+        });
+    }
+
+    public void logoutEvent(){
+        /**
+         * 로그인 방법에 따른 로그아웃 메소드/방식이 다름
+         */
+        if(GlobalApplication.loginInfo.getString("method", "").equals("kakao")){
+            //kakao 로그아웃
+            UserManagement.requestLogout(new LogoutResponseCallback() {
+                @Override
+                public void onCompleteLogout() {
+                }
+            });
+        }
+        else{
+            LoginManager.getInstance().logOut();
+        }
+
+        GlobalApplication.editor.putBoolean("Login_check", false);
+        GlobalApplication.editor.commit();
+
+        /**
+         * 성공시 메인페이지로 이동한다.
+         */
+        Intent intent = new Intent(this, MainTabActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
+    }
+
 
     @Override
     public void moveDetailPage(int mId) {

@@ -3,15 +3,23 @@ package com.project.seoulmarket.detail.review;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.project.seoulmarket.R;
+import com.project.seoulmarket.dialog.DialogCancel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,21 +29,88 @@ public class RegisterReviewActivity extends AppCompatActivity {
 
     @BindView(R.id.addImgBtn)
     Button addImgBtn;
-
     @BindView(R.id.imgName)
     TextView imgName;
 
 
+    DialogCancel dialogCancel;
     final int REQ_CODE_SELECT_IMAGE=100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_review);
+
+        if (Build.VERSION.SDK_INT >= 21) {   //상태바 색
+            getWindow().setStatusBarColor(Color.parseColor("#F6D03F"));
+        }
+
         ButterKnife.bind(this);
 
 
+        /**
+         * actionbar 설정
+         */
+
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        // ActionBar의 배경색 변경
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFFFFFFFF));
+
+        getSupportActionBar().setElevation(0); // 그림자 없애기
+
+        LayoutInflater mInflater = LayoutInflater.from(this);
+        View mCustomView = mInflater.inflate(R.layout.actionbar_close_layout, null);
+
+        ImageView closeBtn = (ImageView) mCustomView.findViewById(R.id.closeBtn);
+
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                warningOut();
+            }
+        });
+
+
+        getSupportActionBar().setCustomView(mCustomView);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+
+
     }
+
+    @Override
+    public void onBackPressed() {
+        warningOut();
+    }
+
+    public void warningOut(){
+        WindowManager.LayoutParams loginParams;
+        dialogCancel = new DialogCancel(RegisterReviewActivity.this, moveDetailPage, remainPageEvent);
+
+        loginParams = dialogCancel.getWindow().getAttributes();
+
+        // Dialog 사이즈 조절 하기
+        loginParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        loginParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+        dialogCancel.getWindow().setAttributes(loginParams);
+        dialogCancel.show();
+    }
+
+    private View.OnClickListener moveDetailPage = new View.OnClickListener() {
+        public void onClick(View v) {
+            dialogCancel.dismiss();
+            finish();
+        }
+
+    };
+
+    private View.OnClickListener remainPageEvent = new View.OnClickListener() {
+        public void onClick(View v) {
+            dialogCancel.dismiss();
+        }
+
+    };
 
     @OnClick(R.id.addImgBtn)
     public void getImg(){

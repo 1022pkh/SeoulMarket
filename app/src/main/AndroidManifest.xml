@@ -44,13 +44,6 @@
         </activity>
         <activity android:name=".login.LoginActivity">
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-
         </activity>
         <activity android:name=".login.KakaoSignupActivity" />
         <activity
@@ -75,8 +68,7 @@
             android:name=".detail.DetailActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".detail.review.RegisterReviewActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".detail.review.RegisterReviewActivity" />
         <activity android:name=".join.JoinActivity" />
         <activity android:name=".main.view.MainTabActivity" />
         <!--
@@ -94,7 +86,18 @@
         <activity
             android:name=".detail.maps.MapsActivity"
             android:label="@string/title_activity_maps" />
-        <activity android:name=".mypage.view.MyPageActivity"></activity>
+        <activity android:name=".mypage.view.MyPageActivity" />
+        <activity android:name=".report.view.ReportMarketActivity" />
+        <activity android:name=".report.view.ReportStepTwoActivity">
+
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+
+
+        </activity>
     </application>
 
 </manifest>

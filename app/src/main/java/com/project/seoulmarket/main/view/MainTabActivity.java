@@ -14,11 +14,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.facebook.login.LoginManager;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.kakao.usermgmt.UserManagement;
-import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.application.GlobalApplication;
 import com.project.seoulmarket.detail.DetailActivity;
@@ -30,6 +27,7 @@ import com.project.seoulmarket.login.LoginActivity;
 import com.project.seoulmarket.main.model.MarketData;
 import com.project.seoulmarket.main.presenter.CardViewAdapter;
 import com.project.seoulmarket.mypage.view.MyPageActivity;
+import com.project.seoulmarket.report.view.ReportMarketActivity;
 
 import java.util.ArrayList;
 
@@ -153,9 +151,9 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
     }
 
 
+    //나의 공간
     @OnClick(R.id.myPage)
     public void moveMyPage(){
-//        Toast.makeText(getApplicationContext(),"나의 공간",Toast.LENGTH_SHORT).show();
 
         if(GlobalApplication.loginInfo.getBoolean("Login_check", false)) {
 
@@ -181,37 +179,57 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
 
     }
 
+    //마켓 제보
     @OnClick(R.id.noitfyMarket)
     public void moveNoitfyMarket(){
 
         if(GlobalApplication.loginInfo.getBoolean("Login_check", false)) {
 
-            if(GlobalApplication.loginInfo.getString("method", "").equals("kakao")){
-                //kakao 로그아웃
-                UserManagement.requestLogout(new LogoutResponseCallback() {
-                    @Override
-                    public void onCompleteLogout() {
-                    }
-                });
-            }
-            else{
-                LoginManager.getInstance().logOut();
-            }
-
-            GlobalApplication.editor.putBoolean("Login_check", false);
-            GlobalApplication.editor.commit();
-
-
+            Intent intent = new Intent(getApplicationContext(), ReportMarketActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
         else{
-            Toast.makeText(getApplicationContext(),"현재 로그인 아웃 상태",Toast.LENGTH_SHORT).show();
+            WindowManager.LayoutParams loginParams;
+            dialog_login = new DialogLogin(MainTabActivity.this, loginEvent,loginCancelEvent);
+
+            loginParams = dialog_login.getWindow().getAttributes();
+
+            // Dialog 사이즈 조절 하기
+            loginParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+            loginParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+            dialog_login.getWindow().setAttributes(loginParams);
+
+            dialog_login.show();
+
         }
 
+//        if(GlobalApplication.loginInfo.getBoolean("Login_check", false)) {
+//
+//            if(GlobalApplication.loginInfo.getString("method", "").equals("kakao")){
+//                //kakao 로그아웃
+//                UserManagement.requestLogout(new LogoutResponseCallback() {
+//                    @Override
+//                    public void onCompleteLogout() {
+//                    }
+//                });
+//            }
+//            else{
+//                LoginManager.getInstance().logOut();
+//            }
+//
+//            GlobalApplication.editor.putBoolean("Login_check", false);
+//            GlobalApplication.editor.commit();
+//
+//
+//        }
+//        else{
+//            Toast.makeText(getApplicationContext(),"현재 로그인 아웃 상태",Toast.LENGTH_SHORT).show();
+//        }
 
-
-//    Toast.makeText(getApplicationContext(),"마켓 제보",Toast.LENGTH_SHORT).show();
     }
 
+    //셀러 모집
     @OnClick(R.id.recruitSeller)
     public void moveRecruitSeller(){
 
@@ -219,7 +237,6 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
     }
 
 
-//    @OnClick(R.id.findNameBtn)
     public void findName(){
         WindowManager.LayoutParams params;
 
