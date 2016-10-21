@@ -42,9 +42,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".login.LoginActivity">
-
-        </activity>
+        <activity android:name=".login.LoginActivity"></activity>
         <activity android:name=".login.KakaoSignupActivity" />
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -67,8 +65,7 @@
         <activity
             android:name=".detail.DetailActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".detail.review.RegisterReviewActivity" />
+        <activity android:name=".detail.review.RegisterReviewActivity" />
         <activity android:name=".join.JoinActivity" />
         <activity android:name=".main.view.MainTabActivity" />
         <!--
@@ -90,14 +87,15 @@
         <activity android:name=".report.view.ReportMarketActivity" />
         <activity android:name=".report.view.ReportStepTwoActivity">
 
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
 
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
 
         </activity>
+        <activity android:name=".report.view.ReportStepThreeActivity"></activity>
     </application>
 
 </manifest>

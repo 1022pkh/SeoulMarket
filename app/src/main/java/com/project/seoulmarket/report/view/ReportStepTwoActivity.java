@@ -1,6 +1,7 @@
 package com.project.seoulmarket.report.view;
 
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -35,6 +36,9 @@ public class ReportStepTwoActivity extends AppCompatActivity implements com.ande
     @BindView(R.id.pickerView)
     com.andexert.calendarlistview.library.DayPickerView pickerView;
 
+    Boolean TimeStartCheck = false;
+    Boolean TimeEndCheck = false;
+    Boolean CalCheck = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +98,17 @@ public class ReportStepTwoActivity extends AppCompatActivity implements com.ande
 
     }
 
+    @OnClick(R.id.nextBtn)
+    public void nextStopBtn(){
+        //다음 단계
+        if(TimeStartCheck && TimeEndCheck && CalCheck){
+
+            Intent intent = new Intent(getApplicationContext(),ReportStepThreeActivity.class);
+            startActivity(intent);
+        }
+
+    }
+
     private TimePickerDialog.OnTimeSetListener startListener = new TimePickerDialog.OnTimeSetListener() {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -107,6 +122,8 @@ public class ReportStepTwoActivity extends AppCompatActivity implements com.ande
                 startMinute.setText("00");
             else
                 startMinute.setText(String.valueOf(Math.round(minute*0.1)*10));
+
+            TimeStartCheck = true;
         }
     };
 
@@ -124,6 +141,9 @@ public class ReportStepTwoActivity extends AppCompatActivity implements com.ande
                 endMinute.setText("00");
             else
                 endMinute.setText(String.valueOf(Math.round(minute*0.1)*10));
+
+            TimeEndCheck = true;
+
         }
     };
 
@@ -142,6 +162,7 @@ public class ReportStepTwoActivity extends AppCompatActivity implements com.ande
     @Override
     public void onDateRangeSelected(com.andexert.calendarlistview.library.SimpleMonthAdapter.SelectedDays<com.andexert.calendarlistview.library.SimpleMonthAdapter.CalendarDay> selectedDays) {
         Log.i("myTag","Date range selected "+ selectedDays.getFirst().toString() + " --> " + selectedDays.getLast().toString());
+        CalCheck = true;
     }
 
 }
