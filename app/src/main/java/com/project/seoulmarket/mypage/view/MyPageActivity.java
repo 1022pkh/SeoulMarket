@@ -358,7 +358,7 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
 
             kakaoTalkLinkMessageBuilder.addText(text)
                     .addImage(imageSrc, width, height)
-                    .addWebButton("마켓 정보 홈페이지", "http://www.kakao.com/services/8")
+//                    .addWebButton("마켓 정보 홈페이지", "http://www.kakao.com/services/8")
                     .build();
 
             //메시지 전달

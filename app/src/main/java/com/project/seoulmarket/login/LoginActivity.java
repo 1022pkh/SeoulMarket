@@ -13,6 +13,7 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.gson.Gson;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.util.exception.KakaoException;
@@ -20,6 +21,9 @@ import com.kakao.util.helper.log.Logger;
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.application.GlobalApplication;
 import com.project.seoulmarket.join.JoinActivity;
+import com.project.seoulmarket.login.model.Token;
+import com.project.seoulmarket.service.NetworkService;
+import com.project.seoulmarket.splash.model.ConnectResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +31,9 @@ import org.json.JSONObject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -37,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     LoginButton facebookBtn;
 
     String token;
+    NetworkService networkService;;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +52,9 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         ButterKnife.bind(this);
+
+        networkService = GlobalApplication.getInstance().getNetworkService();
+
 
 //        try {
 //            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
@@ -58,12 +69,27 @@ public class LoginActivity extends AppCompatActivity {
 //
 //        }
 
+
+
+//        if(GlobalApplication.loginInfo.getString("method", "").equals("kakao")){
+//            //kakao 로그아웃
+//            UserManagement.requestLogout(new LogoutResponseCallback() {
+//                @Override
+//                public void onCompleteLogout() {
+//                }
+//            });
+//
+
+//            Session.getCurrentSession().removeCallback(callback);
+//        }
+
+        LoginManager.getInstance().logOut();
+
+
         //kakao login
         callback = new SessionCallback();
         Session.getCurrentSession().addCallback(callback);
-        Session.getCurrentSession().checkAndImplicitOpen();
-
-
+//        Session.getCurrentSession().checkAndImplicitOpen();
 
 
         //Facebook
@@ -77,55 +103,106 @@ public class LoginActivity extends AppCompatActivity {
         // Callback registration
         facebookBtn.registerCallback(mFacebookCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
-            public void onSuccess(LoginResult loginResult) {
+            public void onSuccess(final LoginResult loginResult) {
                 // App code
                 Log.i("myTag","face-success");
-                Log.i("myTag", "token"+String.valueOf(loginResult.getAccessToken().getToken()));
 
-                GraphRequest request = GraphRequest.newMeRequest(
-                        loginResult.getAccessToken(),
-                        new GraphRequest.GraphJSONObjectCallback() {
-                            @Override
-                            public void onCompleted(
-                                    JSONObject object,
-                                    GraphResponse response) {
-                                // Application code
-                                try {
+//                String token = String.valueOf(loginResult.getAccessToken().getToken());
 
-                                    String id = (String) response.getJSONObject().get("id");//페이스북 아이디값
-                                    String name = (String) response.getJSONObject().get("name");//페이스북 이름
+                Token token = new Token();
+                token.access_token =loginResult.getAccessToken().getToken();
 
-                                    String thumnailImg = "http://graph.facebook.com/"+ id +"/picture?type=large";
+                Call<ConnectResult> requestFacebookLogin = networkService.requestFacebookLogin(token);
+
+                requestFacebookLogin.enqueue(new Callback<ConnectResult>() {
+                    @Override
+                    public void onResponse(Call<ConnectResult> call, Response<ConnectResult> response) {
+
+
+                        if(response.isSuccessful()){
+//                            Log.i("myTag","reponse");
+
+                            Gson gson = new Gson();
+                            String jsonString = gson.toJson(response.body());
+//                            Log.i("myTag",jsonString);
+
+                            try {
+                                JSONObject jsonObject = new JSONObject(jsonString);
+                                JSONObject resultValue = new JSONObject(jsonObject.getString("result"));
+
+                                String result = resultValue.getString("message");
+                                Log.i("myTag",result );
+
+                                if(result.equals("Success")){
+                                    GraphRequest request = GraphRequest.newMeRequest(
+                                            loginResult.getAccessToken(),
+                                            new GraphRequest.GraphJSONObjectCallback() {
+                                                @Override
+                                                public void onCompleted(
+                                                        JSONObject object,
+                                                        GraphResponse response) {
+                                                    // Application code
+                                                    try {
+
+                                                        String id = (String) response.getJSONObject().get("id");//페이스북 아이디값
+                                                        String name = (String) response.getJSONObject().get("name");//페이스북 이름
+
+                                                        String thumnailImg = "http://graph.facebook.com/"+ id +"/picture?type=large";
 
 //                                    Log.i("myTag",id);
 //                                    Log.i("myTag",name);
 
-                                    /**
-                                     * 페이스북 로그인 성공에 따른 정보 업데이트
-                                     */
-                                    GlobalApplication.editor.putBoolean("Login_check", true);
-                                    GlobalApplication.editor.putString("method", "facebook");
-                                    GlobalApplication.editor.putString("nickname", name);
-                                    GlobalApplication.editor.putString("thumbnail", thumnailImg);
-                                    GlobalApplication.editor.commit();
+                                                        /**
+                                                         * 페이스북 로그인 성공에 따른 정보 업데이트
+                                                         */
+//                                                        GlobalApplication.editor.putBoolean("Login_check", true);
+                                                        GlobalApplication.editor.putString("method", "facebook");
+                                                        GlobalApplication.editor.putString("nickname", name);
+                                                        GlobalApplication.editor.putString("thumbnail", thumnailImg);
+                                                        GlobalApplication.editor.commit();
 
 
-                                } catch (JSONException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
+                                                    } catch (JSONException e) {
+                                                        // TODO Auto-generated catch block
+                                                        e.printStackTrace();
+                                                    }
+
+                                                    // new joinTask().execute(); //자신의 서버에서 로그인 처리를 해줍니다
+
+                                                }
+                                            });
+                                    Bundle parameters = new Bundle();
+                                    parameters.putString("fields", "id,name,email,gender, birthday");
+                                    request.setParameters(parameters);
+                                    request.executeAsync();
+
+
+                                    redirectJoinActivity();
+                                }
+                                else{
+                                    LoginManager.getInstance().logOut();
                                 }
 
-                                // new joinTask().execute(); //자신의 서버에서 로그인 처리를 해줍니다
 
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Log.i("myTag", String.valueOf(e));
                             }
-                        });
-                Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,email,gender, birthday");
-                request.setParameters(parameters);
-                request.executeAsync();
 
 
-                redirectJoinActivity();
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ConnectResult> call, Throwable t) {
+
+                        Log.i("myTag","error");
+                    }
+
+                });
+
+
             }
 
             @Override
@@ -169,7 +246,9 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         public void onSessionOpened() {
-            redirectSignupActivity();  // 세션 연결성공 시 redirectSignupActivity() 호출
+
+            redirectSignupActivity();  // 세션 연결성공 시 redirectSignupActivity() 호출         }
+
         }
 
         @Override

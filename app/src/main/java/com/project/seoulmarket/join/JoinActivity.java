@@ -1,11 +1,14 @@
 package com.project.seoulmarket.join;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -14,6 +17,7 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
+import com.google.gson.Gson;
 import com.kakao.auth.ErrorCode;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
@@ -24,6 +28,8 @@ import com.kakao.util.helper.log.Logger;
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.application.GlobalApplication;
 import com.project.seoulmarket.main.view.MainTabActivity;
+import com.project.seoulmarket.service.NetworkService;
+import com.project.seoulmarket.splash.model.ConnectResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +38,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class JoinActivity extends AppCompatActivity {
 
@@ -44,12 +53,18 @@ public class JoinActivity extends AppCompatActivity {
     String loginMethod;
     Boolean nickNameCheck = false;
 
+
+    NetworkService networkService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join);
 
         ButterKnife.bind(this);
+
+
+        networkService = GlobalApplication.getInstance().getNetworkService();
 
         Log.i("myTag","In Join");
 
@@ -215,23 +230,98 @@ public class JoinActivity extends AppCompatActivity {
 
     @OnClick(R.id.doubleCheck)
     public void nickNameCheck(){
-        Toast.makeText(getApplicationContext(),nickNameArea.getText(),Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(),nickNameArea.getText(),Toast.LENGTH_SHORT).show();
+
+
+        if(nickNameArea.length() == 0){
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(nickNameArea.getWindowToken(), 0);
+            final String marketContent = nickNameArea.getText().toString();
+
+            nickNameArea.setError(getString(R.string.error_field_required));
+            nickNameCheck = false;
+
+        }
+        else{
+            Call<ConnectResult> doubleCheck = networkService.nickNameDoubleCheck(String.valueOf(nickNameArea.getText()));
+
+            doubleCheck.enqueue(new Callback<ConnectResult>() {
+                @Override
+                public void onResponse(Call<ConnectResult> call, Response<ConnectResult> response) {
+
+
+                    if(response.isSuccessful()){
+                        Log.i("myTag","double check" );
+                        nickNameCheckError();
+                        Gson gson = new Gson();
+                        String jsonString = gson.toJson(response.body());
+//                            Log.i("myTag",jsonString);
+
+                        JSONObject jsonObject = null;
+                        try {
+                            jsonObject = new JSONObject(jsonString);
+                            JSONObject resultValue = new JSONObject(jsonObject.getString("result"));
+                            String result = resultValue.getString("message");
+
+                            Log.i("myTag",result );
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ConnectResult> call, Throwable t) {
+
+                }
+            });
+        }
+
+
     }
+
+
+    public void nickNameCheckError() {
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(nickNameArea.getWindowToken(), 0);
+        final String marketContent = nickNameArea.getText().toString();
+
+
+        if (TextUtils.isEmpty(marketContent)) {
+            nickNameArea.setError(getString(R.string.error_field_doubled));
+            nickNameCheck = false;
+        }
+        else {
+            nickNameCheck = true;
+        }
+    }
+
 
     @OnClick(R.id.completeNickname)
     public void complete(){
         // TODO: 2016. 10. 18. 서버로 닉네임 업데이트 해줘야 함.
-        GlobalApplication.editor.putString("nickname", String.valueOf(nickNameArea.getText()));
-        GlobalApplication.editor.commit();
 
-        Toast.makeText(getApplicationContext(),"회원가입 성공!",Toast.LENGTH_SHORT).show();
+        if(nickNameCheck){
+            GlobalApplication.editor.putBoolean("Login_check", true);
+            GlobalApplication.editor.putString("nickname", String.valueOf(nickNameArea.getText()));
+            GlobalApplication.editor.commit();
 
-        Intent intent = new Intent(this, MainTabActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
-        finish();
+            Toast.makeText(getApplicationContext(),"회원가입 성공!",Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(this, MainTabActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        }
+        else{
+            Toast.makeText(getApplicationContext(),"닉네임 중복체크를 먼저 해주세요.",Toast.LENGTH_SHORT).show();
+        }
+
     }
 
 }

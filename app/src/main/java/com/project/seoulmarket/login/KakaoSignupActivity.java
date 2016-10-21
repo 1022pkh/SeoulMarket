@@ -5,18 +5,30 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.kakao.auth.ApiResponseCallback;
 import com.kakao.auth.AuthService;
 import com.kakao.auth.ErrorCode;
+import com.kakao.auth.Session;
 import com.kakao.auth.network.response.AccessTokenInfoResponse;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.kakao.usermgmt.callback.MeResponseCallback;
 import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.helper.log.Logger;
 import com.project.seoulmarket.application.GlobalApplication;
 import com.project.seoulmarket.join.JoinActivity;
 import com.project.seoulmarket.main.view.MainActivity;
+import com.project.seoulmarket.service.NetworkService;
+import com.project.seoulmarket.splash.model.ConnectResult;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class KakaoSignupActivity extends AppCompatActivity {
 
@@ -24,12 +36,68 @@ public class KakaoSignupActivity extends AppCompatActivity {
      * Main으로 넘길지 가입 페이지를 그릴지 판단하기 위해 me를 호출한다.
      * @param savedInstanceState 기존 session 정보가 저장된 객체
      */
+    NetworkService networkService;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestMe();
-//        requestAccessTokenInfo();
+
+
+        networkService = GlobalApplication.getInstance().getNetworkService();
+
+        /**
+         * kakao 로그인 요청 -- 우리서버로 토큰의 유효성 체크
+         */
+//        ;
+
+
+        Call<ConnectResult> requestKakaoLogin = networkService.requestKakaoLogin(Session.getCurrentSession().getAccessToken());
+
+        requestKakaoLogin.enqueue(new Callback<ConnectResult>() {
+            @Override
+            public void onResponse(Call<ConnectResult> call, Response<ConnectResult> response) {
+                if(response.isSuccessful()){
+//                            Log.i("myTag","reponse");
+
+                    Gson gson = new Gson();
+                    String jsonString = gson.toJson(response.body());
+//                            Log.i("myTag",jsonString);
+
+                    try {
+                        JSONObject jsonObject = new JSONObject(jsonString);
+                        JSONObject resultValue = new JSONObject(jsonObject.getString("result"));
+
+                        String result = resultValue.getString("message");
+                        Log.i("myTag",result );
+
+                        if(result.equals("Success")){
+                            requestMe();
+//                            requestAccessTokenInfo();
+                        }
+                        else{
+                            //kakao 로그아웃
+                            UserManagement.requestLogout(new LogoutResponseCallback() {
+                                @Override
+                                public void onCompleteLogout() {
+                                }
+                            });
+                        }
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.i("myTag", String.valueOf(e));
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ConnectResult> call, Throwable t) {
+
+            }
+        });
+
     }
 
     /**
@@ -69,8 +137,7 @@ public class KakaoSignupActivity extends AppCompatActivity {
                 Logger.d("UserProfile : " + userProfile);
 
 
-
-                GlobalApplication.editor.putBoolean("Login_check", true);
+//                GlobalApplication.editor.putBoolean("Login_check", true);
                 GlobalApplication.editor.putString("method", "kakao");
                 GlobalApplication.editor.putString("nickname", userProfile.getNickname());
                 GlobalApplication.editor.putString("thumbnail", userProfile.getProfileImagePath());
@@ -112,7 +179,9 @@ public class KakaoSignupActivity extends AppCompatActivity {
                 Log.i("myTag kakao Token", String.valueOf(accessTokenInfoResponse));
 
                 long expiresInMilis = accessTokenInfoResponse.getExpiresInMillis();
-                Logger.d("this access token expires after " + expiresInMilis + " milliseconds.");
+//                Logger.d("this access token expires after " + expiresInMilis + " milliseconds.");
+
+//                Log.i("myTag", String.valueOf(Session.getCurrentSession().getAccessToken()));
             }
         });
     }
