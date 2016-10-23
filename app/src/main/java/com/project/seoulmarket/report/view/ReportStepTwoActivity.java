@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.project.seoulmarket.R;
 
@@ -105,6 +106,9 @@ public class ReportStepTwoActivity extends AppCompatActivity implements com.ande
 
             Intent intent = new Intent(getApplicationContext(),ReportStepThreeActivity.class);
             startActivity(intent);
+        }
+        else{
+            Toast.makeText(getApplicationContext(),"시간 및 날짜를 확인해주세요.",Toast.LENGTH_SHORT).show();
         }
 
     }

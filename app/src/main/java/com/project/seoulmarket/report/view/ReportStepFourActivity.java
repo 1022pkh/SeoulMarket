@@ -1,6 +1,7 @@
 package com.project.seoulmarket.report.view;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
@@ -14,7 +15,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewParent;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,6 +26,8 @@ import android.widget.Toast;
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.dialog.DialogRegister;
 import com.project.seoulmarket.main.view.MainTabActivity;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,11 +49,17 @@ public class ReportStepFourActivity extends AppCompatActivity {
     ImageView itemImg6;
     @BindView(R.id.imgArea)
     LinearLayout imgArea;
+    @BindView(R.id.inputMarketTag)
+    EditText inputMarketTag;
+    @BindView(R.id.addMarketTagArea)
+    LinearLayout inflatedLayout;
+
+    ArrayList tagList;
+
 
     final int REQ_CODE_SELECT_IMAGE=100;
     String[] imgURL = new String[6];
     int imgCount = 0;
-
 
     private DialogRegister dialog_Register;
 
@@ -88,22 +99,101 @@ public class ReportStepFourActivity extends AppCompatActivity {
         getSupportActionBar().setCustomView(mCustomView);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
 
+        /**
+         *
+         */
+        tagList = new ArrayList();
 
+    }
+
+    @OnClick(R.id.addMarketTagBtn)
+    public void addMartketTagToArea(){
+
+        String tempTag = "#"+inputMarketTag.getText().toString();
+
+        /**
+         * 사용자가 입력한 태그 중복체크 후 등록해야함.
+         */
+        //중복 아님
+        if(tagDoubleCheck()){
+
+
+            inputMarketTag.setText("");
+            tagList.add(tempTag);
+
+            LayoutInflater child;
+            final LinearLayout childLayout;
+
+            child = (LayoutInflater) getSystemService (Context.LAYOUT_INFLATER_SERVICE);
+            childLayout = (LinearLayout) child.inflate(R.layout.recurit_tag_item, null);
+
+            TextView tagview = (TextView)childLayout.findViewById(R.id.tagText);
+            ImageView close = (ImageView)childLayout.findViewById(R.id.deleteTag);
+
+            tagview.setText(tempTag);
+
+            close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    ViewParent child = v.getParent();
+                    //hashCode 가 같은 뷰를 삭제함
+                    for(int a=0; a<inflatedLayout.getChildCount(); a++){
+                        if(inflatedLayout.getChildAt(a).hashCode() == child.hashCode()){
+                            tagList.remove(a);
+                            inflatedLayout.removeViewAt(a);
+                            break;
+                        }
+                    }
+
+                }
+            });
+
+            inflatedLayout.addView(childLayout);
+
+
+        }
+
+    }
+
+    public Boolean tagDoubleCheck(){
+        String tempTag = "#"+inputMarketTag.getText().toString();
+
+        if(tagList.size() < 4){
+
+            for(int i = 0 ; i < tagList.size(); i++){
+                if(tempTag.equals(tagList.get(i))){
+                    Toast.makeText(getApplicationContext(),"중복된 태그입니다.",Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }
+        }
+        else{
+            Toast.makeText(getApplicationContext(),"태크는 최대 4개입니다.",Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 
     @OnClick(R.id.registerServer)
     public void registerServer(){
-        WindowManager.LayoutParams registerParams;
-        dialog_Register = new DialogRegister(ReportStepFourActivity.this, registerEvent,registerCancelEvent);
+        if (tagList.size() > 0 && imgCount > 0){
+            WindowManager.LayoutParams registerParams;
+            dialog_Register = new DialogRegister(ReportStepFourActivity.this, registerEvent,registerCancelEvent);
 
-        registerParams = dialog_Register.getWindow().getAttributes();
+            registerParams = dialog_Register.getWindow().getAttributes();
 
-        // Dialog 사이즈 조절 하기
-        registerParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        registerParams.height = WindowManager.LayoutParams.MATCH_PARENT;
-        dialog_Register.getWindow().setAttributes(registerParams);
+            // Dialog 사이즈 조절 하기
+            registerParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+            registerParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+            dialog_Register.getWindow().setAttributes(registerParams);
 
-        dialog_Register.show();
+            dialog_Register.show();
+        }
+        else{
+            Toast.makeText(getApplicationContext(),"필수 항목을 채워주세요.",Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private View.OnClickListener registerEvent = new View.OnClickListener() {

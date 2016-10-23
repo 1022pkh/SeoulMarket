@@ -21,30 +21,20 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="240dp">
+                android:layout_height="240dp"
+                android:background="#E7E7E7">
 
-                <LinearLayout
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/pager"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:background="#E7E7E7"
-                    android:weightSum="5"
-                    >
+                    tools:context=".detail.DetailActivity" />
 
-                    <android.support.v4.view.ViewPager
-                        android:id="@+id/pager"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="4"
-                        tools:context=".detail.DetailActivity" />
-
-                    <com.matthewtamlin.sliding_intro_screen_library.DotIndicator
-                        android:id="@+id/pager_indicator"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"/>
-
-                </LinearLayout>
+                <com.matthewtamlin.sliding_intro_screen_library.DotIndicator
+                    android:id="@+id/pager_indicator"
+                    android:layout_width="match_parent"
+                    android:layout_alignParentBottom="true"
+                    android:layout_height="20dp"/>
 
                 <ImageView
                     android:id="@+id/likehHeart"

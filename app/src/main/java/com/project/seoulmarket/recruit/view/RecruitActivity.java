@@ -1,5 +1,6 @@
 package com.project.seoulmarket.recruit.view;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -14,16 +16,20 @@ import android.widget.TextView;
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.recruit.model.RecruitData;
 import com.project.seoulmarket.recruit.presenter.RecruitAdapter;
+import com.project.seoulmarket.recruit.register.RecruitRegisterActivity;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class RecruitActivity extends AppCompatActivity {
 
     @BindView(R.id.listview)
     ListView listView;
+    @BindView(R.id.addSeller)
+    TextView addSellerBtn;
 
     RecruitAdapter recruitAdapter;
     private ArrayList<RecruitData> itemDatas = null;
@@ -81,7 +87,7 @@ public class RecruitActivity extends AppCompatActivity {
             String Cotent = "내가 만든 마켓이다 설명이 필요없다";
             String date = "2016-10-17";
 
-            RecruitData listViewItem = new RecruitData(0,userNickname,Cotent,date);
+            RecruitData listViewItem = new RecruitData(i,userNickname,Cotent,date);
 
             itemDatas.add(listViewItem);
         }
@@ -89,5 +95,21 @@ public class RecruitActivity extends AppCompatActivity {
         // 들어갈 자료를 ListView에 지정
         recruitAdapter = new RecruitAdapter(itemDatas,getApplicationContext());
         listView.setAdapter(recruitAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent intent = new Intent(getApplicationContext(),RecruitReviewActivity.class);
+                intent.putExtra("recruitId",String.valueOf(itemDatas.get(position).id));
+                startActivity(intent);
+            }
+        });
+    }
+
+    @OnClick(R.id.addSeller)
+    public void moveAddSeller(){
+        Intent intent = new Intent(getApplicationContext(), RecruitRegisterActivity.class);
+        startActivity(intent);
     }
 }

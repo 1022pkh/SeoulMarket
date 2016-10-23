@@ -62,6 +62,7 @@ public class ViewpagerAdapter extends PagerAdapter {
          */
 //        Log.i("myTag","position " + imgUrlDatas.get(position));
 
+        imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         Glide.with(view.getContext())
                 .load(imgUrlDatas.get(position))
                 .into(imgView);

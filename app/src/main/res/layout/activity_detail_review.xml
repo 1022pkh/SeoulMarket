@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.project.seoulmarket.detail.DetailReviewActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="10"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="6">
+
+            <LinearLayout
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical"
+                android:layout_width="300dp"
+                android:layout_height="300dp">
+
+
+                <TextView
+                    android:id="@+id/reviewTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:textSize="30sp"
+                    android:text="title"
+                    android:background="#f6d040"
+                    android:gravity="center"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp">
+
+                        <TextView
+                            android:id="@+id/writer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="20sp"
+                            android:text="writer : "/>
+
+                        <TextView
+                            android:id="@+id/inputWriter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="박경현"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp">
+                        <TextView
+                            android:id="@+id/writeDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="20sp"
+                            android:text="write day : "/>
+
+                        <TextView
+                            android:id="@+id/inputwriteDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="2016.10.23 17:11"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:id="@+id/reviewContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#efefef"/>
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4">
+
+            <LinearLayout
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="horizontal"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:layout_width="300dp"
+                android:layout_height="50dp">
+
+                <EditText
+                    android:id="@+id/inputReviewAddEdit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="input the comment"
+                    android:background="#efefef"
+                    android:layout_weight="4"/>
+
+                <Button
+                    android:id="@+id/reviewAddBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#f6d040"
+                    android:text="Post"/>
+
+            </LinearLayout>
+
+
+            <ListView
+                android:layout_marginTop="5dp"
+                android:id="@+id/listview_comment"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="300dp"
+                android:layout_height="match_parent">
+
+            </ListView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>
+

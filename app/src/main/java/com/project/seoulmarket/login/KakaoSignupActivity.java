@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.kakao.auth.ApiResponseCallback;
@@ -90,11 +91,16 @@ public class KakaoSignupActivity extends AppCompatActivity {
                     }
 
                 }
+                else{
+                    Toast.makeText(getApplicationContext(),"접근이 올바르지 않습니다.",Toast.LENGTH_SHORT).show();
+                    finish();
+                }
             }
 
             @Override
             public void onFailure(Call<ConnectResult> call, Throwable t) {
-
+                Toast.makeText(getApplicationContext(),"접근이 올바르지 않습니다.",Toast.LENGTH_SHORT).show();
+                finish();
             }
         });
 

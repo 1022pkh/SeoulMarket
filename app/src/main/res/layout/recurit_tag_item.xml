@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="30dp"
+    android:background="@drawable/review_border"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:paddingTop="3dp"
+    android:paddingBottom="3dp"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/tagText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:text="#테스트"/>
+
+    <ImageView
+        android:id="@+id/deleteTag"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_x"/>
+
+</LinearLayout>

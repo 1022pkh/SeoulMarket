@@ -89,9 +89,24 @@
         <activity android:name=".report.view.ReportStepTwoActivity" />
         <activity
             android:name=".report.view.ReportStepThreeActivity"
-            android:windowSoftInputMode="adjustPan"></activity>
-        <activity android:name=".report.view.ReportStepFourActivity" />
-        <activity android:name=".recruit.view.RecruitActivity"></activity>
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".report.view.ReportStepFourActivity">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+
+        </activity>
+        <activity android:name=".recruit.view.RecruitActivity" />
+        <activity
+            android:name=".recruit.register.RecruitRegisterActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".recruit.view.RecruitReviewActivity">
+
+        </activity>
     </application>
 
 </manifest>

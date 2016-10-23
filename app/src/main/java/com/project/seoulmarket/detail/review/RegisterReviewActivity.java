@@ -17,9 +17,11 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.dialog.DialogCancel;
+import com.project.seoulmarket.dialog.DialogRegister;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,6 +36,8 @@ public class RegisterReviewActivity extends AppCompatActivity {
 
 
     DialogCancel dialogCancel;
+    DialogRegister dialog_Register;
+
     final int REQ_CODE_SELECT_IMAGE=100;
 
     @Override
@@ -168,4 +172,38 @@ public class RegisterReviewActivity extends AppCompatActivity {
 
         return imgName;
     }
+
+    @OnClick(R.id.registerReviewBtn)
+    public void completeReview(){
+        WindowManager.LayoutParams registerParams;
+        dialog_Register = new DialogRegister(RegisterReviewActivity.this, registerEvent,registerCancelEvent);
+
+        registerParams = dialog_Register.getWindow().getAttributes();
+
+        // Dialog 사이즈 조절 하기
+        registerParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        registerParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+        dialog_Register.getWindow().setAttributes(registerParams);
+
+        dialog_Register.show();
+    }
+
+    private View.OnClickListener registerEvent = new View.OnClickListener() {
+        public void onClick(View v) {
+            dialog_Register.dismiss();
+            Toast.makeText(getApplicationContext(),"후기 등록 완료!",Toast.LENGTH_SHORT).show();
+            /**
+             * 성공시 돌아간다.
+             */
+            finish();
+        }
+
+    };
+
+    private View.OnClickListener registerCancelEvent = new View.OnClickListener() {
+        public void onClick(View v) {
+            dialog_Register.dismiss();
+        }
+
+    };
 }

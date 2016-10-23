@@ -12,6 +12,10 @@ import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.kakao.auth.KakaoSDK;
 import com.project.seoulmarket.login.adapter.KakaoSDKAdapter;
+import com.project.seoulmarket.service.NetworkService;
+
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * 이미지를 캐시를 앱 수준에서 관리하기 위한 애플리케이션 객체이다.
@@ -26,7 +30,8 @@ public class GlobalApplication extends Application {
     public static SharedPreferences loginInfo;
     public static SharedPreferences.Editor editor;
 
-
+    private static String baseUrl = "http://52.78.94.112:3000";
+    private NetworkService networkService;
 
     @Override
     public void onCreate() {
@@ -45,6 +50,32 @@ public class GlobalApplication extends Application {
         loginInfo = getSharedPreferences("login_info", 0);
         editor= loginInfo.edit();
 
+        /**
+         * build service
+         */
+
+        GlobalApplication.instance = this;
+        this.buildService();
+
+    }
+
+    public void buildService() {
+
+        Retrofit.Builder builder = new Retrofit.Builder();
+        Retrofit retrofit = builder
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        networkService = retrofit.create(NetworkService.class);
+    }
+
+    public static GlobalApplication getInstance() {
+        return instance;
+    }
+
+    public NetworkService getNetworkService() {
+        return networkService;
     }
 
     public static Activity getCurrentActivity() {

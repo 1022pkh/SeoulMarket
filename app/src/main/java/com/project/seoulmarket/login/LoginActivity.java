@@ -1,9 +1,17 @@
 package com.project.seoulmarket.login;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -30,7 +38,6 @@ import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -53,38 +60,47 @@ public class LoginActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        /**
+         *
+         */
+        if (Build.VERSION.SDK_INT >= 21) {   //상태바 색
+            getWindow().setStatusBarColor(Color.parseColor("#F6D03F"));
+        }
+
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        // ActionBar의 배경색 변경
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFFFFFFFF));
+
+        getSupportActionBar().setElevation(0); // 그림자 없애기
+
+        LayoutInflater mInflater = LayoutInflater.from(this);
+        View mCustomView = mInflater.inflate(R.layout.actionbar_back_layout, null);
+
+        TextView actionbarTitle = (TextView)mCustomView.findViewById(R.id.mytext);
+        actionbarTitle.setText("로그인");
+        ImageView backBtn = (ImageView) mCustomView.findViewById(R.id.backBtn);
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
+        getSupportActionBar().setCustomView(mCustomView);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+
+        /**
+         *
+         */
         networkService = GlobalApplication.getInstance().getNetworkService();
 
 
-//        try {
-//            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
-//            for (Signature signature : info.signatures) {
-//                MessageDigest md = MessageDigest.getInstance("SHA");
-//                md.update(signature.toByteArray());
-//                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-//            }
-//        } catch (PackageManager.NameNotFoundException e) {
-//
-//        } catch (NoSuchAlgorithmException e) {
-//
-//        }
-
-
-
-//        if(GlobalApplication.loginInfo.getString("method", "").equals("kakao")){
-//            //kakao 로그아웃
-//            UserManagement.requestLogout(new LogoutResponseCallback() {
-//                @Override
-//                public void onCompleteLogout() {
-//                }
-//            });
-//
-
-//            Session.getCurrentSession().removeCallback(callback);
-//        }
 
         LoginManager.getInstance().logOut();
-
 
         //kakao login
         callback = new SessionCallback();
@@ -149,9 +165,6 @@ public class LoginActivity extends AppCompatActivity {
 
                                                         String thumnailImg = "http://graph.facebook.com/"+ id +"/picture?type=large";
 
-//                                    Log.i("myTag",id);
-//                                    Log.i("myTag",name);
-
                                                         /**
                                                          * 페이스북 로그인 성공에 따른 정보 업데이트
                                                          */
@@ -192,12 +205,16 @@ public class LoginActivity extends AppCompatActivity {
 
 
                         }
+                        else{
+                            Toast.makeText(getApplicationContext(),"접근이 올바르지 않습니다.",Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
                     }
 
                     @Override
                     public void onFailure(Call<ConnectResult> call, Throwable t) {
-
-                        Log.i("myTag","error");
+                        Toast.makeText(getApplicationContext(),"접근이 올바르지 않습니다.",Toast.LENGTH_SHORT).show();
+                        finish();
                     }
 
                 });
@@ -219,10 +236,6 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
-    }
-    @OnClick(R.id.facelogout)
-    public void logoutFace(){
-        LoginManager.getInstance().logOut();
     }
 
     @Override

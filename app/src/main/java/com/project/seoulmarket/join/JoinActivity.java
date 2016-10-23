@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -48,6 +49,8 @@ public class JoinActivity extends AppCompatActivity {
     CircleImageView profile;
     @BindView(R.id.userNickname)
     EditText nickNameArea;
+    @BindView(R.id.doubleCheck)
+    TextView doubleCheckBtn;
 
     private String usrToken;
     String loginMethod;
@@ -152,7 +155,7 @@ public class JoinActivity extends AppCompatActivity {
 //                            Log.i("myTag", String.valueOf(response));
 
 
-                            nickNameArea.setText(name);
+//                            nickNameArea.setText(name);
 
                             String thumnailImg = "http://graph.facebook.com/"+ id +"/picture?type=large";
                             Glide.with(JoinActivity.this)
@@ -214,7 +217,7 @@ public class JoinActivity extends AppCompatActivity {
 
 //                Log.i("myTag", thumnailImg);
 
-                nickNameArea.setText(userProfile.getNickname());
+//                nickNameArea.setText(userProfile.getNickname());
 
                 /**
                  * 받아온 User 데이터의 profileUrl을 Glide 라이브러리를 이용하여 이미지뷰에 삽입하는 코드입니다.
@@ -233,17 +236,16 @@ public class JoinActivity extends AppCompatActivity {
 //        Toast.makeText(getApplicationContext(),nickNameArea.getText(),Toast.LENGTH_SHORT).show();
 
 
+        //빈칸 체크
         if(nickNameArea.length() == 0){
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(nickNameArea.getWindowToken(), 0);
             final String marketContent = nickNameArea.getText().toString();
 
             nickNameArea.setError(getString(R.string.error_field_required));
-            nickNameCheck = false;
-
         }
         else{
-            Call<ConnectResult> doubleCheck = networkService.nickNameDoubleCheck(String.valueOf(nickNameArea.getText()));
+            final Call<ConnectResult> doubleCheck = networkService.nickNameDoubleCheck(String.valueOf(nickNameArea.getText()));
 
             doubleCheck.enqueue(new Callback<ConnectResult>() {
                 @Override
@@ -252,7 +254,7 @@ public class JoinActivity extends AppCompatActivity {
 
                     if(response.isSuccessful()){
                         Log.i("myTag","double check" );
-                        nickNameCheckError();
+
                         Gson gson = new Gson();
                         String jsonString = gson.toJson(response.body());
 //                            Log.i("myTag",jsonString);
@@ -264,6 +266,16 @@ public class JoinActivity extends AppCompatActivity {
                             String result = resultValue.getString("message");
 
                             Log.i("myTag",result );
+                            if(result.equals("Success")){
+                                doubleCheckBtn.setText("사용 가능");
+                                nickNameCheck = true;
+                            }
+                            else{
+                                doubleCheckBtn.setText("사용 불가");
+                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(nickNameArea.getWindowToken(), 0);
+                                nickNameArea.setError(getString(R.string.error_field_doubled));
+                            }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -283,19 +295,19 @@ public class JoinActivity extends AppCompatActivity {
     }
 
 
-    public void nickNameCheckError() {
+    public boolean nickNameCheckError() {
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(nickNameArea.getWindowToken(), 0);
         final String marketContent = nickNameArea.getText().toString();
-
+        nickNameArea.setError(getString(R.string.error_field_doubled));
 
         if (TextUtils.isEmpty(marketContent)) {
-            nickNameArea.setError(getString(R.string.error_field_doubled));
-            nickNameCheck = false;
+
+            return false;
         }
         else {
-            nickNameCheck = true;
+            return true;
         }
     }
 

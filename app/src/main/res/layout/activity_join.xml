@@ -61,13 +61,19 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="5"
                 android:textSize="16sp"
+                android:singleLine="true"
+                android:maxLength="10"
                 android:textColor="#000000"/>
 
-            <Button
+            <TextView
                 android:id="@+id/doubleCheck"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="3"
+                android:gravity="center"
+                android:background="#C6D2D2"
+                android:textColor="#000000"
+                android:textSize="17sp"
                 android:text="중복확인"/>
 
         </LinearLayout>

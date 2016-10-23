@@ -31,4 +31,8 @@ public interface NetworkService {
     @GET("/me")
     Call<ConnectResult> nickNameDoubleCheck(@Query("nickname") String nickname);
 
+    //메인페이지 데이터
+    @GET("/main")
+    Call<ConnectResult> getMainData(@Query("currentPage") String currentPage);
+
 }
