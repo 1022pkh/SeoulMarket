@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.main.model.MarketData;
+import com.project.seoulmarket.main.view.MainView;
 
 import java.util.ArrayList;
 
@@ -17,9 +18,11 @@ import java.util.ArrayList;
 public class CardViewAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     private ArrayList<MarketData> itemDatas;
+    MainView myView;
 
-    public CardViewAdapter(ArrayList<MarketData> itemDatas){
+    public CardViewAdapter(ArrayList<MarketData> itemDatas, MainView myView){
         this.itemDatas = itemDatas;
+        this.myView = myView;
     }
 
     //ViewHolder 생성
@@ -28,7 +31,7 @@ public class CardViewAdapter extends RecyclerView.Adapter<ViewHolder> {
 
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.main_cardview_basic, parent,false);
-        ViewHolder viewHolder = new ViewHolder(itemView);
+        ViewHolder viewHolder = new ViewHolder(itemView,myView);
 
         return viewHolder;
 
@@ -52,6 +55,7 @@ public class CardViewAdapter extends RecyclerView.Adapter<ViewHolder> {
         // TODO: 2016. 10. 5. 아직 데이터가 없으므로 임시로 넣어주기로.
         holder.mProgress.setText(itemDatas.get(position).date);
         holder.mImageView.setImageResource(R.drawable.tempimg);
+
 
     }
 

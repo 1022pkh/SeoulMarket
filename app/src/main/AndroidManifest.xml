@@ -68,7 +68,9 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".detail.review.RegisterReviewActivity" />
         <activity android:name=".join.JoinActivity" />
-        <activity android:name=".main.view.MainTabActivity" />
+        <activity
+            android:name=".main.view.MainTabActivity"
+            android:theme="@style/Theme.AppCompat.Light"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -91,14 +93,6 @@
             android:name=".report.view.ReportStepThreeActivity"
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".report.view.ReportStepFourActivity">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-
         </activity>
         <activity android:name=".recruit.view.RecruitActivity" />
         <activity
@@ -106,6 +100,13 @@
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".recruit.view.RecruitReviewActivity">
 
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+            <!---->
         </activity>
     </application>
 

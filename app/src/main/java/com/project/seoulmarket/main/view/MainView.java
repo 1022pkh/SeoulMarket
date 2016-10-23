@@ -8,5 +8,5 @@ public interface MainView {
     void prevousStart();
     void prevousEnd();
     void nextEnd();
-    void moveDetailPage(int id);
+    void moveDetailPage(String id);
 }

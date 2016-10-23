@@ -57,6 +57,7 @@ public class JoinActivity extends AppCompatActivity {
     Boolean nickNameCheck = false;
 
 
+    InputMethodManager imm;
     NetworkService networkService;
 
     @Override
@@ -67,6 +68,7 @@ public class JoinActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
 
+        imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
         networkService = GlobalApplication.getInstance().getNetworkService();
 
         Log.i("myTag","In Join");
@@ -269,6 +271,8 @@ public class JoinActivity extends AppCompatActivity {
                             if(result.equals("Success")){
                                 doubleCheckBtn.setText("사용 가능");
                                 nickNameCheck = true;
+
+                                imm.hideSoftInputFromWindow(nickNameArea.getWindowToken(), 0);
                             }
                             else{
                                 doubleCheckBtn.setText("사용 불가");

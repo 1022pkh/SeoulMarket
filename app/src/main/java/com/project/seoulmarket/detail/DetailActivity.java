@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -71,7 +72,9 @@ public class DetailActivity extends AppCompatActivity {
          */
 
         Intent intent = getIntent();
-        String marketId = intent.getExtras().getString("marketId");
+        String marketId = intent.getExtras().getString("market_id");
+
+        Log.i("myTag",marketId);
 
         /**
          * id를 토대로 정보를 가져온다!.

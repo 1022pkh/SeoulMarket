@@ -20,12 +20,12 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
+import com.gigamole.navigationtabbar.ntb.NavigationTabBar;
 import com.kakao.kakaolink.KakaoLink;
 import com.kakao.kakaolink.KakaoTalkLinkMessageBuilder;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.kakao.util.KakaoParameterException;
-import com.matthewtamlin.sliding_intro_screen_library.DotIndicator;
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.application.GlobalApplication;
 import com.project.seoulmarket.detail.DetailActivity;
@@ -38,6 +38,7 @@ import com.project.seoulmarket.mypage.presenter.MyPagePresenterImpl;
 import com.project.seoulmarket.mypage.presenter.MyPageRecruitAdapter;
 import com.project.seoulmarket.mypage.presenter.MyPageReportAdapter;
 import com.project.seoulmarket.mypage.presenter.MyPageViewPagerAdapter;
+import com.project.seoulmarket.recruit.view.RecruitReviewActivity;
 
 import java.util.ArrayList;
 
@@ -48,8 +49,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MyPageActivity extends AppCompatActivity implements MyPageView{
     @BindView(R.id.pager)
     ViewPager pager;
-    @BindView(R.id.pager_indicator)
-    DotIndicator indicator;
+    @BindView(R.id.ntb)
+    NavigationTabBar navigationTabBar;
 
     MyPagePresenter presenter;
 
@@ -115,41 +116,63 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
 
 
         /**
-         * 도트 색 지정
+         *
          */
-        indicator.setSelectedDotColor( Color.parseColor( "#F96332" ) );
-        indicator.setUnselectedDotColor( Color.parseColor( "#CFCFCF" ) );
 
-        /**
-         * indicator 초기화
-         */
-        indicator.setNumberOfItems(4);
+//        final NavigationTabBar navigationTabBar = (NavigationTabBar) findViewById(R.id.ntb);
+        final ArrayList<NavigationTabBar.Model> models = new ArrayList<>();
+        final String[] colors = getResources().getStringArray(R.array.default_preview);
 
+        models.add(
+                new NavigationTabBar.Model.Builder(
+                        getResources().getDrawable(R.drawable.ic_first),
+                        Color.parseColor(colors[0])
+                ).title("Heart")
+                        .badgeTitle("NTB")
+                        .build()
+        );
+        models.add(
+                new NavigationTabBar.Model.Builder(
+                        getResources().getDrawable(R.drawable.ic_second),
+                        Color.parseColor(colors[1])
+                ).title("Cup")
+                        .badgeTitle("with")
+                        .build()
+        );
+        models.add(
+                new NavigationTabBar.Model.Builder(
+                        getResources().getDrawable(R.drawable.ic_third),
+                        Color.parseColor(colors[2])
+                ).title("Diploma")
+                        .badgeTitle("state")
+                        .build()
+        );
+        models.add(
+                new NavigationTabBar.Model.Builder(
+                        getResources().getDrawable(R.drawable.ic_fourth),
+                        Color.parseColor(colors[3])
+                ).title("Flag")
+                        .badgeTitle("icon")
+                        .build()
+        );
 
-        /**
-         * 스크롤 등으로 다음 페이지로 넘어갈 때 도트도 옮김
-         */
-        pager.addOnPageChangeListener( new ViewPager.OnPageChangeListener()
-        {
-            @Override
-            public void onPageScrolled( int position, float positionOffset, int positionOffsetPixels )
-            {
+        navigationTabBar.setModels(models);
+        navigationTabBar.setViewPager(pager, 0);
 
-            }
-
-            @Override
-            public void onPageSelected( int position )
-            {
-                indicator.setSelectedItem( pager.getCurrentItem(), true );
-            }
-
-            @Override
-            public void onPageScrollStateChanged( int state )
-            {
-
-            }
-        } );
-
+        navigationTabBar.setTitleMode(NavigationTabBar.TitleMode.ACTIVE);
+        navigationTabBar.setBadgeGravity(NavigationTabBar.BadgeGravity.BOTTOM);
+        navigationTabBar.setBadgePosition(NavigationTabBar.BadgePosition.CENTER);
+        navigationTabBar.setIsBadged(true);
+        navigationTabBar.setIsTitled(true);
+        navigationTabBar.setIsTinted(true);
+        navigationTabBar.setIsBadgeUseTypeface(true);
+        navigationTabBar.setBadgeBgColor(Color.RED);
+        navigationTabBar.setBadgeTitleColor(Color.WHITE);
+        navigationTabBar.setIsSwiped(true);
+        navigationTabBar.setBgColor(Color.WHITE);
+        navigationTabBar.setBadgeSize(10);
+        navigationTabBar.setTitleSize(10);
+        navigationTabBar.setIconSizeFraction((float) 0.5);
 
     }
 
@@ -183,11 +206,11 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
          * todo 서버에서 데이터 받아오기 ( 아직 서버 구축 전 )
          */
         //MarketData(int id, String name, String location, String imgUrl, String date)
-        likeItemDatas.add(new MarketData(12,"프리마켓1","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
-        likeItemDatas.add(new MarketData(22,"프리마켓2","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
-        likeItemDatas.add(new MarketData(323,"프리마켓3","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
-        likeItemDatas.add(new MarketData(44,"프리마켓4","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
-        likeItemDatas.add(new MarketData(51,"프리마켓5","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
+        likeItemDatas.add(new MarketData("12","프리마켓1","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
+        likeItemDatas.add(new MarketData("22","프리마켓2","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
+        likeItemDatas.add(new MarketData("323","프리마켓3","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
+        likeItemDatas.add(new MarketData("44","프리마켓4","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
+        likeItemDatas.add(new MarketData("51","프리마켓5","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
     }
 
 
@@ -221,11 +244,11 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
          * todo 서버에서 데이터 받아오기 ( 아직 서버 구축 전 )
          */
         //MarketData(int id, String name, String location, String imgUrl, String date)
-        reportItemDatas.add(new MarketData(12,"프리마켓1","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
-        reportItemDatas.add(new MarketData(22,"프리마켓2","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
-        reportItemDatas.add(new MarketData(323,"프리마켓3","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
-        reportItemDatas.add(new MarketData(44,"프리마켓4","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
-        reportItemDatas.add(new MarketData(51,"프리마켓5","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
+        reportItemDatas.add(new MarketData("12","프리마켓1","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
+        reportItemDatas.add(new MarketData("22","프리마켓2","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
+        reportItemDatas.add(new MarketData("323","프리마켓3","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
+        reportItemDatas.add(new MarketData("44","프리마켓4","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
+        reportItemDatas.add(new MarketData("51","프리마켓5","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
     }
 
     @Override
@@ -258,11 +281,11 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
          * todo 서버에서 데이터 받아오기 ( 아직 서버 구축 전 )
          */
         //MarketData(int id, String name, String location, String imgUrl, String date)
-        recruitItemDatas.add(new RecruitSeller(12,"프리마켓1 셀러모집","2016-10-22","1"));
-        recruitItemDatas.add(new RecruitSeller(22,"프리마켓2 셀러모집","2016-10-22","411"));
-        recruitItemDatas.add(new RecruitSeller(323,"프리마켓3 셀러모집","2016-10-22","24"));
-        recruitItemDatas.add(new RecruitSeller(44,"프리마켓4 셀러모집","2016-10-22","31"));
-        recruitItemDatas.add(new RecruitSeller(51,"프리마켓5 셀러모집","2016-10-22","0"));
+        recruitItemDatas.add(new RecruitSeller("12","프리마켓1 셀러모집","2016-10-22","1"));
+        recruitItemDatas.add(new RecruitSeller("22","프리마켓2 셀러모집","2016-10-22","411"));
+        recruitItemDatas.add(new RecruitSeller("323","프리마켓3 셀러모집","2016-10-22","24"));
+        recruitItemDatas.add(new RecruitSeller("44","프리마켓4 셀러모집","2016-10-22","31"));
+        recruitItemDatas.add(new RecruitSeller("51","프리마켓5 셀러모집","2016-10-22","0"));
 
     }
 
@@ -320,26 +343,33 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
 
 
     @Override
-    public void moveDetailPage(int mId) {
+    public void moveDetailPage(String mId) {
         Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
-        intent.putExtra("marketId",mId);
+        intent.putExtra("market_id",mId);
         startActivity(intent);
     }
 
     @Override
-    public void deleteReport(int mId) {
+    public void moveRecruitPage(String mId) {
+        Intent intent = new Intent(getApplicationContext(), RecruitReviewActivity.class);
+        intent.putExtra("recruitId",mId);
+        startActivity(intent);
+    }
+
+    @Override
+    public void deleteReport(String mId) {
         Toast.makeText(getApplicationContext(),"삭제 구현예정",Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void deleteRecruit(int mId) {
+    public void deleteRecruit(String mId) {
 
         Toast.makeText(getApplicationContext(),"삭제 구현예정",Toast.LENGTH_SHORT).show();
     }
 
 
     @Override
-    public void sendKakao(int marketId) {
+    public void sendKakao(String marketId) {
         Toast.makeText(getApplicationContext(),"kakao " +marketId,Toast.LENGTH_SHORT).show();
 
         /**

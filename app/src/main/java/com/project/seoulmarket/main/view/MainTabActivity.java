@@ -119,6 +119,12 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
         /**
          * recyclerview
          */
+
+        //TODO adpater 설정
+        itemDatas = new ArrayList<MarketData>();
+        mAdapter = new CardViewAdapter(itemDatas,this);
+        recyclerView.setAdapter(mAdapter);
+
         //각 item의 크기가 일정할 경우 고정
         recyclerView.setHasFixedSize(true);
 
@@ -127,10 +133,31 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(mLayoutManager);
 
-        //TODO adpater 설정
-        itemDatas = new ArrayList<MarketData>();
-        mAdapter = new CardViewAdapter(itemDatas);
-        recyclerView.setAdapter(mAdapter);
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int scrollOffset = recyclerView.computeVerticalScrollOffset();
+                int scrollExtend = recyclerView.computeVerticalScrollExtent();
+                int scrollRange = recyclerView.computeVerticalScrollRange();
+
+                if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
+                    Toast.makeText(getApplicationContext(),"ee",Toast.LENGTH_SHORT).show();
+
+
+                    itemDatas.add(new MarketData("1","9999","건대입구역","imgUrl","D-10"));
+                    itemDatas.add(new MarketData("2","9999","건대입구역","imgUrl","D-20"));
+                    itemDatas.add(new MarketData("323","9999","건대입구역","imgUrl","D-30"));
+                    itemDatas.add(new MarketData("44","9999","건대입구역","imgUrl","D-40"));
+                    itemDatas.add(new MarketData("5","9999","건대입구역","imgUrl","D-50"));
+
+
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+
+
+
 
 
         /**
@@ -138,11 +165,11 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
          * todo 서버에서 데이터 받아오기 ( 아직 서버 구축 전 )
          */
         //MarketData(int id, String name, String location, String imgUrl, String date)
-        itemDatas.add(new MarketData(1,"프리마켓1","건대입구역","imgUrl","D-10"));
-        itemDatas.add(new MarketData(2,"프리마켓2","건대입구역","imgUrl","D-20"));
-        itemDatas.add(new MarketData(323,"프리마켓3","건대입구역","imgUrl","D-30"));
-        itemDatas.add(new MarketData(44,"프리마켓4","건대입구역","imgUrl","D-40"));
-        itemDatas.add(new MarketData(5,"프리마켓5","건대입구역","imgUrl","D-50"));
+        itemDatas.add(new MarketData("1","프리마켓1","건대입구역","imgUrl","D-10"));
+        itemDatas.add(new MarketData("2","프리마켓2","건대입구역","imgUrl","D-20"));
+        itemDatas.add(new MarketData("323","프리마켓3","건대입구역","imgUrl","D-30"));
+        itemDatas.add(new MarketData("44","프리마켓4","건대입구역","imgUrl","D-40"));
+        itemDatas.add(new MarketData("5","프리마켓5","건대입구역","imgUrl","D-50"));
     }
 
 
@@ -390,9 +417,10 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
     }
 
     @Override
-    public void moveDetailPage(int id) {
+    public void moveDetailPage(String id) {
         Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
-        intent.putExtra("marketId",id);
+        intent.putExtra("market_id",id);
+
         startActivity(intent);
     }
 

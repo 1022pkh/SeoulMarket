@@ -16,7 +16,7 @@ public class MyPageReportViewHolder extends RecyclerView.ViewHolder implements V
 
     private MyPageView myView;
 
-    public int mId;
+    public String mId;
     public TextView mName;
     public TextView mLocation;
     public TextView mProgress;
@@ -50,6 +50,7 @@ public class MyPageReportViewHolder extends RecyclerView.ViewHolder implements V
                 break;
             case R.id.deleteReport:
                 myView.deleteReport(mId);
+                break;
             default:
                 myView.moveDetailPage(mId);
                 break;

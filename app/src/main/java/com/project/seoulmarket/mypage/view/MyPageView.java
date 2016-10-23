@@ -11,8 +11,9 @@ public interface MyPageView {
     void makeRecruitView(LinearLayout view);
     void makeInfoView(LinearLayout view);
 
-    void moveDetailPage(int mId);
-    void deleteReport(int mId);
-    void deleteRecruit(int mId);
-    void sendKakao(int mId);
+    void moveDetailPage(String mId);
+    void moveRecruitPage(String mId);
+    void deleteReport(String mId);
+    void deleteRecruit(String mId);
+    void sendKakao(String mId);
 }

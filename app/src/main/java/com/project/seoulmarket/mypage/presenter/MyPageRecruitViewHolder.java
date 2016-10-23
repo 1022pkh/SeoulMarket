@@ -14,7 +14,7 @@ public class MyPageRecruitViewHolder extends RecyclerView.ViewHolder implements 
 
     private MyPageView myView;
 
-    public int mId;
+    public String mId;
     public TextView mTitle;
     public TextView mDate;
     public TextView mCount;
@@ -31,10 +31,18 @@ public class MyPageRecruitViewHolder extends RecyclerView.ViewHolder implements 
         deleteBtn = (TextView)itemView.findViewById(R.id.deleteRecruit);
 
         deleteBtn.setOnClickListener(this);
+        itemView.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        myView.deleteRecruit(mId);
+        switch (v.getId()){
+            case R.id.deleteRecruit:
+                myView.deleteRecruit(mId);
+                break;
+            default:
+                myView.moveRecruitPage(mId);
+                break;
+        }
     }
 }

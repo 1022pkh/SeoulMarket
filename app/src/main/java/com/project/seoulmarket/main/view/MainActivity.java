@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity
 
         //TODO adpater 설정
         itemDatas = new ArrayList<MarketData>();
-        mAdapter = new CardViewAdapter(itemDatas);
+        mAdapter = new CardViewAdapter(itemDatas,this);
         recyclerView.setAdapter(mAdapter);
 
 
@@ -155,11 +155,11 @@ public class MainActivity extends AppCompatActivity
          * todo 서버에서 데이터 받아오기 ( 아직 서버 구축 전 )
          */
         //MarketData(int id, String name, String location, String imgUrl, String date)
-        itemDatas.add(new MarketData(1,"프리마켓1","건대입구역","imgUrl","D-10"));
-        itemDatas.add(new MarketData(2,"프리마켓2","건대입구역","imgUrl","D-20"));
-        itemDatas.add(new MarketData(323,"프리마켓3","건대입구역","imgUrl","D-30"));
-        itemDatas.add(new MarketData(44,"프리마켓4","건대입구역","imgUrl","D-40"));
-        itemDatas.add(new MarketData(5,"프리마켓5","건대입구역","imgUrl","D-50"));
+        itemDatas.add(new MarketData("1","프리마켓1","건대입구역","imgUrl","D-10"));
+        itemDatas.add(new MarketData("2","프리마켓2","건대입구역","imgUrl","D-20"));
+        itemDatas.add(new MarketData("323","프리마켓3","건대입구역","imgUrl","D-30"));
+        itemDatas.add(new MarketData("44","프리마켓4","건대입구역","imgUrl","D-40"));
+        itemDatas.add(new MarketData("5","프리마켓5","건대입구역","imgUrl","D-50"));
 
 
 
@@ -435,9 +435,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void moveDetailPage(int id) {
+    public void moveDetailPage(String id) {
         Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
-        intent.putExtra("marketId",id);
-        startActivity(intent);
+
+        intent.putExtra("market_id",id);
+
+        Toast.makeText(getApplicationContext(),id,Toast.LENGTH_SHORT).show();
+//        startActivity(intent);
     }
 }

@@ -1,6 +1,7 @@
 package com.project.seoulmarket.mypage.presenter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,7 +17,7 @@ public class MyPageViewHolder extends RecyclerView.ViewHolder implements View.On
 
     private MyPageView myView;
 
-    public int mId;
+    public String mId;
     public TextView mName;
     public TextView mLocation;
     public TextView mProgress;

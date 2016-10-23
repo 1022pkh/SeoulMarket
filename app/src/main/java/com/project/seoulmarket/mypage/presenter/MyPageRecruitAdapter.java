@@ -41,7 +41,6 @@ public class MyPageRecruitAdapter extends RecyclerView.Adapter<MyPageRecruitView
 
     }
 
-    //ListView의 getView()랑 동일
     @Override
     public void onBindViewHolder(MyPageRecruitViewHolder holder, int position) {
 
