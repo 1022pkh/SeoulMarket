@@ -38,7 +38,7 @@ import com.project.seoulmarket.mypage.presenter.MyPagePresenterImpl;
 import com.project.seoulmarket.mypage.presenter.MyPageRecruitAdapter;
 import com.project.seoulmarket.mypage.presenter.MyPageReportAdapter;
 import com.project.seoulmarket.mypage.presenter.MyPageViewPagerAdapter;
-import com.project.seoulmarket.recruit.view.RecruitReviewActivity;
+import com.project.seoulmarket.recruit.view.RecruitDetailActivity;
 
 import java.util.ArrayList;
 
@@ -351,7 +351,7 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
 
     @Override
     public void moveRecruitPage(String mId) {
-        Intent intent = new Intent(getApplicationContext(), RecruitReviewActivity.class);
+        Intent intent = new Intent(getApplicationContext(), RecruitDetailActivity.class);
         intent.putExtra("recruitId",mId);
         startActivity(intent);
     }

@@ -30,11 +30,6 @@
 
         <!-- 카카오 전 -->
         <activity
-            android:name=".main.view.MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
             android:name=".splash.view.SplashAcitivty"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -98,7 +93,7 @@
         <activity
             android:name=".recruit.register.RecruitRegisterActivity"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".recruit.view.RecruitReviewActivity">
+        <activity android:name=".recruit.view.RecruitDetailActivity">
 
             <!--<intent-filter>-->
                 <!--<action android:name="android.intent.action.MAIN" />-->

@@ -1,12 +1,15 @@
 package com.project.seoulmarket.service;
 
+import com.project.seoulmarket.detail.model.DetailResultData;
 import com.project.seoulmarket.login.model.Token;
+import com.project.seoulmarket.main.model.ResultData;
 import com.project.seoulmarket.splash.model.ConnectResult;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -26,13 +29,16 @@ public interface NetworkService {
     @GET("/auth/kakao/token")
     Call<ConnectResult> requestKakaoLogin(@Query("access_token") String access_token);
 
-
     // 닉네임 중복체크
     @GET("/me")
     Call<ConnectResult> nickNameDoubleCheck(@Query("nickname") String nickname);
 
     //메인페이지 데이터
     @GET("/main")
-    Call<ConnectResult> getMainData(@Query("currentPage") String currentPage);
+    Call<ResultData> getMainData(@Query("currentPage") String currentPage);
+
+    //상세페이지 데이터
+    @GET("/main/{id}")
+    Call<DetailResultData> getDetailData(@Path("id") String id);
 
 }

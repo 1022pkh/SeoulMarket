@@ -1,19 +1,12 @@
 package com.project.seoulmarket.detail.model;
 
 /**
- * Created by kh on 2016. 10. 5..
+ * Created by kh on 2016. 10. 25..
  */
 public class ReviewData {
-    public int id;
-    public String nickName;
-    public String content;
-    public String date;
-
-    public ReviewData(int id, String nickName, String content, String date) {
-        this.id = id;
-        this.nickName = nickName;
-        this.content = content;
-        this.date = date;
-    }
-
+    public String review_idx;
+    public String user_nickname;
+    public String review_contents;
+    public String review_img;
+    public String review_uploadtime;
 }

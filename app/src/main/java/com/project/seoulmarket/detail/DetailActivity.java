@@ -21,6 +21,9 @@ import com.project.seoulmarket.R;
 import com.project.seoulmarket.application.GlobalApplication;
 import com.project.seoulmarket.detail.maps.MapsActivity;
 import com.project.seoulmarket.detail.model.ReviewData;
+import com.project.seoulmarket.detail.model.Result;
+import com.project.seoulmarket.detail.presenter.DetailPresenter;
+import com.project.seoulmarket.detail.presenter.DetailPresenterImpl;
 import com.project.seoulmarket.detail.presenter.ViewpagerAdapter;
 import com.project.seoulmarket.detail.review.RegisterReviewActivity;
 import com.project.seoulmarket.dialog.DialogLogin;
@@ -32,7 +35,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements DetailView{
 
     @BindView(R.id.pager)
     ViewPager pager;
@@ -47,13 +50,35 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.likehHeart)
     ImageView likeHeart;
 
+    @BindView(R.id.marketName)
+    TextView marketName;
+    @BindView(R.id.finderName)
+    TextView finderName;
+    //tag정보
+    @BindView(R.id.marketLocation)
+    TextView marketLocation;
+    @BindView(R.id.likeCount)
+    TextView likeCount;
+
 
     Boolean heartCheck = false;
-
     ArrayList<String> imgUrl;
-    ArrayList<ReviewData> reviewDatas = null;
-
     DialogLogin dialog_login;
+    DetailPresenter presenter;
+
+    String mName="";
+    String mStart="";
+    String mEnd="";
+    String mContent="";
+    String mHost="";
+    String mAddress="";
+    String longitude="";
+    String latitude="";
+    String mFavorite="";
+    int heartStat = -1;
+    String mURL="";
+
+    ArrayList<ReviewData> reviewDatas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +92,8 @@ public class DetailActivity extends AppCompatActivity {
         }
 
 
+        presenter = new DetailPresenterImpl(this);
+        imgUrl = new ArrayList<String>();
         /**
          * get id
          */
@@ -76,109 +103,11 @@ public class DetailActivity extends AppCompatActivity {
 
         Log.i("myTag",marketId);
 
-        /**
-         * id를 토대로 정보를 가져온다!.
-         */
-
-        if(heartCheck == false) {
-            likeHeart.setImageResource(R.drawable.ic_heart_big_blank);
-        }
-        else{
-            likeHeart.setImageResource(R.drawable.ic_heart_big);
-        }
-
 
         /**
-         * 서버에서 받아온 이미지를 리스트에 넣어준다.
+         * getData
          */
-
-        imgUrl = new ArrayList<String>();
-
-        imgUrl.add("http://www.samsungfundblog.com/wp-content/uploads/2014/04/%ED%94%84%EB%A6%AC%EB%A7%88%EC%BC%93.jpg");
-        imgUrl.add("http://www.samsungfundblog.com/wp-content/uploads/2014/04/IMG_0665-701x525.jpg");
-        imgUrl.add("http://www.samsungfundblog.com/wp-content/uploads/2014/04/%EC%9A%B0%EC%82%AC%EB%8B%A8-%EB%A7%88%EC%9D%84.jpg");
-
-        ViewpagerAdapter adapter= new ViewpagerAdapter(getLayoutInflater(),imgUrl);
-
-        //ViewPager에 Adapter 설정
-        pager.setAdapter(adapter);
-
-
-        /**
-         * 도트 색 지정
-         */
-        indicator.setSelectedDotColor( Color.parseColor( "#F96332" ) );
-        indicator.setUnselectedDotColor( Color.parseColor( "#CFCFCF" ) );
-
-        /**
-         * indicator 초기화
-         */
-        indicator.setNumberOfItems( imgUrl.size());
-
-
-        /**
-         * 스크롤 등으로 다음 페이지로 넘어갈 때 도트도 옮김
-         */
-        pager.addOnPageChangeListener( new ViewPager.OnPageChangeListener()
-        {
-            @Override
-            public void onPageScrolled( int position, float positionOffset, int positionOffsetPixels )
-            {
-
-            }
-
-            @Override
-            public void onPageSelected( int position )
-            {
-                indicator.setSelectedItem( pager.getCurrentItem(), true );
-            }
-
-            @Override
-            public void onPageScrollStateChanged( int state )
-            {
-
-            }
-        } );
-
-
-        changeBasicArea();
-
-        /**
-         * review 탭은 바로 보이는게 아니기때문에 페이지 정보를 받아온 후
-         * 그 다음 받아온다.
-         */
-
-        reviewDatas = new ArrayList<ReviewData>();
-
-        /**
-         * 임시로 데이터 넣어줌
-         */
-        ReviewData data = new ReviewData(0,"pkh1022","마켓에 다양한 물품이 많았어요~!!!","10/22 17:00");
-
-        reviewDatas.add(data);
-        data = new ReviewData(0,"pkh1022","마켓에 다양한 물품이 많았어요~!!!","10/22 17:00");
-        reviewDatas.add(data);
-        data = new ReviewData(1,"rudgus1022","마켓에 다양한 물품이 많았어요~!!!","10/22 17:00");
-        reviewDatas.add(data);
-        data = new ReviewData(2,"1022pkh","마켓에 다양한 물품이 많았어요~!!!","10/22 17:00");
-        reviewDatas.add(data);
-        data = new ReviewData(3,"cafe","마켓에 다양한 물품이 많았어요~!!!","10/22 17:00");
-        reviewDatas.add(data);
-        data = new ReviewData(4,"sejong","마켓에 다양한 물품이 많았어요~!!!","10/22 17:00");
-        reviewDatas.add(data);
-        data = new ReviewData(5,"sopt","마켓에 다양한 물품이 많았어요~!!!","10/22 17:00");
-        reviewDatas.add(data);
-        data = new ReviewData(6,"good6","마켓에 다양한 물품이 많았어요~!!!","10/22 17:00");
-        reviewDatas.add(data);
-        data = new ReviewData(7,"good7","마켓에 다양한 물품이 많았어요~!!!","10/22 17:00");
-        reviewDatas.add(data);
-        data = new ReviewData(8,"good8","마켓에 다양한 물품이 많았어요~!!!","10/22 17:00");
-        reviewDatas.add(data);
-        data = new ReviewData(9,"good9","마켓에 다양한 물품이 많았어요~!!!","10/22 17:00");
-        reviewDatas.add(data);
-        data = new ReviewData(10,"good10","마켓에 다양한 물품이 많았어요~!!!","10/22 17:00");
-        reviewDatas.add(data);
-
+        presenter.getDetail(marketId);
 
     }
 
@@ -202,10 +131,10 @@ public class DetailActivity extends AppCompatActivity {
          */
 
         Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
-        intent.putExtra("name","건대프리마켓");
-        intent.putExtra("address","서울특별시 광진구 능동로 120");
-        intent.putExtra("longitude","127.0793428");
-        intent.putExtra("latitude","37.5407625");
+        intent.putExtra("name",mName);
+        intent.putExtra("address",mAddress);
+        intent.putExtra("longitude",longitude);
+        intent.putExtra("latitude",latitude);
 
         startActivity(intent);
     }
@@ -272,20 +201,18 @@ public class DetailActivity extends AppCompatActivity {
         TextView marketContent =  (TextView)findViewById(R.id.marketContent);
         TextView marketURL = (TextView)findViewById(R.id.marketURL);
 
-        progressGroup.setText("생활협동조합");
+        progressGroup.setText(mHost);
         progressDate.setText("2016-10-17 ~ 2016-10-23");
         progressTime.setText("10:00 ~ 17:30");
         marketKind.setText("오픈마켓 형식");
-        marketContent.setText("내가 만든 마켓이다 설명이 필요없다\\n내가 만든 마켓이다 설명이 필요없다\\n내가 만든 마켓이다 설명이 필요없다");
-
-        final String url = "http:www.naver.com";
-        marketURL.setText(url);
+        marketContent.setText(mContent);
+        marketURL.setText(mURL);
 
 
         marketURL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent page = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                Intent page = new Intent(Intent.ACTION_VIEW, Uri.parse(mURL));
                 startActivity(page);
             }
         });
@@ -328,9 +255,9 @@ public class DetailActivity extends AppCompatActivity {
             reviewDate = (TextView)childLayout.findViewById(R.id.reviewDate);
             reviewContent =  (TextView)childLayout.findViewById(R.id.reviewContent);
 
-            reviewNickname.setText(reviewDatas.get(i).nickName);
-            reviewDate.setText(reviewDatas.get(i).date);
-            reviewContent.setText(reviewDatas.get(i).content);
+            reviewNickname.setText(reviewDatas.get(i).user_nickname);
+            reviewDate.setText(reviewDatas.get(i).review_uploadtime);
+            reviewContent.setText(reviewDatas.get(i).review_contents);
 
             listview.addView(childLayout);
 
@@ -338,4 +265,87 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void setDetailData(Result itemDatas) {
+        marketName.setText(itemDatas.market_name);
+        finderName.setText(itemDatas.user_nickname);
+        marketLocation.setText(itemDatas.market_address);
+        likeCount.setText(itemDatas.market_count);
+
+        for(int i=0;i<itemDatas.image.size();i++){
+            imgUrl.add(itemDatas.image.get(i).img_url);
+//                Log.i("myTag", itemDatas.image.get(i).img_url);
+        }
+
+        ViewpagerAdapter adapter= new ViewpagerAdapter(getLayoutInflater(),imgUrl);
+
+        //ViewPager에 Adapter 설정
+        pager.setAdapter(adapter);
+
+
+        /**
+         * 도트 색 지정
+         */
+        indicator.setSelectedDotColor( Color.parseColor( "#F96332" ) );
+        indicator.setUnselectedDotColor( Color.parseColor( "#CFCFCF" ) );
+
+        /**
+         * indicator 초기화
+         */
+        indicator.setNumberOfItems( imgUrl.size());
+
+
+        /**
+         * 스크롤 등으로 다음 페이지로 넘어갈 때 도트도 옮김
+         */
+        pager.addOnPageChangeListener( new ViewPager.OnPageChangeListener()
+        {
+            @Override
+            public void onPageScrolled( int position, float positionOffset, int positionOffsetPixels )
+            {
+
+            }
+
+            @Override
+            public void onPageSelected( int position )
+            {
+                indicator.setSelectedItem( pager.getCurrentItem(), true );
+            }
+
+            @Override
+            public void onPageScrollStateChanged( int state )
+            {
+
+            }
+        } );
+
+
+
+
+        mName = itemDatas.market_name;
+        mStart = itemDatas.market_startdate;
+        mEnd = itemDatas.market_enddate;
+        mContent = itemDatas.market_contents;
+        mHost = itemDatas.market_host;
+        mAddress = itemDatas.market_address;
+        longitude = itemDatas.market_longitude;
+        latitude = itemDatas.market_latitude;
+        mURL = itemDatas.market_url;
+
+        reviewDatas = new ArrayList<ReviewData>();
+        reviewDatas.addAll(itemDatas.review);
+
+        mFavorite = itemDatas.favorite;
+        heartStat =  Integer.valueOf(mFavorite);
+
+        if(heartStat == -1 || heartStat == 0) {
+            likeHeart.setImageResource(R.drawable.ic_heart_big_blank);
+        }
+        else{
+            likeHeart.setImageResource(R.drawable.ic_heart_big);
+        }
+
+        changeBasicArea();
+
+    }
 }

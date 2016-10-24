@@ -31,7 +31,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class RecruitReviewActivity extends AppCompatActivity {
+public class RecruitDetailActivity extends AppCompatActivity {
 
     @BindView(R.id.reviewAddBtn)
     Button reviewAddBtn;

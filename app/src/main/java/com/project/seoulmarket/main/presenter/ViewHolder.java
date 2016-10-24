@@ -2,7 +2,6 @@ package com.project.seoulmarket.main.presenter;
 
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,7 +38,6 @@ public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        Log.i("myTag>", String.valueOf(mId));
         Intent intent = new Intent(v.getContext(), DetailActivity.class);
         intent.putExtra("marketId",mId);
 

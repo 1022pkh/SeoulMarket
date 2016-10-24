@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -24,8 +25,10 @@ import com.project.seoulmarket.dialog.DialogLocation;
 import com.project.seoulmarket.dialog.DialogLogin;
 import com.project.seoulmarket.dialog.DialogName;
 import com.project.seoulmarket.login.LoginActivity;
-import com.project.seoulmarket.main.model.MarketData;
+import com.project.seoulmarket.main.model.MarketFirstData;
 import com.project.seoulmarket.main.presenter.CardViewAdapter;
+import com.project.seoulmarket.main.presenter.MainPresenter;
+import com.project.seoulmarket.main.presenter.MainPresenterImpl;
 import com.project.seoulmarket.mypage.view.MyPageActivity;
 import com.project.seoulmarket.recruit.view.RecruitActivity;
 import com.project.seoulmarket.report.view.ReportMarketActivity;
@@ -44,7 +47,7 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
 
 
     RecyclerView.Adapter mAdapter;
-    ArrayList<MarketData> itemDatas;
+    ArrayList<MarketFirstData> itemDatas;
     LinearLayoutManager mLayoutManager;
 
     DialogLocation dialog_location;
@@ -60,6 +63,12 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
     String chooseAddress = "";
     String startDate = "";
     String endDate = "";
+
+    //페이지 카운터
+    int currentPage = 0;
+
+
+    MainPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +111,12 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
 
 
         /**
+         * presenter 초기화
+         */
+
+        presenter = new MainPresenterImpl(this);
+
+        /**
          * 로그인 유무 체크
          */
         //loginCheck();
@@ -120,8 +135,7 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
          * recyclerview
          */
 
-        //TODO adpater 설정
-        itemDatas = new ArrayList<MarketData>();
+        itemDatas = new ArrayList<MarketFirstData>();
         mAdapter = new CardViewAdapter(itemDatas,this);
         recyclerView.setAdapter(mAdapter);
 
@@ -141,35 +155,21 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
                 int scrollRange = recyclerView.computeVerticalScrollRange();
 
                 if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
-                    Toast.makeText(getApplicationContext(),"ee",Toast.LENGTH_SHORT).show();
 
+                    presenter.requestMainData(String.valueOf(currentPage++));
 
-                    itemDatas.add(new MarketData("1","9999","건대입구역","imgUrl","D-10"));
-                    itemDatas.add(new MarketData("2","9999","건대입구역","imgUrl","D-20"));
-                    itemDatas.add(new MarketData("323","9999","건대입구역","imgUrl","D-30"));
-                    itemDatas.add(new MarketData("44","9999","건대입구역","imgUrl","D-40"));
-                    itemDatas.add(new MarketData("5","9999","건대입구역","imgUrl","D-50"));
-
-
-                    mAdapter.notifyDataSetChanged();
                 }
             }
         });
 
 
 
-
-
         /**
-         * 임시로 데이터 삽입
-         * todo 서버에서 데이터 받아오기 ( 아직 서버 구축 전 )
+         * 데이터 삽입
          */
-        //MarketData(int id, String name, String location, String imgUrl, String date)
-        itemDatas.add(new MarketData("1","프리마켓1","건대입구역","imgUrl","D-10"));
-        itemDatas.add(new MarketData("2","프리마켓2","건대입구역","imgUrl","D-20"));
-        itemDatas.add(new MarketData("323","프리마켓3","건대입구역","imgUrl","D-30"));
-        itemDatas.add(new MarketData("44","프리마켓4","건대입구역","imgUrl","D-40"));
-        itemDatas.add(new MarketData("5","프리마켓5","건대입구역","imgUrl","D-50"));
+        //String idx; String address; String state; String image; String marketname;
+        presenter.requestMainData(String.valueOf(currentPage++));
+
     }
 
 
@@ -231,29 +231,6 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
             dialog_login.show();
 
         }
-
-//        if(GlobalApplication.loginInfo.getBoolean("Login_check", false)) {
-//
-//            if(GlobalApplication.loginInfo.getString("method", "").equals("kakao")){
-//                //kakao 로그아웃
-//                UserManagement.requestLogout(new LogoutResponseCallback() {
-//                    @Override
-//                    public void onCompleteLogout() {
-//                    }
-//                });
-//            }
-//            else{
-//                LoginManager.getInstance().logOut();
-//            }
-//
-//            GlobalApplication.editor.putBoolean("Login_check", false);
-//            GlobalApplication.editor.commit();
-//
-//
-//        }
-//        else{
-//            Toast.makeText(getApplicationContext(),"현재 로그인 아웃 상태",Toast.LENGTH_SHORT).show();
-//        }
 
     }
 
@@ -420,8 +397,15 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
     public void moveDetailPage(String id) {
         Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
         intent.putExtra("market_id",id);
-
         startActivity(intent);
+    }
+
+    @Override
+    public void firstSetData(ArrayList<MarketFirstData> getDatas) {
+        Log.i("myTag",String.valueOf(getDatas.size()));
+
+        itemDatas.addAll(getDatas);
+        mAdapter.notifyDataSetChanged();
     }
 
 }

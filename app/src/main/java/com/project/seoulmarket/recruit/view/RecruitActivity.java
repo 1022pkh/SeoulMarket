@@ -100,7 +100,7 @@ public class RecruitActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Intent intent = new Intent(getApplicationContext(),RecruitReviewActivity.class);
+                Intent intent = new Intent(getApplicationContext(),RecruitDetailActivity.class);
                 intent.putExtra("recruitId",String.valueOf(itemDatas.get(position).id));
                 startActivity(intent);
             }

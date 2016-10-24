@@ -20,7 +20,7 @@ import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.helper.log.Logger;
 import com.project.seoulmarket.application.GlobalApplication;
 import com.project.seoulmarket.join.JoinActivity;
-import com.project.seoulmarket.main.view.MainActivity;
+import com.project.seoulmarket.main.view.MainTabActivity;
 import com.project.seoulmarket.service.NetworkService;
 import com.project.seoulmarket.splash.model.ConnectResult;
 
@@ -194,7 +194,7 @@ public class KakaoSignupActivity extends AppCompatActivity {
 
 
     private void redirectMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, MainTabActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
