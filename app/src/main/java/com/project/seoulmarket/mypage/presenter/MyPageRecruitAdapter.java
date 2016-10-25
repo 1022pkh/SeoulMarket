@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.project.seoulmarket.R;
-import com.project.seoulmarket.mypage.model.RecruitSeller;
+import com.project.seoulmarket.mypage.model.RecruitDetailData;
 import com.project.seoulmarket.mypage.view.MyPageView;
 
 import java.util.ArrayList;
@@ -17,13 +17,13 @@ import java.util.ArrayList;
 
 public class MyPageRecruitAdapter extends RecyclerView.Adapter<MyPageRecruitViewHolder> {
 
-    private ArrayList<RecruitSeller> itemDatas;
+    private ArrayList<RecruitDetailData> itemDatas;
     private View itemView;
     private ViewGroup parent;
 
     private MyPageView myView;
 
-    public MyPageRecruitAdapter(ArrayList<RecruitSeller> itemDatas, MyPageView myView){
+    public MyPageRecruitAdapter(ArrayList<RecruitDetailData> itemDatas, MyPageView myView){
         this.itemDatas = itemDatas;
         this.myView = myView;
     }
@@ -44,9 +44,9 @@ public class MyPageRecruitAdapter extends RecyclerView.Adapter<MyPageRecruitView
     @Override
     public void onBindViewHolder(MyPageRecruitViewHolder holder, int position) {
 
-        holder.mId = itemDatas.get(position).id;
-        holder.mTitle.setText(itemDatas.get(position).title);
-        holder.mDate.setText(itemDatas.get(position).date);
+        holder.mId = itemDatas.get(position).recruitment_idx;
+        holder.mTitle.setText(itemDatas.get(position).recruitment_title);
+        holder.mDate.setText(itemDatas.get(position).recruitment_uploadtime);
         holder.mCount.setText(itemDatas.get(position).count);
 
     }

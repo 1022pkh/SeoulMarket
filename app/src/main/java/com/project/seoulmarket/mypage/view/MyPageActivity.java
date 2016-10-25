@@ -31,7 +31,8 @@ import com.project.seoulmarket.application.GlobalApplication;
 import com.project.seoulmarket.detail.DetailActivity;
 import com.project.seoulmarket.main.model.MarketData;
 import com.project.seoulmarket.main.view.MainTabActivity;
-import com.project.seoulmarket.mypage.model.RecruitSeller;
+import com.project.seoulmarket.mypage.model.LikeDetailData;
+import com.project.seoulmarket.mypage.model.RecruitDetailData;
 import com.project.seoulmarket.mypage.presenter.MyPageAdapter;
 import com.project.seoulmarket.mypage.presenter.MyPagePresenter;
 import com.project.seoulmarket.mypage.presenter.MyPagePresenterImpl;
@@ -52,19 +53,20 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
     @BindView(R.id.ntb)
     NavigationTabBar navigationTabBar;
 
-    MyPagePresenter presenter;
-
     MyPageAdapter mLikeAdapter;
-    ArrayList<MarketData> likeItemDatas;
-    LinearLayoutManager mLikeLayoutManager;
 
+    ArrayList<LikeDetailData> likeItemDatas;
+    LinearLayoutManager mLikeLayoutManager;
     MyPageReportAdapter mReportAdapter;
+
     ArrayList<MarketData> reportItemDatas;
     LinearLayoutManager mReportLayoutManager;
-
     MyPageRecruitAdapter mRecruitAdapter;
-    ArrayList<RecruitSeller> recruitItemDatas;
+
+    ArrayList<RecruitDetailData> recruitItemDatas;
     LinearLayoutManager mRecruitLayoutManager;
+
+    MyPagePresenter presenter;
 
 
     @Override
@@ -174,6 +176,15 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
         navigationTabBar.setTitleSize(10);
         navigationTabBar.setIconSizeFraction((float) 0.5);
 
+
+        presenter.getMyLikeMarketData();
+        presenter.getMyRecruitSellerData();
+
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
     }
 
     @Override
@@ -196,21 +207,10 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
         recyclerView.setLayoutManager(mLikeLayoutManager);
 
         //TODO adpater 설정
-        likeItemDatas = new ArrayList<MarketData>();
+        likeItemDatas = new ArrayList<LikeDetailData>();
         mLikeAdapter = new MyPageAdapter(likeItemDatas, this);
         recyclerView.setAdapter(mLikeAdapter);
 
-
-        /**
-         * 임시로 데이터 삽입
-         * todo 서버에서 데이터 받아오기 ( 아직 서버 구축 전 )
-         */
-        //MarketData(int id, String name, String location, String imgUrl, String date)
-        likeItemDatas.add(new MarketData("12","프리마켓1","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
-        likeItemDatas.add(new MarketData("22","프리마켓2","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
-        likeItemDatas.add(new MarketData("323","프리마켓3","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
-        likeItemDatas.add(new MarketData("44","프리마켓4","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
-        likeItemDatas.add(new MarketData("51","프리마켓5","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
     }
 
 
@@ -271,21 +271,12 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
         recyclerView.setLayoutManager(mRecruitLayoutManager);
 
         //TODO adpater 설정
-        recruitItemDatas = new ArrayList<RecruitSeller>();
+        recruitItemDatas = new ArrayList<RecruitDetailData>();
         mRecruitAdapter = new MyPageRecruitAdapter(recruitItemDatas, this);
         recyclerView.setAdapter(mRecruitAdapter);
 
 
-        /**
-         * 임시로 데이터 삽입
-         * todo 서버에서 데이터 받아오기 ( 아직 서버 구축 전 )
-         */
-        //MarketData(int id, String name, String location, String imgUrl, String date)
-        recruitItemDatas.add(new RecruitSeller("12","프리마켓1 셀러모집","2016-10-22","1"));
-        recruitItemDatas.add(new RecruitSeller("22","프리마켓2 셀러모집","2016-10-22","411"));
-        recruitItemDatas.add(new RecruitSeller("323","프리마켓3 셀러모집","2016-10-22","24"));
-        recruitItemDatas.add(new RecruitSeller("44","프리마켓4 셀러모집","2016-10-22","31"));
-        recruitItemDatas.add(new RecruitSeller("51","프리마켓5 셀러모집","2016-10-22","0"));
+//        recruitItemDatas.add(new RecruitDetailData("12","프리마켓1 셀러모집","","nick","2016.10.22","1"));
 
     }
 
@@ -309,6 +300,23 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
                 logoutEvent();
             }
         });
+    }
+
+    @Override
+    public void dataNull() {
+        Toast.makeText(getApplicationContext(),"데이터가 없습니다.",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void setLikeData(ArrayList<LikeDetailData> getDatas) {
+        likeItemDatas.addAll(getDatas);
+        mLikeAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void setRecruitData(ArrayList<RecruitDetailData> getDatas) {
+        recruitItemDatas.addAll(getDatas);
+        mRecruitAdapter.notifyDataSetChanged();
     }
 
     public void logoutEvent(){

@@ -7,4 +7,6 @@ import com.project.seoulmarket.detail.model.Result;
  */
 public interface DetailView {
     void setDetailData(Result itemDatas);
+    void setLikeHeart();
+    void setDeleteHeart();
 }

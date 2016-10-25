@@ -177,7 +177,28 @@ public class ReportStepFourActivity extends AppCompatActivity {
 
     @OnClick(R.id.registerServer)
     public void registerServer(){
+        Intent getData = getIntent();
+        Log.i("myTag name",getData.getExtras().getString("name"));
+        Log.i("myTag host",getData.getExtras().getString("host"));
+        Log.i("myTag content",getData.getExtras().getString("content"));
+        Log.i("myTag startDate",getData.getExtras().getString("startDate"));
+        Log.i("myTag startTime",getData.getExtras().getString("startTime"));
+        Log.i("myTag endDate",getData.getExtras().getString("endDate"));
+        Log.i("myTag endTime",getData.getExtras().getString("endTime"));
+        Log.i("myTag address",getData.getExtras().getString("address"));
+        Log.i("myTag lat",getData.getExtras().getString("lat"));
+        Log.i("myTag log",getData.getExtras().getString("log"));
+
+
         if (tagList.size() > 0 && imgCount > 0){
+
+
+            String tagTemp = String.valueOf(tagList.get(0));
+            for(int i = 1; i<tagList.size();i++)
+                tagTemp+=","+tagList.get(i);
+
+            Log.i("myTag tag",tagTemp);
+
             WindowManager.LayoutParams registerParams;
             dialog_Register = new DialogRegister(ReportStepFourActivity.this, registerEvent,registerCancelEvent);
 

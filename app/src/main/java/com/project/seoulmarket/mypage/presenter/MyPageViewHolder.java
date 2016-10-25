@@ -1,7 +1,6 @@
 package com.project.seoulmarket.mypage.presenter;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,6 +21,7 @@ public class MyPageViewHolder extends RecyclerView.ViewHolder implements View.On
     public TextView mLocation;
     public TextView mProgress;
     public ImageView mImageView;
+    public TextView mDate;
     public TextView kakaoBtn;
 
     public MyPageViewHolder(View itemView,MyPageView myView) {
@@ -32,7 +32,8 @@ public class MyPageViewHolder extends RecyclerView.ViewHolder implements View.On
         mImageView = (ImageView)itemView.findViewById(R.id.image);
         mName = (TextView)itemView.findViewById(R.id.marketName);
         mLocation = (TextView)itemView.findViewById(R.id.marketLocation);
-        mProgress = (TextView)itemView.findViewById(R.id.marketDate);
+        mProgress = (TextView)itemView.findViewById(R.id.progressRate);
+        mDate = (TextView)itemView.findViewById(R.id.mDate);
         kakaoBtn = (TextView)itemView.findViewById(R.id.kakaoBtn);
 
         kakaoBtn.setOnClickListener(this);

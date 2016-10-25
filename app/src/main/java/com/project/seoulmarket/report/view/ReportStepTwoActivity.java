@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import com.project.seoulmarket.R;
 
+import java.text.SimpleDateFormat;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -40,6 +42,15 @@ public class ReportStepTwoActivity extends AppCompatActivity implements com.ande
     Boolean TimeStartCheck = false;
     Boolean TimeEndCheck = false;
     Boolean CalCheck = false;
+
+    String startDate = "";
+    String endDate = "";
+    String startTime = "";
+    String endTime = "";
+
+    int startCount = 0;
+    int endCount = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +115,22 @@ public class ReportStepTwoActivity extends AppCompatActivity implements com.ande
         //다음 단계
         if(TimeStartCheck && TimeEndCheck && CalCheck){
 
+
+            if(startCount > endCount){
+                String temp = startTime;
+                startTime = endTime;
+                endTime = temp;
+            }
+            Intent getData = getIntent();
             Intent intent = new Intent(getApplicationContext(),ReportStepThreeActivity.class);
+            intent.putExtra("name",getData.getExtras().getString("name"));
+            intent.putExtra("host",getData.getExtras().getString("host"));
+            intent.putExtra("content",getData.getExtras().getString("content"));
+            intent.putExtra("startDate",startDate);
+            intent.putExtra("startTime",startTime);
+            intent.putExtra("endDate",endDate);
+            intent.putExtra("endTime",endTime);
+
             startActivity(intent);
         }
         else{
@@ -127,6 +153,8 @@ public class ReportStepTwoActivity extends AppCompatActivity implements com.ande
             else
                 startMinute.setText(String.valueOf(Math.round(minute*0.1)*10));
 
+            startCount = Integer.valueOf(startHour.getText().toString()) * 60 + Integer.valueOf(startMinute.getText().toString());
+            startTime = startHour.getText().toString() + ":" + startMinute.getText().toString();
             TimeStartCheck = true;
         }
     };
@@ -146,6 +174,8 @@ public class ReportStepTwoActivity extends AppCompatActivity implements com.ande
             else
                 endMinute.setText(String.valueOf(Math.round(minute*0.1)*10));
 
+            endCount = Integer.valueOf(endHour.getText().toString()) * 60 + Integer.valueOf(endMinute.getText().toString());
+            endTime = endHour.getText().toString() + ":" + endMinute.getText().toString();
             TimeEndCheck = true;
 
         }
@@ -165,7 +195,13 @@ public class ReportStepTwoActivity extends AppCompatActivity implements com.ande
 
     @Override
     public void onDateRangeSelected(com.andexert.calendarlistview.library.SimpleMonthAdapter.SelectedDays<com.andexert.calendarlistview.library.SimpleMonthAdapter.CalendarDay> selectedDays) {
-        Log.i("myTag","Date range selected "+ selectedDays.getFirst().toString() + " --> " + selectedDays.getLast().toString());
+//        Log.i("myTag","Date range selected "+ selectedDays.getFirst().toString() + " --> " + selectedDays.getLast().toString());
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
+
+        startDate = dateFormat.format(selectedDays.getFirst().getDate());
+        endDate = dateFormat.format(selectedDays.getLast().getDate());
+
         CalCheck = true;
     }
 

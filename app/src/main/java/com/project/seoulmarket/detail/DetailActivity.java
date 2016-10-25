@@ -49,6 +49,8 @@ public class DetailActivity extends AppCompatActivity implements DetailView{
     LinearLayout inflatedLayout;
     @BindView(R.id.likehHeart)
     ImageView likeHeart;
+    @BindView(R.id.marketTag)
+    TextView marketTag;
 
     @BindView(R.id.marketName)
     TextView marketName;
@@ -66,9 +68,14 @@ public class DetailActivity extends AppCompatActivity implements DetailView{
     DialogLogin dialog_login;
     DetailPresenter presenter;
 
+    String marketId = "";
+
     String mName="";
-    String mStart="";
-    String mEnd="";
+    String mTag = "";
+    String mStartTime="";
+    String mEndTime="";
+    String mStartDate="";
+    String mEndDate="";
     String mContent="";
     String mHost="";
     String mAddress="";
@@ -99,7 +106,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView{
          */
 
         Intent intent = getIntent();
-        String marketId = intent.getExtras().getString("market_id");
+        marketId = intent.getExtras().getString("market_id");
 
         Log.i("myTag",marketId);
 
@@ -113,14 +120,33 @@ public class DetailActivity extends AppCompatActivity implements DetailView{
 
     @OnClick(R.id.likehHeart)
     public void likeHeartEvent(){
-        if(heartCheck == false) {
-            likeHeart.setImageResource(R.drawable.ic_heart_big);
-            heartCheck = true;
+
+        if(GlobalApplication.loginInfo.getBoolean("Login_check", false)) {
+
+            if(heartCheck == false) {
+                Log.i("myTag","request like");
+                presenter.requestLikeFavorite(marketId);
+            }
+            else {
+                Log.i("myTag","request delete");
+                presenter.requestDeleteFavorite(marketId);
+            }
         }
-        else {
-            likeHeart.setImageResource(R.drawable.ic_heart_big_blank);
-            heartCheck = false;
+        else{
+            WindowManager.LayoutParams loginParams;
+            dialog_login = new DialogLogin(DetailActivity.this, loginEvent,loginCancelEvent);
+
+            loginParams = dialog_login.getWindow().getAttributes();
+
+            // Dialog 사이즈 조절 하기
+            loginParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+            loginParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+            dialog_login.getWindow().setAttributes(loginParams);
+
+            dialog_login.show();
         }
+
+
     }
 
     @OnClick(R.id.showLocation)
@@ -202,8 +228,8 @@ public class DetailActivity extends AppCompatActivity implements DetailView{
         TextView marketURL = (TextView)findViewById(R.id.marketURL);
 
         progressGroup.setText(mHost);
-        progressDate.setText("2016-10-17 ~ 2016-10-23");
-        progressTime.setText("10:00 ~ 17:30");
+        progressDate.setText(mStartDate+"~"+mEndDate);
+        progressTime.setText(mStartTime+"~"+mEndTime);
         marketKind.setText("오픈마켓 형식");
         marketContent.setText(mContent);
         marketURL.setText(mURL);
@@ -268,6 +294,9 @@ public class DetailActivity extends AppCompatActivity implements DetailView{
     @Override
     public void setDetailData(Result itemDatas) {
         marketName.setText(itemDatas.market_name);
+
+        marketTag.setText(itemDatas.market_tag.replace(","," "));
+
         finderName.setText(itemDatas.user_nickname);
         marketLocation.setText(itemDatas.market_address);
         likeCount.setText(itemDatas.market_count);
@@ -323,8 +352,11 @@ public class DetailActivity extends AppCompatActivity implements DetailView{
 
 
         mName = itemDatas.market_name;
-        mStart = itemDatas.market_startdate;
-        mEnd = itemDatas.market_enddate;
+        mTag = itemDatas.market_tag;
+        mStartTime = itemDatas.market_openTime;
+        mEndTime = itemDatas.market_endTime;
+        mStartDate = itemDatas.market_startdate;
+        mEndDate = itemDatas.market_enddate;
         mContent = itemDatas.market_contents;
         mHost = itemDatas.market_host;
         mAddress = itemDatas.market_address;
@@ -340,12 +372,25 @@ public class DetailActivity extends AppCompatActivity implements DetailView{
 
         if(heartStat == -1 || heartStat == 0) {
             likeHeart.setImageResource(R.drawable.ic_heart_big_blank);
+            heartCheck = false;
         }
         else{
             likeHeart.setImageResource(R.drawable.ic_heart_big);
+            heartCheck = true;
         }
 
         changeBasicArea();
 
+    }
+
+    @Override
+    public void setLikeHeart() {
+        likeHeart.setImageResource(R.drawable.ic_heart_big);
+        heartCheck = true;
+    }
+    @Override
+    public void setDeleteHeart() {
+        likeHeart.setImageResource(R.drawable.ic_heart_big_blank);
+        heartCheck = false;
     }
 }

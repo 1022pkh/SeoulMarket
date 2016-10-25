@@ -30,7 +30,7 @@ public class ReportMarketActivity extends AppCompatActivity {
     @BindView(R.id.inputMarketName)
     EditText inputMarketName;
     @BindView(R.id.inputMarketGroup)
-    EditText inputMarketGroup;
+    EditText inputMarketHost;
     @BindView(R.id.inputMarketContent)
     EditText inputMarketContent;
     @BindView(R.id.inputMarketContentArea)
@@ -92,7 +92,7 @@ public class ReportMarketActivity extends AppCompatActivity {
 
     public void warningOut(){
         //사용자가 아무것도 입력하지 않았을 경우
-        if (inputMarketName.length() == 0 && inputMarketGroup.length() == 0 & inputMarketContent.length() == 0) {
+        if (inputMarketName.length() == 0 && inputMarketHost.length() == 0 & inputMarketContent.length() == 0) {
             super.onBackPressed();
         }
         //사용자가 입력했을 경우는 경고창을 띄워준다.
@@ -147,6 +147,9 @@ public class ReportMarketActivity extends AppCompatActivity {
         if(inputNameCheck && inputContentCheck){
             //다음 단계
             Intent intent = new Intent(getApplicationContext(),ReportStepTwoActivity.class);
+            intent.putExtra("name",inputMarketName.getText().toString());
+            intent.putExtra("host",inputMarketHost.getText().toString());
+            intent.putExtra("content",inputMarketContent.getText().toString());
             startActivity(intent);
         }
 

@@ -8,47 +8,44 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.project.seoulmarket.R;
-import com.project.seoulmarket.main.model.MarketFirstData;
+import com.project.seoulmarket.main.model.MarketFilterData;
 import com.project.seoulmarket.main.view.MainView;
 
 import java.util.ArrayList;
 
 /**
- * Created by kh on 2016. 10. 5..
+ * Created by kh on 2016. 10. 25..
  */
+public class FilterViewAdapter extends RecyclerView.Adapter<FilterViewHolder> {
+    private ArrayList<MarketFilterData> itemDatas;
 
-public class CardViewAdapter extends RecyclerView.Adapter<ViewHolder> {
-
-    private ArrayList<MarketFirstData> itemDatas;
     MainView myView;
     private View itemView;
     private ViewGroup parent;
 
-    public CardViewAdapter(ArrayList<MarketFirstData> itemDatas, MainView myView){
+    public FilterViewAdapter(ArrayList<MarketFilterData> itemDatas, MainView myView){
         this.itemDatas = itemDatas;
         this.myView = myView;
     }
 
-    //ViewHolder 생성
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
+    public FilterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         this.parent = parent;
         this.itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.main_cardview_basic, parent,false);
-        ViewHolder viewHolder = new ViewHolder(itemView,myView);
+                .inflate(R.layout.main_cardview_filter, parent,false);
+
+        FilterViewHolder viewHolder = new FilterViewHolder(itemView,myView);
 
         return viewHolder;
-
     }
 
-    //ListView의 getView()랑 동일
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-
-        holder.mId = itemDatas.get(position).idx;
-        holder.mName.setText(itemDatas.get(position).marketname);
-        holder.mLocation.setText(itemDatas.get(position).address);
+    public void onBindViewHolder(FilterViewHolder holder, int position) {
+        holder.mId = itemDatas.get(position).market_idx;
+        holder.mName.setText(itemDatas.get(position).market_name);
+        holder.mLocation.setText(itemDatas.get(position).market_address);
+        holder.mDate.setText(itemDatas.get(position).market_startdate + "\n~" + itemDatas.get(position).market_enddate);
+        holder.mLike.setText(itemDatas.get(position).market_count);
 
         // TODO: 2016. 10. 5. 아직 데이터가 없으므로 임시로 넣어주기로.
         /**
@@ -57,7 +54,7 @@ public class CardViewAdapter extends RecyclerView.Adapter<ViewHolder> {
          * state < 0 만료
          */
 
-        int state = Integer.valueOf(itemDatas.get(position).state);
+        int state = Integer.valueOf(itemDatas.get(position).market_state);
 
         if( state > 0){
             holder.mProgress.setText("D-" + state);
@@ -70,13 +67,14 @@ public class CardViewAdapter extends RecyclerView.Adapter<ViewHolder> {
         }
 
         ImageView imageView = (ImageView)itemView.findViewById(R.id.image);
+
 //        Log.i("myTag",itemDatas.get(position).image);
+
         Glide.with(parent.getContext())
-                .load(itemDatas.get(position).image)
+                .load(itemDatas.get(position).image_url)
                 .into(imageView);
 
     }
-
 
     @Override
     public int getItemCount() {

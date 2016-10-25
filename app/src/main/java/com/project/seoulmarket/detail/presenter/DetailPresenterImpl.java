@@ -5,6 +5,7 @@ import android.util.Log;
 import com.project.seoulmarket.application.GlobalApplication;
 import com.project.seoulmarket.detail.DetailView;
 import com.project.seoulmarket.detail.model.DetailResultData;
+import com.project.seoulmarket.detail.model.FavoriteResult;
 import com.project.seoulmarket.detail.model.Result;
 import com.project.seoulmarket.service.NetworkService;
 
@@ -45,4 +46,73 @@ public class DetailPresenterImpl implements DetailPresenter {
         });
 
     }
+
+    @Override
+    public void requestLikeFavorite(String id) {
+
+        Call<FavoriteResult> requestLike = networkService.requestLikeFavorite(id);
+        requestLike.enqueue(new Callback<FavoriteResult>() {
+            @Override
+            public void onResponse(Call<FavoriteResult> call, Response<FavoriteResult> response) {
+
+
+                if(response.isSuccessful()){
+
+//                    Log.i("myTag",String.valueOf(response.body().result));
+
+                    FavoriteResult.FavoriteDetailData getDatas = response.body().result;
+
+                    Log.i("myTag",String.valueOf(getDatas.message));
+
+                    if (getDatas.message != null){
+                        if(getDatas.message.equals("Success"))
+                            view.setLikeHeart();
+                    }
+                }
+                else
+                    Log.i("myTag",response.body() + " " + response.code());
+
+            }
+
+            @Override
+            public void onFailure(Call<FavoriteResult> call, Throwable t) {
+                Log.i("myTag",String.valueOf(t));
+            }
+        });
+    }
+
+    @Override
+    public void requestDeleteFavorite(String id) {
+        Call<FavoriteResult> requestLike = networkService.requestDeleteFavorite(id);
+        requestLike.enqueue(new Callback<FavoriteResult>() {
+            @Override
+            public void onResponse(Call<FavoriteResult> call, Response<FavoriteResult> response) {
+
+
+                if(response.isSuccessful()){
+
+//                    Log.i("myTag",String.valueOf(response.body().result));
+
+                    FavoriteResult.FavoriteDetailData getDatas = response.body().result;
+
+                    Log.i("myTag",String.valueOf(getDatas.message));
+
+                    if (getDatas.message != null){
+                        if(getDatas.message.equals("Success"))
+                            view.setLikeHeart();
+                    }
+                }
+                else
+                    Log.i("myTag",response.body() + " " + response.code());
+
+            }
+
+            @Override
+            public void onFailure(Call<FavoriteResult> call, Throwable t) {
+                Log.i("myTag",String.valueOf(t));
+            }
+        });
+    }
+
+
 }

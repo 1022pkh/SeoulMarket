@@ -1,5 +1,6 @@
 package com.project.seoulmarket.main.view;
 
+import com.project.seoulmarket.main.model.MarketFilterData;
 import com.project.seoulmarket.main.model.MarketFirstData;
 
 import java.util.ArrayList;
@@ -12,6 +13,8 @@ public interface MainView {
     void prevousStart();
     void prevousEnd();
     void nextEnd();
+    void DataNull();
     void moveDetailPage(String id);
     void firstSetData(ArrayList<MarketFirstData> getDatas);
+    void filterSetData(String fName, ArrayList<MarketFilterData> getDatas);
 }

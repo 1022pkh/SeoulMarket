@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -25,8 +27,10 @@ import com.project.seoulmarket.dialog.DialogLocation;
 import com.project.seoulmarket.dialog.DialogLogin;
 import com.project.seoulmarket.dialog.DialogName;
 import com.project.seoulmarket.login.LoginActivity;
+import com.project.seoulmarket.main.model.MarketFilterData;
 import com.project.seoulmarket.main.model.MarketFirstData;
 import com.project.seoulmarket.main.presenter.CardViewAdapter;
+import com.project.seoulmarket.main.presenter.FilterViewAdapter;
 import com.project.seoulmarket.main.presenter.MainPresenter;
 import com.project.seoulmarket.main.presenter.MainPresenterImpl;
 import com.project.seoulmarket.mypage.view.MyPageActivity;
@@ -44,11 +48,21 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
 
     @BindView(R.id.my_recyclerView)
     RecyclerView recyclerView;
-
+    @BindView(R.id.mainArea)
+    LinearLayout mainArea;
+    @BindView(R.id.middleUserName)
+    TextView middleUserName;
+    @BindView(R.id.middleTitle)
+    TextView middleTitle;
 
     RecyclerView.Adapter mAdapter;
     ArrayList<MarketFirstData> itemDatas;
     LinearLayoutManager mLayoutManager;
+
+    FilterViewAdapter filterAdapter;
+    ArrayList<MarketFilterData> filterDatas;
+    LinearLayoutManager FilterLayoutManager;
+
 
     DialogLocation dialog_location;
     DialogDate dialog_date;
@@ -66,9 +80,10 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
 
     //페이지 카운터
     int currentPage = 0;
-
-
     MainPresenter presenter;
+
+    //검색 필터 사용 중인지
+    Boolean setFilterPage = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +151,7 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
          */
 
         itemDatas = new ArrayList<MarketFirstData>();
+        filterDatas = new ArrayList<MarketFilterData>();
         mAdapter = new CardViewAdapter(itemDatas,this);
         recyclerView.setAdapter(mAdapter);
 
@@ -346,8 +362,19 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
     private View.OnClickListener getNameEvent = new View.OnClickListener() {
         public void onClick(View v) {
 
-            Toast.makeText(getApplicationContext(),"검색 : " + dialog_name.getName(),Toast.LENGTH_SHORT).show();
-            dialog_name.dismiss();
+            if (dialog_name.getName().length() == 0 ){
+                Toast.makeText(getApplicationContext(),"검색할 마켓을 입력해주세요.",Toast.LENGTH_SHORT).show();
+            }
+            else{
+                dialog_name.dismiss();
+
+                setFilterPage = true;
+
+                currentPage = 0;
+                recyclerView.removeAllViews();
+                presenter.requestNameFilterData(dialog_name.getName(), String.valueOf(currentPage++));
+
+            }
 
         }
 
@@ -358,6 +385,41 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
         long tempTime        = System.currentTimeMillis();
         long intervalTime    = tempTime - backPressedTime;
 
+        //검색 필터 중이면...다시 처음 화면으로 돌리기
+        if(setFilterPage == true){
+            setFilterPage = false;
+            currentPage = 0;
+
+            mAdapter = new CardViewAdapter(itemDatas,this);
+            recyclerView.setAdapter(mAdapter);
+
+            //각 item의 크기가 일정할 경우 고정
+            recyclerView.setHasFixedSize(true);
+
+            // layoutManager 설정
+            mLayoutManager = new LinearLayoutManager(this);
+            mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            recyclerView.setLayoutManager(mLayoutManager);
+
+            recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    int scrollOffset = recyclerView.computeVerticalScrollOffset();
+                    int scrollExtend = recyclerView.computeVerticalScrollExtent();
+                    int scrollRange = recyclerView.computeVerticalScrollRange();
+
+                    if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
+
+                        presenter.requestMainData(String.valueOf(currentPage++));
+
+                    }
+                }
+            });
+
+            presenter.requestMainData(String.valueOf(currentPage++));
+
+        }
+        else{
             /**
              * Back키 두번 연속 클릭 시 앱 종료
              */
@@ -368,6 +430,8 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
                 backPressedTime = tempTime;
                 Toast.makeText(getApplicationContext(),"뒤로 가기 키을 한번 더 누르시면 종료됩니다.",Toast.LENGTH_SHORT).show();
             }
+        }
+
 
 
     }
@@ -394,6 +458,11 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
     }
 
     @Override
+    public void DataNull() {
+        Toast.makeText(getApplicationContext(),"더 이상 데이터가 없습니다.",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void moveDetailPage(String id) {
         Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
         intent.putExtra("market_id",id);
@@ -406,6 +475,36 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
 
         itemDatas.addAll(getDatas);
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void filterSetData(String fName, ArrayList<MarketFilterData> getDatas) {
+
+
+        middleUserName.setText(fName);
+        middleTitle.setText(" 으로 검색된 마켓");
+
+
+        filterDatas.addAll(getDatas);
+
+        filterAdapter = new FilterViewAdapter(filterDatas, this);
+        recyclerView.setAdapter(filterAdapter);
+
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int scrollOffset = recyclerView.computeVerticalScrollOffset();
+                int scrollExtend = recyclerView.computeVerticalScrollExtent();
+                int scrollRange = recyclerView.computeVerticalScrollRange();
+
+                if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
+//                    Toast.makeText(getApplicationContext(),"get",Toast.LENGTH_SHORT).show();
+                    presenter.requestNameFilterData(middleUserName.getText().toString(), String.valueOf(currentPage++));
+//                    Toast.makeText(getApplicationContext(),String.valueOf(currentPage),Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
 
 }

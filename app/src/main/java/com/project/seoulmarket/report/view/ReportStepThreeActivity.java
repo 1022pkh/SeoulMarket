@@ -60,7 +60,7 @@ public class ReportStepThreeActivity extends AppCompatActivity implements OnMapR
     View marker_root_view;
     ImageView iv_marker;
 
-    String address;
+    String address ="";
     double lat = 37.5580798;
     double log = 126.9255336;
 
@@ -122,8 +122,25 @@ public class ReportStepThreeActivity extends AppCompatActivity implements OnMapR
 
     @OnClick(R.id.completeAddress)
     public void nextBtn(){
-        Intent intent = new Intent(getApplicationContext(),ReportStepFourActivity.class);
-        startActivity(intent);
+
+        if(address.length()!=0){
+
+            Intent getData = getIntent();
+            Intent intent = new Intent(getApplicationContext(),ReportStepFourActivity.class);
+            intent.putExtra("name",getData.getExtras().getString("name"));
+            intent.putExtra("host",getData.getExtras().getString("host"));
+            intent.putExtra("content",getData.getExtras().getString("content"));
+            intent.putExtra("startDate",getData.getExtras().getString("startDate"));
+            intent.putExtra("startTime",getData.getExtras().getString("startTime"));
+            intent.putExtra("endDate",getData.getExtras().getString("endDate"));
+            intent.putExtra("endTime",getData.getExtras().getString("endTime"));
+            intent.putExtra("address",address);
+            intent.putExtra("lat",String.valueOf(lat));
+            intent.putExtra("log",String.valueOf(log));
+            startActivity(intent);
+        }
+        else
+            Toast.makeText(getApplicationContext(),"위치 설정을 해주세요.",Toast.LENGTH_SHORT).show();
     }
 
     public void getxlatlngToAddress(){
@@ -399,7 +416,6 @@ public class ReportStepThreeActivity extends AppCompatActivity implements OnMapR
     public void changeNullValue() {
         runOnUiThread(new Runnable() {
             public void run() {
-
                 Toast.makeText(getApplicationContext(),"검색 결과가 없습니다..",Toast.LENGTH_SHORT).show();
                 marketAddress.setText("검색 결과가 없습니다..");
             }

@@ -5,4 +5,5 @@ package com.project.seoulmarket.main.presenter;
  */
 public interface MainPresenter {
     void requestMainData(String pageNum);
+    void requestNameFilterData(String mName,String pageNum);
 }
