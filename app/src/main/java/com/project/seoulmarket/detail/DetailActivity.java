@@ -386,11 +386,16 @@ public class DetailActivity extends AppCompatActivity implements DetailView{
     @Override
     public void setLikeHeart() {
         likeHeart.setImageResource(R.drawable.ic_heart_big);
+        int temp = Integer.valueOf(likeCount.getText().toString());
+        likeCount.setText(String.valueOf(++temp));
+
         heartCheck = true;
     }
     @Override
     public void setDeleteHeart() {
         likeHeart.setImageResource(R.drawable.ic_heart_big_blank);
+        int temp = Integer.valueOf(likeCount.getText().toString());
+        likeCount.setText(String.valueOf(--temp));
         heartCheck = false;
     }
 }

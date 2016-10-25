@@ -7,6 +7,8 @@ import com.project.seoulmarket.mypage.model.LikeDetailData;
 import com.project.seoulmarket.mypage.model.LikeResult;
 import com.project.seoulmarket.mypage.model.RecruitDetailData;
 import com.project.seoulmarket.mypage.model.RecruitResult;
+import com.project.seoulmarket.mypage.model.ReportDetailData;
+import com.project.seoulmarket.mypage.model.ReportResult;
 import com.project.seoulmarket.mypage.view.MyPageView;
 import com.project.seoulmarket.service.NetworkService;
 
@@ -59,6 +61,33 @@ public class MyPagePresenterImpl implements MyPagePresenter{
     }
 
     @Override
+    public void getMyReportMarketData() {
+        Call<ReportResult> getReportData = networkService.getMyReportMarketData();
+        getReportData.enqueue(new Callback<ReportResult>() {
+            @Override
+            public void onResponse(Call<ReportResult> call, Response<ReportResult> response) {
+                Log.i("myTag","report");
+
+                if (response.isSuccessful()){
+                    ArrayList<ReportDetailData> getDatas = response.body().result;
+
+//                    Log.i("myTag",String.valueOf(getDatas));
+
+                    if(getDatas.size() > 0 )
+                        view.setReportData(getDatas);
+                    else
+                        view.dataNull();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReportResult> call, Throwable t) {
+
+            }
+        });
+    }
+
+    @Override
     public void getMyRecruitSellerData() {
         Call<RecruitResult> getRecruitData = networkService.getMyRecruitSellerData();
         getRecruitData.enqueue(new Callback<RecruitResult>() {
@@ -69,7 +98,7 @@ public class MyPagePresenterImpl implements MyPagePresenter{
                 if (response.isSuccessful()){
                     ArrayList<RecruitDetailData> getDatas = response.body().result;
 
-//                    Log.i("myTag",String.valueOf(getDatas));
+                    Log.i("myTag idx",String.valueOf(getDatas.get(0).recruitment_idx));
 
                     if(getDatas.size() > 0 )
                         view.setRecruitData(getDatas);

@@ -5,5 +5,6 @@ package com.project.seoulmarket.mypage.presenter;
  */
 public interface MyPagePresenter {
     void getMyLikeMarketData();
+    void getMyReportMarketData();
     void getMyRecruitSellerData();
 }

@@ -121,12 +121,14 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(final LoginResult loginResult) {
                 // App code
-                Log.i("myTag","face-success");
+                Log.i("myTag","facebook");
 
 //                String token = String.valueOf(loginResult.getAccessToken().getToken());
 
                 Token token = new Token();
                 token.access_token =loginResult.getAccessToken().getToken();
+
+                Log.i("myTag", String.valueOf(token.access_token));
 
                 Call<ConnectResult> requestFacebookLogin = networkService.requestFacebookLogin(token);
 
@@ -134,10 +136,10 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<ConnectResult> call, Response<ConnectResult> response) {
 
+//                        final String cookies = response.headers().get("set-cookie");
+//                        Log.i("myTag cookies2", cookies);
 
                         if(response.isSuccessful()){
-//                            Log.i("myTag","reponse");
-
                             Gson gson = new Gson();
                             String jsonString = gson.toJson(response.body());
 //                            Log.i("myTag",jsonString);
@@ -147,7 +149,7 @@ public class LoginActivity extends AppCompatActivity {
                                 JSONObject resultValue = new JSONObject(jsonObject.getString("result"));
 
                                 String result = resultValue.getString("message");
-                                Log.i("myTag",result );
+                                Log.i("myTag >> ",result );
 
                                 if(result.equals("Success")){
                                     GraphRequest request = GraphRequest.newMeRequest(
@@ -169,6 +171,9 @@ public class LoginActivity extends AppCompatActivity {
                                                          * 페이스북 로그인 성공에 따른 정보 업데이트
                                                          */
 //                                                        GlobalApplication.editor.putBoolean("Login_check", true);
+//                                                        Log.i("myTag cookies", cookies);
+//                                                        GlobalApplication.editor.putString("cookie", cookies);
+
                                                         GlobalApplication.editor.putString("method", "facebook");
                                                         GlobalApplication.editor.putString("nickname", name);
                                                         GlobalApplication.editor.putString("thumbnail", thumnailImg);

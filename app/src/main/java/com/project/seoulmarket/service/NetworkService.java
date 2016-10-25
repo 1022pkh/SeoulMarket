@@ -7,6 +7,7 @@ import com.project.seoulmarket.main.model.ResultData;
 import com.project.seoulmarket.main.model.ResultFilter;
 import com.project.seoulmarket.mypage.model.LikeResult;
 import com.project.seoulmarket.mypage.model.RecruitResult;
+import com.project.seoulmarket.mypage.model.ReportResult;
 import com.project.seoulmarket.splash.model.ConnectResult;
 
 import retrofit2.Call;
@@ -62,6 +63,10 @@ public interface NetworkService {
     //나의 공간 - 내가 좋아하는 마켓
     @GET("/me/market/good")
     Call<LikeResult> getMyLikeMarketData();
+
+    //나의 공간 - 내가 제보한 마켓
+    @GET("/me/market")
+    Call<ReportResult> getMyReportMarketData();
 
     //나의 공간 - 셀러모집
     @GET("/me/saller")

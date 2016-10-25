@@ -33,7 +33,7 @@ public class MyPageViewHolder extends RecyclerView.ViewHolder implements View.On
         mName = (TextView)itemView.findViewById(R.id.marketName);
         mLocation = (TextView)itemView.findViewById(R.id.marketLocation);
         mProgress = (TextView)itemView.findViewById(R.id.progressRate);
-        mDate = (TextView)itemView.findViewById(R.id.mDate);
+        mDate = (TextView)itemView.findViewById(R.id.marketDate);
         kakaoBtn = (TextView)itemView.findViewById(R.id.kakaoBtn);
 
         kakaoBtn.setOnClickListener(this);

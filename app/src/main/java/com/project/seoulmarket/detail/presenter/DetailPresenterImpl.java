@@ -99,7 +99,7 @@ public class DetailPresenterImpl implements DetailPresenter {
 
                     if (getDatas.message != null){
                         if(getDatas.message.equals("Success"))
-                            view.setLikeHeart();
+                            view.setDeleteHeart();
                     }
                 }
                 else

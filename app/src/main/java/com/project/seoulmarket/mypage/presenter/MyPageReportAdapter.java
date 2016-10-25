@@ -8,7 +8,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.project.seoulmarket.R;
-import com.project.seoulmarket.main.model.MarketData;
+import com.project.seoulmarket.mypage.model.ReportDetailData;
 import com.project.seoulmarket.mypage.view.MyPageView;
 
 import java.util.ArrayList;
@@ -19,13 +19,13 @@ import java.util.ArrayList;
 
 public class MyPageReportAdapter extends RecyclerView.Adapter<MyPageReportViewHolder> {
 
-    private ArrayList<MarketData> itemDatas;
+    private ArrayList<ReportDetailData> itemDatas;
     private View itemView;
     private ViewGroup parent;
 
     private MyPageView myView;
 
-    public MyPageReportAdapter(ArrayList<MarketData> itemDatas, MyPageView myView){
+    public MyPageReportAdapter(ArrayList<ReportDetailData> itemDatas, MyPageView myView){
         this.itemDatas = itemDatas;
         this.myView = myView;
     }
@@ -46,27 +46,28 @@ public class MyPageReportAdapter extends RecyclerView.Adapter<MyPageReportViewHo
     //ListView의 getView()랑 동일
     @Override
     public void onBindViewHolder(MyPageReportViewHolder holder, int position) {
-        /**
-         *
-         int id;
-         String name;
-         String location;
-         String imgUrl;
-         String date; // 날짜를 받아와서 진행상태를 표시하기로
-         */
-        holder.mId = itemDatas.get(position).id;
-        holder.mName.setText(itemDatas.get(position).name);
-        holder.mLocation.setText(itemDatas.get(position).location);
+        holder.mId = itemDatas.get(position).idx;
+        holder.mName.setText(itemDatas.get(position).marketname);
+        holder.mLocation.setText(itemDatas.get(position).address);
 
-        // TODO: 2016. 10. 5. 아직 데이터가 없으므로 임시로 넣어주기로.
-        holder.mProgress.setText(itemDatas.get(position).date);
+        int state = Integer.valueOf(itemDatas.get(position).state);
 
-        String tempUrl = "http://www.samsungfundblog.com/wp-content/uploads/2014/04/%ED%94%84%EB%A6%AC%EB%A7%88%EC%BC%93.jpg";
+        if( state > 0){
+            holder.mProgress.setText("D-" + state);
+        }
+        else if(state == 0){
+            holder.mProgress.setText("D-day");
+        }
+        else{
+            holder.mProgress.setText("만료");
+        }
+
+        holder.mDate.setText(itemDatas.get(position).market_startdate +"\n~"+itemDatas.get(position).market_enddate);
 
         ImageView imageView = (ImageView)itemView.findViewById(R.id.image);
 
         Glide.with(parent.getContext())
-                .load(tempUrl)
+                .load(itemDatas.get(position).image)
                 .into(imageView);
 
 

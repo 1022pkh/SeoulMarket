@@ -23,6 +23,7 @@ public class MyPageReportViewHolder extends RecyclerView.ViewHolder implements V
     public ImageView mImageView;
     public TextView kakaoBtn;
     public TextView deleteBtn;
+    public TextView mDate;
 
     public MyPageReportViewHolder(View itemView, MyPageView myView) {
         super(itemView);
@@ -35,6 +36,7 @@ public class MyPageReportViewHolder extends RecyclerView.ViewHolder implements V
         mProgress = (TextView)itemView.findViewById(R.id.marketDate);
         kakaoBtn = (TextView)itemView.findViewById(R.id.kakaoBtn);
         deleteBtn = (TextView)itemView.findViewById(R.id.deleteReport);
+        mDate = (TextView)itemView.findViewById(R.id.marketDate);
 
         kakaoBtn.setOnClickListener(this);
         deleteBtn.setOnClickListener(this);

@@ -29,10 +29,10 @@ import com.kakao.util.KakaoParameterException;
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.application.GlobalApplication;
 import com.project.seoulmarket.detail.DetailActivity;
-import com.project.seoulmarket.main.model.MarketData;
 import com.project.seoulmarket.main.view.MainTabActivity;
 import com.project.seoulmarket.mypage.model.LikeDetailData;
 import com.project.seoulmarket.mypage.model.RecruitDetailData;
+import com.project.seoulmarket.mypage.model.ReportDetailData;
 import com.project.seoulmarket.mypage.presenter.MyPageAdapter;
 import com.project.seoulmarket.mypage.presenter.MyPagePresenter;
 import com.project.seoulmarket.mypage.presenter.MyPagePresenterImpl;
@@ -59,7 +59,7 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
     LinearLayoutManager mLikeLayoutManager;
     MyPageReportAdapter mReportAdapter;
 
-    ArrayList<MarketData> reportItemDatas;
+    ArrayList<ReportDetailData> reportItemDatas;
     LinearLayoutManager mReportLayoutManager;
     MyPageRecruitAdapter mRecruitAdapter;
 
@@ -108,6 +108,12 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
 
         getSupportActionBar().setCustomView(mCustomView);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
+
+
+
+        likeItemDatas = new ArrayList<LikeDetailData>();
+        reportItemDatas = new ArrayList<ReportDetailData>();
+        recruitItemDatas = new ArrayList<RecruitDetailData>();
 
         /**
          * viewpager
@@ -178,6 +184,7 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
 
 
         presenter.getMyLikeMarketData();
+        presenter.getMyReportMarketData();
         presenter.getMyRecruitSellerData();
 
     }
@@ -206,8 +213,6 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
         mLikeLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(mLikeLayoutManager);
 
-        //TODO adpater 설정
-        likeItemDatas = new ArrayList<LikeDetailData>();
         mLikeAdapter = new MyPageAdapter(likeItemDatas, this);
         recyclerView.setAdapter(mLikeAdapter);
 
@@ -233,22 +238,11 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
         mReportLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(mReportLayoutManager);
 
-        //TODO adpater 설정
-        reportItemDatas = new ArrayList<MarketData>();
+
         mReportAdapter = new MyPageReportAdapter(reportItemDatas, this);
         recyclerView.setAdapter(mReportAdapter);
 
 
-        /**
-         * 임시로 데이터 삽입
-         * todo 서버에서 데이터 받아오기 ( 아직 서버 구축 전 )
-         */
-        //MarketData(int id, String name, String location, String imgUrl, String date)
-        reportItemDatas.add(new MarketData("12","프리마켓1","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
-        reportItemDatas.add(new MarketData("22","프리마켓2","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
-        reportItemDatas.add(new MarketData("323","프리마켓3","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
-        reportItemDatas.add(new MarketData("44","프리마켓4","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
-        reportItemDatas.add(new MarketData("51","프리마켓5","건대입구역","imgUrl","2016-10-04\n~ 2016-10-10"));
     }
 
     @Override
@@ -270,8 +264,6 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
         mRecruitLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(mRecruitLayoutManager);
 
-        //TODO adpater 설정
-        recruitItemDatas = new ArrayList<RecruitDetailData>();
         mRecruitAdapter = new MyPageRecruitAdapter(recruitItemDatas, this);
         recyclerView.setAdapter(mRecruitAdapter);
 
@@ -314,9 +306,14 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
     }
 
     @Override
+    public void setReportData(ArrayList<ReportDetailData> getDatas) {
+        reportItemDatas.addAll(getDatas);
+    }
+
+    @Override
     public void setRecruitData(ArrayList<RecruitDetailData> getDatas) {
         recruitItemDatas.addAll(getDatas);
-        mRecruitAdapter.notifyDataSetChanged();
+//        mRecruitAdapter.notifyDataSetChanged();
     }
 
     public void logoutEvent(){

@@ -4,6 +4,7 @@ import android.widget.LinearLayout;
 
 import com.project.seoulmarket.mypage.model.LikeDetailData;
 import com.project.seoulmarket.mypage.model.RecruitDetailData;
+import com.project.seoulmarket.mypage.model.ReportDetailData;
 
 import java.util.ArrayList;
 
@@ -17,6 +18,7 @@ public interface MyPageView {
     void makeInfoView(LinearLayout view);
     void dataNull();
     void setLikeData(ArrayList<LikeDetailData> getDatas);
+    void setReportData(ArrayList<ReportDetailData> getDatas);
     void setRecruitData(ArrayList<RecruitDetailData> getDatas);
 
     void moveDetailPage(String mId);

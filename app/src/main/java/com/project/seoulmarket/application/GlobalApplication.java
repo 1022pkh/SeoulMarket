@@ -12,8 +12,15 @@ import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.kakao.auth.KakaoSDK;
 import com.project.seoulmarket.login.adapter.KakaoSDKAdapter;
+import com.project.seoulmarket.login.cookies.PersistentCookieStore;
 import com.project.seoulmarket.service.NetworkService;
 
+import java.net.CookieManager;
+import java.net.CookiePolicy;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.JavaNetCookieJar;
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -33,10 +40,17 @@ public class GlobalApplication extends Application {
     private static String baseUrl = "http://52.78.94.112:3000";
     private NetworkService networkService;
 
+
+    PersistentCookieStore cookieStore;
+    CookieManager cookieManager;
+
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
+
+        cookieStore = new PersistentCookieStore(getApplicationContext());
+        cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
 
         //facebook
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -61,10 +75,19 @@ public class GlobalApplication extends Application {
 
     public void buildService() {
 
+
+        OkHttpClient client =  new OkHttpClient().newBuilder()
+                .connectTimeout(7676, TimeUnit.SECONDS)
+                .writeTimeout(7676, TimeUnit.SECONDS)
+                .readTimeout(7676, TimeUnit.SECONDS)
+                .cookieJar(new JavaNetCookieJar(cookieManager))
+                .build();
+
         Retrofit.Builder builder = new Retrofit.Builder();
         Retrofit retrofit = builder
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
                 .build();
 
         networkService = retrofit.create(NetworkService.class);
