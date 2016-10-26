@@ -8,6 +8,7 @@ import com.project.seoulmarket.main.model.ResultFilter;
 import com.project.seoulmarket.mypage.model.LikeResult;
 import com.project.seoulmarket.mypage.model.RecruitResult;
 import com.project.seoulmarket.mypage.model.ReportResult;
+import com.project.seoulmarket.recruit.model.ResultRecruitDetail;
 import com.project.seoulmarket.splash.model.ConnectResult;
 
 import retrofit2.Call;
@@ -40,6 +41,10 @@ public interface NetworkService {
     @GET("/me")
     Call<ConnectResult> nickNameDoubleCheck(@Query("nickname") String nickname);
 
+    //회원가입 -- 닉네임
+    @PUT("/me")
+    Call<ConnectResult> joinPutNickName(@Query("nickname") String nickname);
+
     //메인페이지 데이터
     @GET("/main")
     Call<ResultData> getMainData(@Query("currentPage") String currentPage);
@@ -47,6 +52,10 @@ public interface NetworkService {
     //메인페이지  - 이름 검색 데이터
     @GET("/main/searchname/{name}")
     Call<ResultFilter> getNameFilterData(@Path("name") String name, @Query("currentPage") String currentPage);
+
+    //메인페이지 - 위치 검색
+    @GET("/main/search/{address}/{startdate}/{enddate}")
+    Call<ResultFilter> getLocationFilterData(@Path("address") String address,@Path("startdate") String startdate,@Path("enddate") String enddate,@Query("currentPage") String currentPage);
 
     //상세페이지 데이터
     @GET("/main/{id}")
@@ -71,5 +80,13 @@ public interface NetworkService {
     //나의 공간 - 셀러모집
     @GET("/me/saller")
     Call<RecruitResult> getMyRecruitSellerData();
+
+    //셀러모집 리스트
+    @GET("/me/market/saller")
+    Call<RecruitResult> getRecruitSellerListData(@Query("currentPage") String currentPage);
+
+    //셀러모집 상세보기
+    @GET("/me/market/saller/{id}")
+    Call<ResultRecruitDetail> getRecrutitDetailData(@Path("id") String id);
 
 }

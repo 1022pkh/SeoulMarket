@@ -20,7 +20,10 @@ import android.widget.TextView;
 
 import com.emilsjolander.components.StickyScrollViewItems.StickyScrollView;
 import com.project.seoulmarket.R;
-import com.project.seoulmarket.recruit.model.RecruitReviewDetailData;
+import com.project.seoulmarket.recruit.model.DetailData;
+import com.project.seoulmarket.recruit.model.Review;
+import com.project.seoulmarket.recruit.presenter.RecruitDetailPresenter;
+import com.project.seoulmarket.recruit.presenter.RecruitDetailPresenterImpl;
 import com.project.seoulmarket.recruit.presenter.RecruitReviewAdapter;
 
 import java.text.SimpleDateFormat;
@@ -31,7 +34,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class RecruitDetailActivity extends AppCompatActivity {
+public class RecruitDetailActivity extends AppCompatActivity implements RecruitDetailView{
 
     @BindView(R.id.reviewAddBtn)
     Button reviewAddBtn;
@@ -43,12 +46,21 @@ public class RecruitDetailActivity extends AppCompatActivity {
     TextView reviewTitle;
     @BindView(R.id.sticky_scroll)
     StickyScrollView sticky_scroll;
+    @BindView(R.id.inputWriter)
+    TextView inputWriter;
+    @BindView(R.id.inputwriteDate)
+    TextView inputwriteDate;
+    @BindView(R.id.reviewContent)
+    TextView reviewContent;
+
 
     InputMethodManager imm;
     RecruitReviewAdapter adapter;
-    ArrayList<RecruitReviewDetailData> reviewDatas;
+    ArrayList<Review> reviewDatas;
 
     String nickname="pkh";
+
+    RecruitDetailPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,75 +107,24 @@ public class RecruitDetailActivity extends AppCompatActivity {
          *
          */
 
+        presenter = new RecruitDetailPresenterImpl(this);
+
         Intent intent = getIntent();
         String recruitId = intent.getExtras().getString("recruitId");
 
         Log.i("myTag",recruitId);
 
+        presenter.getDetailData(recruitId);
 
         imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
 
+        reviewDatas = new ArrayList<Review>();
 
-        reviewDatas = new ArrayList<RecruitReviewDetailData>();
-
-        RecruitReviewDetailData data = new RecruitReviewDetailData("박경현", "2016.10.22 17:11","댓글1");
-        reviewDatas.add(data);
-        data = new RecruitReviewDetailData("박경현", "2016.10.22 17:11","댓글1");
-        reviewDatas.add(data);
-        data = new RecruitReviewDetailData("박경현", "2016.10.22 17:11","댓글1");
-        reviewDatas.add(data);
-        data = new RecruitReviewDetailData("박경현", "2016.10.22 17:11","댓글1");
-        reviewDatas.add(data);
-        data = new RecruitReviewDetailData("박경현", "2016.10.22 17:11","댓글1");
-        reviewDatas.add(data);
-        data = new RecruitReviewDetailData("박경현", "2016.10.22 17:11","댓글1");
-        reviewDatas.add(data);
-        data = new RecruitReviewDetailData("박경현", "2016.10.22 17:11","댓글1");
-        reviewDatas.add(data);
-        data = new RecruitReviewDetailData("박경현", "2016.10.22 17:11","댓글1");
-        reviewDatas.add(data);
-
-//
-//        ListView listView = (ListView)findViewById(R.id.reviewList);
-//        adapter = new RecruitReviewAdapter(reviewDatas,getApplicationContext());
-//        listView.setAdapter(adapter);
-
-        /**
-         * 미리 정보를 받아와서 객체로 저장해놓고 있어야함!
-         */
-
-        //부모 뷰
-        LinearLayout listview = (LinearLayout)findViewById(R.id.reviewList);
-
-        LayoutInflater child;
-        LinearLayout childLayout;
-
-        TextView reviewNickname;
-        TextView reviewContent;
-        TextView reviewDate;
-
-        for(int i=0; i<reviewDatas.size();i++){
-
-            child = (LayoutInflater) getSystemService (Context.LAYOUT_INFLATER_SERVICE);
-            childLayout = (LinearLayout) child.inflate(R.layout.review_detail_list_review_item, null);
-
-            reviewNickname =  (TextView)childLayout.findViewById(R.id.reviewNickname);
-            reviewDate = (TextView)childLayout.findViewById(R.id.reviewDate);
-            reviewContent =  (TextView)childLayout.findViewById(R.id.reviewContent);
-
-            reviewNickname.setText(reviewDatas.get(i).name);
-            reviewDate.setText(reviewDatas.get(i).date);
-            reviewContent.setText(reviewDatas.get(i).content);
-
-            listview.addView(childLayout);
-
-        }
 
     }
 
     @OnClick(R.id.reviewAddBtn)
     public void addReview(){
-
 
         if(inputReviewAddEdit.getText().length() != 0) {
 
@@ -203,6 +164,47 @@ public class RecruitDetailActivity extends AppCompatActivity {
             imm.hideSoftInputFromWindow(inputReviewAddEdit.getWindowToken(), 0);
 
             sticky_scroll.fullScroll(ScrollView.FOCUS_DOWN);
+        }
+    }
+
+    @Override
+    public void setRecruitDetailData(DetailData getData) {
+        reviewTitle.setText(getData.recruitment_title);
+        inputWriter.setText(getData.user_nickname);
+        inputwriteDate.setText(getData.recruitment_uploadtime);
+        reviewContent.setText(getData.recruitment_contents);
+
+        reviewDatas.addAll(getData.review);
+
+        /**
+         * 미리 정보를 받아와서 객체로 저장해놓고 있어야함!
+         */
+
+        //부모 뷰
+        LinearLayout listview = (LinearLayout)findViewById(R.id.reviewList);
+
+        LayoutInflater child;
+        LinearLayout childLayout;
+
+        TextView reviewNickname;
+        TextView reviewContent;
+        TextView reviewDate;
+
+        for(int i=0; i<reviewDatas.size();i++){
+
+            child = (LayoutInflater) getSystemService (Context.LAYOUT_INFLATER_SERVICE);
+            childLayout = (LinearLayout) child.inflate(R.layout.review_detail_list_review_item, null);
+
+            reviewNickname =  (TextView)childLayout.findViewById(R.id.reviewNickname);
+            reviewDate = (TextView)childLayout.findViewById(R.id.reviewDate);
+            reviewContent =  (TextView)childLayout.findViewById(R.id.reviewContent);
+
+            reviewNickname.setText(reviewDatas.get(i).user_nickname);
+            reviewDate.setText(reviewDatas.get(i).reply_uploadtime);
+            reviewContent.setText(reviewDatas.get(i).reply_contents);
+
+            listview.addView(childLayout);
+
         }
     }
 }

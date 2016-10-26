@@ -31,6 +31,7 @@ import com.project.seoulmarket.application.GlobalApplication;
 import com.project.seoulmarket.main.view.MainTabActivity;
 import com.project.seoulmarket.service.NetworkService;
 import com.project.seoulmarket.splash.model.ConnectResult;
+import com.project.seoulmarket.splash.model.MessageResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -321,18 +322,48 @@ public class JoinActivity extends AppCompatActivity {
         // TODO: 2016. 10. 18. 서버로 닉네임 업데이트 해줘야 함.
 
         if(nickNameCheck){
-            GlobalApplication.editor.putBoolean("Login_check", true);
-            GlobalApplication.editor.putString("nickname", String.valueOf(nickNameArea.getText()));
-            GlobalApplication.editor.commit();
 
-            Toast.makeText(getApplicationContext(),"회원가입 성공!",Toast.LENGTH_SHORT).show();
+            Call<ConnectResult> requestJoin = networkService.joinPutNickName(nickNameArea.getText().toString());
+            requestJoin.enqueue(new Callback<ConnectResult>() {
+                @Override
+                public void onResponse(Call<ConnectResult> call, Response<ConnectResult> response) {
+                    if(response.isSuccessful()){
 
-            Intent intent = new Intent(this, MainTabActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-            finish();
+                        Log.i("myTag","nickname put");
+
+                        MessageResult data = response.body().result;
+
+                        if(data.message.equals("Success")){
+                            GlobalApplication.editor.putBoolean("Login_check", true);
+                            GlobalApplication.editor.putString("nickname", String.valueOf(nickNameArea.getText()));
+                            GlobalApplication.editor.commit();
+
+                            Toast.makeText(getApplicationContext(),"회원가입 성공!",Toast.LENGTH_SHORT).show();
+
+                            Intent intent = new Intent(JoinActivity.this, MainTabActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            startActivity(intent);
+                            finish();
+                        }
+
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(),"인터넷 상태를 확인해주세요.",Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ConnectResult> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(),"인터넷 상태를 확인해주세요.",Toast.LENGTH_SHORT).show();
+                    Log.i("myTag",t.toString());
+
+                }
+            });
+
+
+
         }
         else{
             Toast.makeText(getApplicationContext(),"닉네임 중복체크를 먼저 해주세요.",Toast.LENGTH_SHORT).show();

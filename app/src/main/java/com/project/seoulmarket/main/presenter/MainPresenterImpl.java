@@ -29,7 +29,7 @@ public class MainPresenterImpl implements MainPresenter {
     }
 
     @Override
-    public void requestMainData(String pageNum) {
+    public void requestMainData(final String pageNum) {
 
         Call<ResultData> getFirstData = networkService.getMainData(pageNum);
         getFirstData.enqueue(new Callback<ResultData>() {
@@ -43,7 +43,12 @@ public class MainPresenterImpl implements MainPresenter {
                     if(getDatas.size() > 0 )
                         view.firstSetData(getDatas);
                     else
-                        view.DataNull();
+                    {
+                        if (Integer.valueOf(pageNum) > 0)
+                            ;
+                        else
+                            view.DataNull();
+                    }
                 }
 
             }
@@ -57,7 +62,7 @@ public class MainPresenterImpl implements MainPresenter {
     }
 
     @Override
-    public void requestNameFilterData(final String mName, String pageNum) {
+    public void requestNameFilterData(final String mName, final String pageNum) {
         Call<ResultFilter> getFilterData = networkService.getNameFilterData(mName,pageNum);
         getFilterData.enqueue(new Callback<ResultFilter>() {
             @Override
@@ -68,8 +73,73 @@ public class MainPresenterImpl implements MainPresenter {
 
                     if(getDatas.size() > 0 )
                         view.filterSetData(mName,getDatas);
+                    else{
+                        if (Integer.valueOf(pageNum) > 0)
+                            ;
+                        else
+                            view.FilterDataNull();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResultFilter> call, Throwable t) {
+
+            }
+        });
+    }
+
+    @Override
+    public void requestLocationFilterData(final String address, final String startDate, final String endDate, final String pageNum) {
+
+        Call<ResultFilter> getFilterData = networkService.getLocationFilterData(address,startDate,endDate,pageNum);
+        getFilterData.enqueue(new Callback<ResultFilter>() {
+            @Override
+            public void onResponse(Call<ResultFilter> call, Response<ResultFilter> response) {
+
+                if(response.isSuccessful()){
+                    ArrayList<MarketFilterData> getDatas = response.body().result;
+                    if(getDatas.size() > 0)
+                        view.filterSetData(address,startDate,endDate,getDatas);
                     else
-                        view.DataNull();
+                    {
+                        if (Integer.valueOf(pageNum) > 0)
+                            ;
+                        else
+                            view.FilterDataNull();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResultFilter> call, Throwable t) {
+
+            }
+        });
+    }
+
+    @Override
+    public void requestDateFilterData(final String address, final String startDate, final String endDate, final String pageNum) {
+        Call<ResultFilter> getFilterData = networkService.getLocationFilterData(address,startDate,endDate,pageNum);
+        getFilterData.enqueue(new Callback<ResultFilter>() {
+            @Override
+            public void onResponse(Call<ResultFilter> call, Response<ResultFilter> response) {
+
+                if(response.isSuccessful()){
+                    ArrayList<MarketFilterData> getDatas = response.body().result;
+                    if(getDatas.size() > 0)
+                        view.filterSetData(address,startDate,endDate,getDatas);
+                    else {
+                        if (Integer.valueOf(pageNum) > 0)
+                            ;
+                        else
+                        {
+                            if (Integer.valueOf(pageNum) > 0)
+                                ;
+                            else
+                                view.FilterDataNull();
+                        }
+                    }
                 }
             }
 

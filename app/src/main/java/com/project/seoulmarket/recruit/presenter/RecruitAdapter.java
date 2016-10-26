@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.project.seoulmarket.R;
-import com.project.seoulmarket.recruit.model.RecruitData;
+import com.project.seoulmarket.mypage.model.RecruitDetailData;
 
 import java.util.ArrayList;
 
@@ -20,16 +20,16 @@ public class RecruitAdapter extends BaseAdapter {
     // 아무것도 없을 때 빨간 줄
     // 기본적으로 무조건 적어줘야 하는 Override 메소드가 있기 때문 !!
 
-    private ArrayList<RecruitData> itemDatas = null;
+    private ArrayList<RecruitDetailData> itemDatas = null;
     private LayoutInflater layoutInflater = null;
 
     //생성자
-    public RecruitAdapter(ArrayList<RecruitData> itemDatas, Context ctx){
+    public RecruitAdapter(ArrayList<RecruitDetailData> itemDatas, Context ctx){
         this.itemDatas = itemDatas;
         layoutInflater = (LayoutInflater)ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public void setItemDatas(ArrayList<RecruitData> itemDatas){
+    public void setItemDatas(ArrayList<RecruitDetailData> itemDatas){
         this.itemDatas = itemDatas;
         this.notifyDataSetChanged();
     }
@@ -64,18 +64,18 @@ public class RecruitAdapter extends BaseAdapter {
 
             viewHolder.Textview_nickname = (TextView)convertView.findViewById(R.id.reviewNickname);
             viewHolder.Textview_content = (TextView)convertView.findViewById(R.id.reviewContent);
-            viewHolder.Textview_item = (TextView)convertView.findViewById(R.id.reviewDate);
+            viewHolder.Textview_date = (TextView)convertView.findViewById(R.id.reviewDate);
 
             convertView.setTag(viewHolder);
         }else{
             viewHolder = (ViewHolder)convertView.getTag();
         }
 
-        RecruitData itemData = itemDatas.get(position);
+        RecruitDetailData itemData = itemDatas.get(position);
 
-        viewHolder.Textview_nickname.setText(itemData.nickName);
-        viewHolder.Textview_content.setText(itemData.content);
-        viewHolder.Textview_item.setText(itemData.date);
+        viewHolder.Textview_nickname.setText(itemData.user_nickname);
+        viewHolder.Textview_content.setText(itemData.recruitment_title);
+        viewHolder.Textview_date.setText(itemData.recruitment_uploadtime);
 
         return convertView;
     }
@@ -83,7 +83,7 @@ public class RecruitAdapter extends BaseAdapter {
     public class ViewHolder {
         TextView Textview_nickname;
         TextView Textview_content;
-        TextView Textview_item;
+        TextView Textview_date;
     }
 
 }

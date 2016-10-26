@@ -54,6 +54,10 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
     TextView middleUserName;
     @BindView(R.id.middleTitle)
     TextView middleTitle;
+    @BindView(R.id.findLocationBtn)
+    TextView findLocationBtn;
+    @BindView(R.id.findDateBtn)
+    TextView findDateBtn;
 
     RecyclerView.Adapter mAdapter;
     ArrayList<MarketFirstData> itemDatas;
@@ -74,9 +78,9 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
     private long backPressedTime = 0;
 
     //요청한 검색 값
-    String chooseAddress = "";
-    String startDate = "";
-    String endDate = "";
+    String chooseAddress = "*";
+    String chooseStartDate = "*";
+    String chooseEndDate = "*";
 
     //페이지 카운터
     int currentPage = 0;
@@ -314,15 +318,24 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
     private View.OnClickListener getLocationEvent = new View.OnClickListener() {
         public void onClick(View v) {
 
-            chooseAddress = dialog_location.giveAddress();
-//
-            if(chooseAddress == "null") {
+            if(dialog_location.giveAddress() == "null") {
                 Toast.makeText(getApplicationContext(),"지역을 선택해주세요.",Toast.LENGTH_SHORT).show();
             }
             else {
+                chooseAddress = dialog_location.giveAddress();
+//                Toast.makeText(getApplicationContext(),chooseAddress,Toast.LENGTH_SHORT).show();
 
-                Toast.makeText(getApplicationContext(),chooseAddress,Toast.LENGTH_SHORT).show();
+                findLocationBtn.setText(chooseAddress);
+                middleTitle.setText("검색된 마켓");
+
                 dialog_location.dismiss();
+
+                setFilterPage = true;
+                currentPage = 0;
+                recyclerView.removeAllViews();
+
+                filterDatas.clear();
+                presenter.requestLocationFilterData(chooseAddress,chooseStartDate,chooseEndDate,String.valueOf(currentPage++));
 
             }
         }
@@ -349,11 +362,27 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
     private View.OnClickListener getDateEvent = new View.OnClickListener() {
         public void onClick(View v) {
 
-            startDate = dialog_date.getStartDate();
-            endDate = dialog_date.getEndDate();
+            if(dialog_date.getStartDate() == null || dialog_date.getEndDate() == null ){
+                Toast.makeText(getApplicationContext(),"기간을 선택해주세요.",Toast.LENGTH_SHORT).show();
+            }
+            else{
+                chooseStartDate = dialog_date.getStartDate();
+                chooseEndDate = dialog_date.getEndDate();
 
-            Toast.makeText(getApplicationContext(),startDate + " ~ "+endDate,Toast.LENGTH_SHORT).show();
-            dialog_date.dismiss();
+                findDateBtn.setText(chooseStartDate+"~"+chooseEndDate);
+                middleTitle.setText("검색된 마켓");
+
+//                Toast.makeText(getApplicationContext(),chooseStartDate + " ~ "+chooseEndDate,Toast.LENGTH_SHORT).show();
+                dialog_date.dismiss();
+
+                setFilterPage = true;
+                currentPage = 0;
+                recyclerView.removeAllViews();
+
+                filterDatas.clear();
+                presenter.requestDateFilterData(chooseAddress,chooseStartDate,chooseEndDate,String.valueOf(currentPage++));
+
+            }
 
         }
 
@@ -368,10 +397,15 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
             else{
                 dialog_name.dismiss();
 
+                middleUserName.setText(dialog_name.getName());
+                middleTitle.setText(" 으로 검색된 마켓");
+
                 setFilterPage = true;
 
                 currentPage = 0;
                 recyclerView.removeAllViews();
+
+                filterDatas.clear();
                 presenter.requestNameFilterData(dialog_name.getName(), String.valueOf(currentPage++));
 
             }
@@ -389,6 +423,14 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
         if(setFilterPage == true){
             setFilterPage = false;
             currentPage = 0;
+
+            findLocationBtn.setText("위치 검색");
+            findDateBtn.setText("날짜 검색");
+            middleUserName.setText("");
+            middleTitle.setText("인기 마켓 순위");
+            chooseAddress = "*";
+            chooseStartDate ="*";
+            chooseEndDate = "*";
 
             mAdapter = new CardViewAdapter(itemDatas,this);
             recyclerView.setAdapter(mAdapter);
@@ -416,6 +458,8 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
                 }
             });
 
+
+            itemDatas.clear();
             presenter.requestMainData(String.valueOf(currentPage++));
 
         }
@@ -463,6 +507,15 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
     }
 
     @Override
+    public void FilterDataNull() {
+        Toast.makeText(getApplicationContext(),"검색 결과가 없습니다.",Toast.LENGTH_SHORT).show();
+        recyclerView.removeAllViews();
+
+        filterAdapter = new FilterViewAdapter(filterDatas, this);
+        recyclerView.setAdapter(filterAdapter);
+    }
+
+    @Override
     public void moveDetailPage(String id) {
         Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
         intent.putExtra("market_id",id);
@@ -479,11 +532,6 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
 
     @Override
     public void filterSetData(String fName, ArrayList<MarketFilterData> getDatas) {
-
-
-        middleUserName.setText(fName);
-        middleTitle.setText(" 으로 검색된 마켓");
-
 
         filterDatas.addAll(getDatas);
 
@@ -505,6 +553,28 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
             }
         });
 
+    }
+
+    @Override
+    public void filterSetData(final String address, final String startDate, final String endDate, ArrayList<MarketFilterData> getDatas) {
+
+        filterDatas.addAll(getDatas);
+
+        filterAdapter = new FilterViewAdapter(filterDatas, this);
+        recyclerView.setAdapter(filterAdapter);
+
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int scrollOffset = recyclerView.computeVerticalScrollOffset();
+                int scrollExtend = recyclerView.computeVerticalScrollExtent();
+                int scrollRange = recyclerView.computeVerticalScrollRange();
+
+                if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
+                    presenter.requestLocationFilterData(chooseAddress,chooseStartDate,chooseEndDate,String.valueOf(currentPage++));
+                }
+            }
+        });
     }
 
 }
