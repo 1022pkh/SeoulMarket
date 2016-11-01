@@ -54,6 +54,11 @@ public class DialogDate extends Dialog implements com.andexert.calendarlistview.
         this.sendPersonEvent = BtnEvent;
     }
 
+    public void onBackPressed() {
+//        Log.i("myTag","cancel");
+        mainView.cancelDateDialog();
+    }
+
     @Override
     public int getMaxYear()
     {

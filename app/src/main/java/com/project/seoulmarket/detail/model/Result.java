@@ -11,6 +11,7 @@ public class Result {
     public String market_host;
     public String market_address;
     public String market_tag;
+    public String market_tell;
     public String market_state;
     public String market_latitude;
     public String market_longitude;

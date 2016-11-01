@@ -43,4 +43,8 @@ public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickL
 
         myView.moveDetailPage(mId);
     }
+
+    public ImageView getImageView(){
+        return mImageView;
+    }
 }

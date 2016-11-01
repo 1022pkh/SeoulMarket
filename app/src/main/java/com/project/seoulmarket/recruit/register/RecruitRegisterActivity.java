@@ -1,10 +1,12 @@
 package com.project.seoulmarket.recruit.register;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -24,6 +26,9 @@ import android.widget.Toast;
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.dialog.DialogCancel;
 import com.project.seoulmarket.dialog.DialogRegister;
+import com.project.seoulmarket.recruit.presenter.RecruitRegisterPresenter;
+import com.project.seoulmarket.recruit.presenter.RecruitRegisterPresenterImpl;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -32,7 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class RecruitRegisterActivity extends AppCompatActivity {
+public class RecruitRegisterActivity extends AppCompatActivity implements RecruitRegisterView{
 
     @BindView(R.id.inputTitleEdit)
     EditText inputTitleEdit;
@@ -43,6 +48,7 @@ public class RecruitRegisterActivity extends AppCompatActivity {
 
     DialogCancel dialogCancel;
     DialogRegister dialog_Register;
+    ProgressDialog asyncDialog;
 
     Boolean emptyTitleCheck = false;
     Boolean emptyContentCheck = false;
@@ -50,12 +56,18 @@ public class RecruitRegisterActivity extends AppCompatActivity {
     String currentDate = "";
     final int REQ_CODE_SELECT_IMAGE=100;
 
+    String imgUrl="";
+
+    RecruitRegisterPresenter presenter;
+
+    Intent data;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recruit_register);
         if (Build.VERSION.SDK_INT >= 21) {   //상태바 색
-            getWindow().setStatusBarColor(Color.parseColor("#F6D03F"));
+            getWindow().setStatusBarColor(Color.parseColor("#FFA700"));
         }
 
         ButterKnife.bind(this);
@@ -76,6 +88,11 @@ public class RecruitRegisterActivity extends AppCompatActivity {
         LayoutInflater mInflater = LayoutInflater.from(this);
         View mCustomView = mInflater.inflate(R.layout.actionbar_close_layout, null);
 
+
+        TextView actionbarTitle = (TextView)mCustomView.findViewById(R.id.mytext);
+        actionbarTitle.setText("셀러 모집");
+        actionbarTitle.setTypeface(Typeface.createFromAsset(getAssets(),"OTF_B.otf"));
+
         ImageView closeBtn = (ImageView) mCustomView.findViewById(R.id.closeBtn);
 
         closeBtn.setOnClickListener(new View.OnClickListener() {
@@ -93,6 +110,9 @@ public class RecruitRegisterActivity extends AppCompatActivity {
          *
          */
 
+        presenter = new RecruitRegisterPresenterImpl(this);
+
+
         // 시스템으로부터 현재시간(ms) 가져오기
         long now = System.currentTimeMillis();
         // Data 객체에 시간을 저장한다.
@@ -101,6 +121,11 @@ public class RecruitRegisterActivity extends AppCompatActivity {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
         currentDate = dateFormat.format(date);
 
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
     }
 
     @OnClick(R.id.getImageBtn)
@@ -124,22 +149,21 @@ public class RecruitRegisterActivity extends AppCompatActivity {
                     //Uri에서 이미지 이름을 얻어온다.
                     String name_Str = getImageNameToUri(data.getData());
 
+                    this.data = data;
+
                     Log.i("myTag",name_Str);
 
                     imgName.setText(name_Str);
-                    //이미지 데이터를 비트맵으로 받아온다.
-//                    Bitmap image_bitmap 	= MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-//                    ImageView image = (ImageView)findViewById(R.id.imageView1);
-
-                    //배치해놓은 ImageView에 set
-//                    image.setImageBitmap(image_bitmap);
-
-                    //Toast.makeText(getBaseContext(), "name_Str : "+name_Str , Toast.LENGTH_SHORT).show();
 
                 }
-//                catch (FileNotFoundException e) { 		e.printStackTrace(); 			}
-//                catch (IOException e)                 {		e.printStackTrace(); 			}
-                catch (Exception e)		         {             e.printStackTrace();			}
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            else{
+                imgUrl = "";
+                imgName.setText("");
             }
         }
     }
@@ -156,6 +180,7 @@ public class RecruitRegisterActivity extends AppCompatActivity {
         String imgPath = cursor.getString(column_index);
         String imgName = imgPath.substring(imgPath.lastIndexOf("/")+1);
 
+        imgUrl = imgPath;
 
         return imgName;
     }
@@ -163,7 +188,11 @@ public class RecruitRegisterActivity extends AppCompatActivity {
 
     @OnClick(R.id.inputContentArea)
     public void focusContentArea(){
-        inputContentEdit.hasFocus();
+        Log.i("myTag","click");
+
+        inputContentEdit.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
     @OnClick(R.id.completeRecruit)
@@ -194,11 +223,19 @@ public class RecruitRegisterActivity extends AppCompatActivity {
     private View.OnClickListener registerEvent = new View.OnClickListener() {
         public void onClick(View v) {
             dialog_Register.dismiss();
-            Toast.makeText(getApplicationContext(),"셀러 모집 등록 완료!",Toast.LENGTH_SHORT).show();
-            /**
-             * 성공시 돌아간다.
-             */
-            finish();
+//            Toast.makeText(getApplicationContext(),"셀러 모집 등록 완료!",Toast.LENGTH_SHORT).show();
+
+            String title = inputTitleEdit.getText().toString();
+            String content = inputContentEdit.getText().toString();
+
+            asyncDialog = new ProgressDialog(RecruitRegisterActivity.this);
+            asyncDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            asyncDialog.setMessage("등록 중 입니다..");
+            asyncDialog.setCanceledOnTouchOutside(false);
+            // show dialog
+            asyncDialog.show();
+
+            presenter.addRecruit(imgUrl,title,content,data);
         }
 
     };
@@ -268,4 +305,21 @@ public class RecruitRegisterActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void successMsg() {
+        Toast.makeText(getApplicationContext(),"셀러 모집 등록 완료",Toast.LENGTH_SHORT).show();
+        asyncDialog.dismiss();
+        finish();
+    }
+
+    @Override
+    public void errorMsg() {
+        Toast.makeText(getApplicationContext(),R.string.error_network,Toast.LENGTH_SHORT).show();
+        asyncDialog.dismiss();
+    }
+
+    @Override
+    public Context getNowContext() {
+        return getApplicationContext();
+}
 }

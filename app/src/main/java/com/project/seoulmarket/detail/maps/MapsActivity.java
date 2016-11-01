@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.detail.model.MarkerItem;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,9 +63,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         marketAddress.setText(intent.getExtras().getString("address"));
 
 
-        lat = Double.valueOf( intent.getExtras().getString("latitude"));
-        log = Double.valueOf(intent.getExtras().getString("longitude"));
-
+        lat = Double.valueOf(intent.getExtras().getString("longitude"));
+        log = Double.valueOf( intent.getExtras().getString("latitude"));
 
     }
 
@@ -92,6 +92,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         getSampleMarkerItems();
 
     }
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
+    }
 
     @OnClick(R.id.mapClose)
     public void closeMap(){
@@ -107,7 +111,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void getSampleMarkerItems() {
 
         //임의로 위치 4개 지정
-        MarkerItem markerItem = new MarkerItem(lat, log, R.drawable.ic_pin_01);
+        MarkerItem markerItem = new MarkerItem(lat, log, R.drawable.ic_picker);
         addMarker(markerItem, false);
 
     }
@@ -118,9 +122,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng position = new LatLng(markerItem.getLat(), markerItem.getLon());
 
         if (isSelectedMarker) {
-            iv_marker.setBackgroundResource(R.drawable.ic_pin_01);
+            iv_marker.setBackgroundResource(R.drawable.ic_picker);
         } else {
-            iv_marker.setBackgroundResource(R.drawable.ic_pin_01);
+            iv_marker.setBackgroundResource(R.drawable.ic_picker);
         }
 
         MarkerOptions markerOptions = new MarkerOptions();

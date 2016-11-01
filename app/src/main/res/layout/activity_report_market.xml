@@ -3,122 +3,169 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.project.seoulmarket.report.view.ReportMarketActivity"
-    android:padding="10dp"
     android:orientation="vertical"
     android:weightSum="10"
+    android:background="#ffffff"
     android:focusable="true"
     android:focusableInTouchMode="true">
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.5"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            android:text="*마켓 이름 : "/>
-
-        <EditText
-            android:id="@+id/inputMarketName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            android:singleLine="true"
-            android:maxLength="15"/>
-
-    </LinearLayout>
-
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#999999"/>
+        android:background="#dfdfdf"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.5"
-        android:paddingTop="5dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            android:text="주최 기관 : "/>
-
-        <EditText
-            android:id="@+id/inputMarketGroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            android:singleLine="true"
-            android:maxLength="15"/>
-
-    </LinearLayout>
-
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#999999"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="6"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="5dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            android:text="*마켓 설명 : "/>
+        android:background="@drawable/recruit_content_background"
+        android:layout_margin="20dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
 
         <LinearLayout
-            android:id="@+id/inputMarketContentArea"
+            android:layout_marginTop="32dp"
+            android:weightSum="10"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp">
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:textColor="@color/mainPupple"
+                android:textSize="15sp"
+                android:gravity="right"
+                android:layout_marginRight="10dp"
+                app:font="Bold"
+                android:text="* 마켓 이름"/>
 
             <EditText
-                android:id="@+id/inputMarketContent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:id="@+id/inputMarketName"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="7"
+                android:layout_marginRight="20dp"
                 android:textColor="#000000"
-                android:textSize="18sp"
+                android:background="@drawable/content_background"
+                android:textSize="14sp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:singleLine="true"
                 android:maxLength="15"/>
 
         </LinearLayout>
 
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center">
-
-        <Button
-            android:id="@+id/nextBtn"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_marginTop="30dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="다음"
-            android:textSize="15sp"
-            android:textColor="#000000"/>
+            android:weightSum="10">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:textColor="@color/mainPupple"
+                android:textSize="15sp"
+                android:gravity="right"
+                android:layout_marginRight="10dp"
+                app:font="Bold"
+                android:text="주최 기관"/>
+
+            <EditText
+                android:id="@+id/inputMarketGroup"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="7"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:layout_marginRight="20dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:singleLine="true"
+                android:maxLength="15"
+                android:background="@drawable/content_background"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:gravity="right"
+                    android:textColor="@color/mainPupple"
+                    android:textSize="15sp"
+                    app:font="Bold"
+                    android:text="* 마켓 설명"/>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_marginTop="14dp"
+                android:id="@+id/inputMarketContentArea"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="214dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/content_background"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp">
+
+                <EditText
+                    android:id="@+id/inputMarketContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:textColor="#000000"
+                    android:hint="100자 이내"
+                    android:padding="5dp"
+                    android:textSize="14sp"
+                    android:maxLength="100"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/nextBtn"
+                android:layout_width="110dp"
+                android:layout_height="36dp"
+                android:layout_marginBottom="24dp"
+                android:layout_marginTop="24dp"
+                android:text="다음"
+                android:background="@drawable/dialog_location_background"
+                android:textSize="16sp"
+                app:font="Bold"
+                android:textColor="#ffffff"/>
+        </LinearLayout>
+
+
     </LinearLayout>
 
 

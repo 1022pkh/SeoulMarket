@@ -7,4 +7,6 @@ import com.project.seoulmarket.recruit.model.DetailData;
  */
 public interface RecruitDetailView {
     void setRecruitDetailData(DetailData getData);
+    void addReviewArea();
+    void NetworkError();
 }

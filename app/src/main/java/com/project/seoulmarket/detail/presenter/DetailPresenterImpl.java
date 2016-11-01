@@ -27,15 +27,18 @@ public class DetailPresenterImpl implements DetailPresenter {
     }
 
     @Override
-    public void getDetail(String id) {
-        Call<DetailResultData> detailData = networkService.getDetailData(id);
+    public void getDetail(String id, final String pageNum) {
+        Call<DetailResultData> detailData = networkService.getDetailData(id,pageNum);
         detailData.enqueue(new Callback<DetailResultData>() {
             @Override
             public void onResponse(Call<DetailResultData> call, Response<DetailResultData> response) {
                 if(response.isSuccessful()){
                     Result getDatas = response.body().result;
-                    view.setDetailData(getDatas);
-//                    Log.i("myTag", String.valueOf(getDatas.image.get(i).img_url));
+//                    Log.i("myTag", String.valueOf(getDatas.market_name));
+                    if(Integer.valueOf(pageNum) == 0)
+                        view.setDetailData(getDatas);
+                    else
+                        view.addReviewData(getDatas.review);
                 }
             }
 

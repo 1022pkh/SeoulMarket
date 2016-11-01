@@ -1,7 +1,9 @@
 package com.project.seoulmarket.login;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,9 +31,12 @@ import com.kakao.util.helper.log.Logger;
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.application.GlobalApplication;
 import com.project.seoulmarket.join.JoinActivity;
+import com.project.seoulmarket.join.model.UserNickCheckResult;
 import com.project.seoulmarket.login.model.Token;
+import com.project.seoulmarket.main.view.MainTabActivity;
 import com.project.seoulmarket.service.NetworkService;
 import com.project.seoulmarket.splash.model.ConnectResult;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,6 +58,9 @@ public class LoginActivity extends AppCompatActivity {
     String token;
     NetworkService networkService;;
 
+    String name;
+    String thumnailImg;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
          *
          */
         if (Build.VERSION.SDK_INT >= 21) {   //상태바 색
-            getWindow().setStatusBarColor(Color.parseColor("#F6D03F"));
+            getWindow().setStatusBarColor(Color.parseColor("#FFA700"));
         }
 
         getSupportActionBar().setDisplayShowHomeEnabled(false);
@@ -80,6 +88,7 @@ public class LoginActivity extends AppCompatActivity {
 
         TextView actionbarTitle = (TextView)mCustomView.findViewById(R.id.mytext);
         actionbarTitle.setText("로그인");
+        actionbarTitle.setTypeface(Typeface.createFromAsset(getAssets(),"OTF_B.otf"));
         ImageView backBtn = (ImageView) mCustomView.findViewById(R.id.backBtn);
 
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -163,9 +172,9 @@ public class LoginActivity extends AppCompatActivity {
                                                     try {
 
                                                         String id = (String) response.getJSONObject().get("id");//페이스북 아이디값
-                                                        String name = (String) response.getJSONObject().get("name");//페이스북 이름
+                                                        name = (String) response.getJSONObject().get("name");//페이스북 이름
 
-                                                        String thumnailImg = "http://graph.facebook.com/"+ id +"/picture?type=large";
+                                                        thumnailImg = "http://graph.facebook.com/"+ id +"/picture?type=large";
 
                                                         /**
                                                          * 페이스북 로그인 성공에 따른 정보 업데이트
@@ -175,7 +184,7 @@ public class LoginActivity extends AppCompatActivity {
 //                                                        GlobalApplication.editor.putString("cookie", cookies);
 
                                                         GlobalApplication.editor.putString("method", "facebook");
-                                                        GlobalApplication.editor.putString("nickname", name);
+//                                                        GlobalApplication.editor.putString("nickname", name);
                                                         GlobalApplication.editor.putString("thumbnail", thumnailImg);
                                                         GlobalApplication.editor.commit();
 
@@ -194,8 +203,8 @@ public class LoginActivity extends AppCompatActivity {
                                     request.setParameters(parameters);
                                     request.executeAsync();
 
-
-                                    redirectJoinActivity();
+                                    checkUser();
+//                                    redirectJoinActivity();
                                 }
                                 else{
                                     LoginManager.getInstance().logOut();
@@ -241,6 +250,10 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
+    }
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
     }
 
     @Override
@@ -298,5 +311,55 @@ public class LoginActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
         finish();
+    }
+
+    private void redirectMainActivity() {
+        /**
+         * 연동을 성공하는 순간, 회원가입은 된 것.
+         * 앱에서 사용할 닉네임만 따로 수정할 수 있도록 이동하는 것
+         */
+
+        Intent intent = new Intent(this, MainTabActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
+    }
+
+    private void checkUser(){
+        Call<UserNickCheckResult> call = networkService.userCheck("nickname");
+        call.enqueue(new Callback<UserNickCheckResult>() {
+            @Override
+            public void onResponse(Call<UserNickCheckResult> call, Response<UserNickCheckResult> response) {
+                if (response.isSuccessful()){
+
+                    UserNickCheckResult.Result result = response.body().result;
+
+                    if(result.message.user_nickname == null)
+                        redirectJoinActivity();
+                    else{
+                        if (result.message.user_nickname.equals("")){
+                            redirectJoinActivity();
+                        }
+                        else{
+                            Log.i("myTag",result.message.user_nickname);
+                            GlobalApplication.editor.putBoolean("Login_check", true);
+                            GlobalApplication.editor.putString("method", "facebook");
+                            GlobalApplication.editor.putString("nickname", result.message.user_nickname);
+                            GlobalApplication.editor.putString("thumbnail", thumnailImg);
+                            GlobalApplication.editor.commit();
+                            redirectMainActivity();
+                        }
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserNickCheckResult> call, Throwable t) {
+
+            }
+        });
     }
 }

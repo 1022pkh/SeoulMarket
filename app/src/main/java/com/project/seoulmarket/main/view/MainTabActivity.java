@@ -1,10 +1,14 @@
 package com.project.seoulmarket.main.view;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +16,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,6 +42,7 @@ import com.project.seoulmarket.main.presenter.MainPresenterImpl;
 import com.project.seoulmarket.mypage.view.MyPageActivity;
 import com.project.seoulmarket.recruit.view.RecruitActivity;
 import com.project.seoulmarket.report.view.ReportMarketActivity;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.util.ArrayList;
 
@@ -43,13 +50,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainTabActivity extends AppCompatActivity implements MainView{
 
+public class MainTabActivity extends AppCompatActivity implements MainView, SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.my_recyclerView)
     RecyclerView recyclerView;
     @BindView(R.id.mainArea)
-    LinearLayout mainArea;
+    SwipeRefreshLayout mainArea;
     @BindView(R.id.middleUserName)
     TextView middleUserName;
     @BindView(R.id.middleTitle)
@@ -58,6 +65,21 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
     TextView findLocationBtn;
     @BindView(R.id.findDateBtn)
     TextView findDateBtn;
+    @BindView(R.id.moveTopBtn)
+    ImageView moveTopBtn;
+
+    @BindView(R.id.searchMarketArea)
+    LinearLayout searchMarketArea;
+    @BindView(R.id.requestInputEdit)
+    EditText requestInputEdit;
+    @BindView(R.id.requestSearch)
+    TextView requestSearch;
+
+    @BindView(R.id.findLocationArea)
+    View findLocationArea;
+
+    @BindView(R.id.findDateArea)
+    View findDateArea;
 
     RecyclerView.Adapter mAdapter;
     ArrayList<MarketFirstData> itemDatas;
@@ -78,6 +100,7 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
     private long backPressedTime = 0;
 
     //요청한 검색 값
+    String chooseName = "";
     String chooseAddress = "*";
     String chooseStartDate = "*";
     String chooseEndDate = "*";
@@ -87,18 +110,27 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
     MainPresenter presenter;
 
     //검색 필터 사용 중인지
+    Boolean setNameFilterPage = false;
     Boolean setFilterPage = false;
+    Boolean setNameSearch = false;
+
+    InputMethodManager imm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tab);
 
+        ButterKnife.bind(this);
+
+        /**
+         * toolbar
+         */
+
         if (Build.VERSION.SDK_INT >= 21) {   //상태바 색
-            getWindow().setStatusBarColor(Color.parseColor("#F6D03F"));
+            getWindow().setStatusBarColor(Color.parseColor("#FFA700"));
         }
 
-        ButterKnife.bind(this);
 
 
         getSupportActionBar().setDisplayShowHomeEnabled(false);
@@ -115,18 +147,46 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
         LayoutInflater mInflater = LayoutInflater.from(this);
         View mCustomView = mInflater.inflate(R.layout.actionbar_layout, null);
 
+        TextView title = (TextView)mCustomView.findViewById(R.id.mytext);
+        title.setTypeface(Typeface.createFromAsset(getAssets(),"OTF_B.otf"));
+
         ImageView findNameBtn = (ImageView) mCustomView.findViewById(R.id.findNameBtn);
 
         findNameBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                findName();
+
+                if(setNameSearch){
+                    findLocationBtn.setClickable(true);
+                    findDateBtn.setClickable(true);
+                    searchMarketArea.setVisibility(View.INVISIBLE);
+                    setNameSearch = false;
+
+                }
+                else{
+                    requestInputEdit.setText("");
+                    findLocationBtn.setClickable(false);
+                    findDateBtn.setClickable(false);
+                    searchMarketArea.setVisibility(View.VISIBLE);
+                    setNameSearch = true;
+
+                }
+
+                //findName();
+
+
             }
         });
 
 
         getSupportActionBar().setCustomView(mCustomView);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
+
+
+        imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+
+        mainArea.setOnRefreshListener(this);
+        mainArea.setColorSchemeResources(R.color.mainYellow, R.color.white);
 
 
         /**
@@ -169,6 +229,20 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
 
         recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+                int firstPos=mLayoutManager.findFirstCompletelyVisibleItemPosition();
+
+                if (firstPos>0)
+                {
+                    mainArea.setEnabled(false);
+                }
+                else {
+                    mainArea.setEnabled(true);
+                }
+            }
+
+            @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 int scrollOffset = recyclerView.computeVerticalScrollOffset();
                 int scrollExtend = recyclerView.computeVerticalScrollExtent();
@@ -177,9 +251,9 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
                 if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
 
                     presenter.requestMainData(String.valueOf(currentPage++));
-
                 }
             }
+
         });
 
 
@@ -192,12 +266,20 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
 
     }
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
+    }
 
     @Override
     protected void onRestart() {
         super.onRestart();
     }
 
+    @OnClick(R.id.moveTopBtn)
+    public void moveTop(){
+        recyclerView.smoothScrollToPosition(0);
+    }
 
     //나의 공간
     @OnClick(R.id.myPage)
@@ -284,9 +366,11 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
     @OnClick(R.id.findLocationBtn)
     public void findLocation(){
 
+        findLocationArea.setVisibility(View.VISIBLE);
+
         WindowManager.LayoutParams params;
 
-        dialog_location = new DialogLocation(MainTabActivity.this, getLocationEvent);
+        dialog_location = new DialogLocation(MainTabActivity.this, getLocationEvent, this);
 
         params = dialog_location.getWindow().getAttributes();
 
@@ -300,6 +384,8 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
 
     @OnClick(R.id.findDateBtn)
     public void findDate(){
+
+        findDateArea.setVisibility(View.VISIBLE);
 
         WindowManager.LayoutParams params;
 
@@ -323,14 +409,22 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
             }
             else {
                 chooseAddress = dialog_location.giveAddress();
+
 //                Toast.makeText(getApplicationContext(),chooseAddress,Toast.LENGTH_SHORT).show();
 
                 findLocationBtn.setText(chooseAddress);
                 middleTitle.setText("검색된 마켓");
 
                 dialog_location.dismiss();
+                findLocationArea.setVisibility(View.INVISIBLE);
+
+
+                if(chooseAddress.equals("전체"))
+                    chooseAddress = "*";
 
                 setFilterPage = true;
+                setNameFilterPage = false;
+
                 currentPage = 0;
                 recyclerView.removeAllViews();
 
@@ -369,13 +463,17 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
                 chooseStartDate = dialog_date.getStartDate();
                 chooseEndDate = dialog_date.getEndDate();
 
-                findDateBtn.setText(chooseStartDate+"~"+chooseEndDate);
+                findDateBtn.setText(chooseStartDate.replace("-",".")+"~"+chooseEndDate.replace("-","."));
                 middleTitle.setText("검색된 마켓");
 
 //                Toast.makeText(getApplicationContext(),chooseStartDate + " ~ "+chooseEndDate,Toast.LENGTH_SHORT).show();
                 dialog_date.dismiss();
+                findDateArea.setVisibility(View.INVISIBLE);
+
 
                 setFilterPage = true;
+                setNameFilterPage = false;
+
                 currentPage = 0;
                 recyclerView.removeAllViews();
 
@@ -397,8 +495,14 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
             else{
                 dialog_name.dismiss();
 
-                middleUserName.setText(dialog_name.getName());
-                middleTitle.setText(" 으로 검색된 마켓");
+                middleUserName.setText('"'+dialog_name.getName()+'"');
+                middleTitle.setText(" 마켓정보");
+                findLocationBtn.setText("위치별검색");
+                findDateBtn.setText("날짜별검색");
+                chooseAddress = "*";
+                chooseStartDate ="*";
+                chooseEndDate = "*";
+
 
                 setFilterPage = true;
 
@@ -414,68 +518,124 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
 
     };
 
+    @OnClick(R.id.requestSearch)
+    public void searchName(){
+        if (requestInputEdit.getText().length() == 0 ){
+            Toast.makeText(getApplicationContext(),"검색할 마켓을 입력해주세요.",Toast.LENGTH_SHORT).show();
+        }
+        else{
+
+            chooseName = requestInputEdit.getText().toString();
+            middleUserName.setText('"'+chooseName+'"');
+            middleTitle.setText(" 마켓정보");
+            findLocationBtn.setText("위치별검색");
+            findDateBtn.setText("날짜별검색");
+            chooseAddress = "*";
+            chooseStartDate ="*";
+            chooseEndDate = "*";
+
+            setFilterPage = true;
+
+            currentPage = 0;
+            recyclerView.removeAllViews();
+
+            setNameFilterPage = true;
+
+            filterDatas.clear();
+            presenter.requestNameFilterData(chooseName, String.valueOf(currentPage++));
+
+            imm.hideSoftInputFromWindow(requestInputEdit.getWindowToken(), 0);
+        }
+    }
+
     @Override
     public void onBackPressed() {
         long tempTime        = System.currentTimeMillis();
         long intervalTime    = tempTime - backPressedTime;
 
         //검색 필터 중이면...다시 처음 화면으로 돌리기
-        if(setFilterPage == true){
-            setFilterPage = false;
-            currentPage = 0;
 
-            findLocationBtn.setText("위치 검색");
-            findDateBtn.setText("날짜 검색");
-            middleUserName.setText("");
-            middleTitle.setText("인기 마켓 순위");
-            chooseAddress = "*";
-            chooseStartDate ="*";
-            chooseEndDate = "*";
-
-            mAdapter = new CardViewAdapter(itemDatas,this);
-            recyclerView.setAdapter(mAdapter);
-
-            //각 item의 크기가 일정할 경우 고정
-            recyclerView.setHasFixedSize(true);
-
-            // layoutManager 설정
-            mLayoutManager = new LinearLayoutManager(this);
-            mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-            recyclerView.setLayoutManager(mLayoutManager);
-
-            recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                    int scrollOffset = recyclerView.computeVerticalScrollOffset();
-                    int scrollExtend = recyclerView.computeVerticalScrollExtent();
-                    int scrollRange = recyclerView.computeVerticalScrollRange();
-
-                    if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
-
-                        presenter.requestMainData(String.valueOf(currentPage++));
-
-                    }
-                }
-            });
-
-
-            itemDatas.clear();
-            presenter.requestMainData(String.valueOf(currentPage++));
-
+        if(setNameSearch){
+            searchMarketArea.setVisibility(View.INVISIBLE);
+            setNameSearch = false;
+            findLocationBtn.setClickable(true);
+            findDateBtn.setClickable(true);
         }
         else{
-            /**
-             * Back키 두번 연속 클릭 시 앱 종료
-             */
-            if ( 0 <= intervalTime && FINSH_INTERVAL_TIME >= intervalTime ) {
-                super.onBackPressed();
+            if(setFilterPage == true){
+                setFilterPage = false;
+                setNameFilterPage = false;
+
+                currentPage = 0;
+
+                findLocationBtn.setText("위치별검색");
+                findDateBtn.setText("날짜별검색");
+                middleUserName.setText("");
+                middleTitle.setText("인기 마켓 순위");
+                chooseAddress = "*";
+                chooseStartDate ="*";
+                chooseEndDate = "*";
+
+                mAdapter = new CardViewAdapter(itemDatas,this);
+                recyclerView.setAdapter(mAdapter);
+
+                //각 item의 크기가 일정할 경우 고정
+                recyclerView.setHasFixedSize(true);
+
+                // layoutManager 설정
+                mLayoutManager = new LinearLayoutManager(this);
+                mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                recyclerView.setLayoutManager(mLayoutManager);
+
+                recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+
+                    @Override
+                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+                        int firstPos=mLayoutManager.findFirstCompletelyVisibleItemPosition();
+
+                        if (firstPos>0)
+                        {
+                            mainArea.setEnabled(false);
+                        }
+                        else {
+                            mainArea.setEnabled(true);
+                        }
+                    }
+
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                        int scrollOffset = recyclerView.computeVerticalScrollOffset();
+                        int scrollExtend = recyclerView.computeVerticalScrollExtent();
+                        int scrollRange = recyclerView.computeVerticalScrollRange();
+
+
+                        if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
+
+                            presenter.requestMainData(String.valueOf(currentPage++));
+
+                        }
+                    }
+                });
+
+
+                itemDatas.clear();
+                presenter.requestMainData(String.valueOf(currentPage++));
+
             }
-            else {
-                backPressedTime = tempTime;
-                Toast.makeText(getApplicationContext(),"뒤로 가기 키을 한번 더 누르시면 종료됩니다.",Toast.LENGTH_SHORT).show();
+            else{
+                /**
+                 * Back키 두번 연속 클릭 시 앱 종료
+                 */
+                if ( 0 <= intervalTime && FINSH_INTERVAL_TIME >= intervalTime ) {
+                    super.onBackPressed();
+                }
+                else {
+                    backPressedTime = tempTime;
+                    Toast.makeText(getApplicationContext(),"뒤로 가기 키을 한번 더 누르시면 종료됩니다.",Toast.LENGTH_SHORT).show();
+                }
             }
         }
-
 
 
     }
@@ -533,48 +693,147 @@ public class MainTabActivity extends AppCompatActivity implements MainView{
     @Override
     public void filterSetData(String fName, ArrayList<MarketFilterData> getDatas) {
 
-        filterDatas.addAll(getDatas);
+        Log.i("myTag",String.valueOf(currentPage));
 
-        filterAdapter = new FilterViewAdapter(filterDatas, this);
-        recyclerView.setAdapter(filterAdapter);
+        if(currentPage == 1){
 
-        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                int scrollOffset = recyclerView.computeVerticalScrollOffset();
-                int scrollExtend = recyclerView.computeVerticalScrollExtent();
-                int scrollRange = recyclerView.computeVerticalScrollRange();
+            filterDatas.addAll(getDatas);
+            filterAdapter = new FilterViewAdapter(filterDatas, this);
+            recyclerView.setAdapter(filterAdapter);
 
-                if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
-//                    Toast.makeText(getApplicationContext(),"get",Toast.LENGTH_SHORT).show();
-                    presenter.requestNameFilterData(middleUserName.getText().toString(), String.valueOf(currentPage++));
-//                    Toast.makeText(getApplicationContext(),String.valueOf(currentPage),Toast.LENGTH_SHORT).show();
+            recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+                    int firstPos=mLayoutManager.findFirstCompletelyVisibleItemPosition();
+
+                    if (firstPos>0)
+                    {
+                        mainArea.setEnabled(false);
+                    }
+                    else {
+                        mainArea.setEnabled(true);
+                    }
                 }
-            }
-        });
+
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    int scrollOffset = recyclerView.computeVerticalScrollOffset();
+                    int scrollExtend = recyclerView.computeVerticalScrollExtent();
+                    int scrollRange = recyclerView.computeVerticalScrollRange();
+
+                    if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
+//                    Toast.makeText(getApplicationContext(),"get",Toast.LENGTH_SHORT).show();
+                        presenter.requestNameFilterData(middleUserName.getText().toString(), String.valueOf(currentPage++));
+//                    Toast.makeText(getApplicationContext(),String.valueOf(currentPage),Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+        else{
+            filterDatas.addAll(getDatas);
+            filterAdapter.notifyDataSetChanged();
+        }
+
 
     }
 
     @Override
     public void filterSetData(final String address, final String startDate, final String endDate, ArrayList<MarketFilterData> getDatas) {
 
-        filterDatas.addAll(getDatas);
 
-        filterAdapter = new FilterViewAdapter(filterDatas, this);
-        recyclerView.setAdapter(filterAdapter);
+        if(currentPage == 1){
 
-        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                int scrollOffset = recyclerView.computeVerticalScrollOffset();
-                int scrollExtend = recyclerView.computeVerticalScrollExtent();
-                int scrollRange = recyclerView.computeVerticalScrollRange();
+            filterDatas.addAll(getDatas);
+            filterAdapter = new FilterViewAdapter(filterDatas, this);
 
-                if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
-                    presenter.requestLocationFilterData(chooseAddress,chooseStartDate,chooseEndDate,String.valueOf(currentPage++));
+            recyclerView.setAdapter(filterAdapter);
+
+            recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+                    int firstPos=mLayoutManager.findFirstCompletelyVisibleItemPosition();
+
+                    if (firstPos>0)
+                    {
+                        mainArea.setEnabled(false);
+                    }
+                    else {
+                        mainArea.setEnabled(true);
+                    }
                 }
-            }
-        });
+
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    int scrollOffset = recyclerView.computeVerticalScrollOffset();
+                    int scrollExtend = recyclerView.computeVerticalScrollExtent();
+                    int scrollRange = recyclerView.computeVerticalScrollRange();
+
+                    if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
+                        Log.i("myTag","dfd");
+                        presenter.requestLocationFilterData(chooseAddress,chooseStartDate,chooseEndDate,String.valueOf(currentPage++));
+                    }
+                }
+            });
+        }
+        else{
+            filterDatas.addAll(getDatas);
+            filterAdapter.notifyDataSetChanged();
+
+        }
+
+
     }
 
+    @Override
+    public void cancelLocationDialog() {
+        dialog_location.cancel();
+        findLocationArea.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void cancelDateDialog() {
+        dialog_date.cancel();
+        findDateArea.setVisibility(View.INVISIBLE);
+    }
+
+
+    @Override
+    public void onRefresh() {
+//        Toast.makeText(getApplicationContext(),"fresh",Toast.LENGTH_SHORT).show();
+
+        mainArea.setRefreshing(true);
+        //3초후에 해당 adapoter를 갱신하고 동글뱅이를 닫아준다.setRefreshing(false);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                //필터 검색인 상태
+                if(setFilterPage){
+                    currentPage = 0;
+                    filterDatas.clear();
+
+                    //이름검색일 경우
+                    if(setNameFilterPage){
+
+                        presenter.requestNameFilterData(dialog_name.getName(), String.valueOf(currentPage++));
+                    }
+                    //지역,날짜일 경우
+                    else{
+                        presenter.requestLocationFilterData(chooseAddress,chooseStartDate,chooseEndDate,String.valueOf(currentPage++));
+
+                    }
+                }
+                else{
+                    itemDatas.clear();
+                    currentPage = 0;
+                    presenter.requestMainData(String.valueOf(currentPage++));
+
+                }
+
+                mainArea.setRefreshing(false);
+            }
+        },1500);
+    }
 }

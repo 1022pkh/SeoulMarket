@@ -3,262 +3,302 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.project.seoulmarket.report.view.ReportStepFourActivity"
-    android:padding="10dp"
     android:orientation="vertical"
-    android:weightSum="10"
     android:focusable="true"
     android:focusableInTouchMode="true">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:gravity="center_vertical"
-        android:orientation="vertical"
-        android:weightSum="2">
+        android:layout_height="match_parent"
+        android:background="@drawable/recruit_content_background"
+        android:layout_margin="20dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:weightSum="10"
+                android:layout_marginTop="20dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:textSize="16sp"
+                    android:textColor="@color/mainPupple"
+                    android:gravity="right"
+                    android:layout_marginRight="10dp"
+                    app:font="Bold"
+                    android:text="* 태그 설정"/>
+
+                <EditText
+                    android:id="@+id/inputMarketTag"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="5"
+                    android:textColor="#000000"
+                    android:background="@drawable/content_background"
+                    android:textSize="15sp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:singleLine="true"
+                    android:hint="태그 입력"
+                    android:maxLength="8"/>
+
+                <Button
+                    android:id="@+id/addMarketTagBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="2"
+                    android:textColor="#ffffff"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="10dp"
+                    app:font="Bold"
+                    android:textSize="12sp"
+                    android:background="@drawable/dialog_location_background"
+                    android:text="추가"/>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/addMarketTagArea"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:orientation="horizontal">
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginTop="20dp"
             android:weightSum="10">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:textColor="#000000"
-                android:textSize="18sp"
-                android:text="*태그 설정 : "/>
+                android:textSize="16sp"
+                android:textColor="@color/mainPupple"
+                android:gravity="right"
+                android:layout_marginRight="10dp"
+                app:font="Bold"
+                android:text="URL주소"/>
+
 
             <EditText
-                android:id="@+id/inputMarketTag"
+                android:id="@+id/inputMarketURL"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="7"
+                android:textColor="#000000"
+                android:background="@drawable/content_background"
+                android:textSize="15sp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:singleLine="true"
+                android:maxLength="15"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginTop="20dp"
+            android:weightSum="10">
+
+            <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="5"
+                android:layout_weight="3"
+                android:textSize="16sp"
+                android:textColor="@color/mainPupple"
+                android:gravity="right"
+                android:layout_marginRight="10dp"
+                app:font="Bold"
+                android:text="전화번호"/>
+
+            <EditText
+                android:id="@+id/inputPhoneNum"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="7"
+                android:layout_marginRight="10dp"
                 android:textColor="#000000"
-                android:textSize="18sp"
+                android:background="@drawable/content_background"
+                android:textSize="15sp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 android:singleLine="true"
-                android:hint="태그 입력"
-                android:maxLength="8"/>
+                android:inputType="number"
+                android:maxLength="15"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/imgArea"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:orientation="vertical"
+            android:layout_marginTop="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@color/mainPupple"
+                android:gravity="right"
+                android:layout_marginRight="10dp"
+                app:font="Bold"
+                android:text="* 이미지 첨부"/>
+
+
+            <LinearLayout
+                android:layout_marginTop="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/itemImg1"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginRight="8dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_camera_inbox_1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/itemImg2"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginRight="8dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_camera_inbox_2" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/itemImg3"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_camera_inbox_2" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/itemImg4"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginRight="8dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_camera_inbox_2"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/itemImg5"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginRight="8dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_camera_inbox_2" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/itemImg6"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_camera_inbox_2"  />
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
 
             <Button
-                android:id="@+id/addMarketTagBtn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:textColor="#000000"
-                android:textSize="18sp"
-                android:text="추가"/>
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/addMarketTagArea"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="horizontal"
-            android:layout_weight="1">
-
-        </LinearLayout>
-
-
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#999999"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            android:text="마켓URL : "/>
-
-
-        <EditText
-            android:id="@+id/inputMarketURL"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            android:singleLine="true"
-            android:maxLength="15"/>
-
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#999999"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            android:text="전화 번호 : "/>
-
-        <EditText
-            android:id="@+id/inputPhoneNum"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            android:singleLine="true"
-            android:maxLength="15"/>
-
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#999999"/>
-
-    <LinearLayout
-        android:id="@+id/imgArea"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="5"
-        android:weightSum="2"
-        android:orientation="vertical"
-        android:paddingTop="10dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            android:text="*이미지 첨부 : "/>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:paddingTop="10dp"
-            android:weightSum="9"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3">
-
-                <ImageView
-                    android:id="@+id/itemImg1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3">
-
-                <ImageView
-                    android:id="@+id/itemImg2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3">
-
-                <ImageView
-                    android:id="@+id/itemImg3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:weightSum="9"
-            android:orientation="horizontal"
-            android:paddingTop="10dp">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3">
-
-                <ImageView
-                    android:id="@+id/itemImg4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3">
-
-                <ImageView
-                    android:id="@+id/itemImg5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3">
-
-                <ImageView
-                    android:id="@+id/itemImg6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
+                android:id="@+id/registerServer"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_width="110dp"
+                android:layout_height="36dp"
+                android:text="완료"
+                android:background="@drawable/dialog_location_background"
+                android:textSize="16sp"
+                app:font="Bold"
+                android:textColor="#ffffff"/>
 
         </LinearLayout>
 
 
     </LinearLayout>
 
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#999999"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center">
-
-        <Button
-            android:id="@+id/registerServer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="제보 완료"/>
-
-    </LinearLayout>
 
 
 </LinearLayout>

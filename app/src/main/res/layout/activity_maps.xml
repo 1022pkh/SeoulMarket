@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
 
@@ -15,14 +16,14 @@
 
         <TextView
             android:id="@+id/main_toolbar_title"
-            android:textColor="#000000"
+            android:textColor="@color/mainYellow"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:gravity="center_vertical"
-            android:textSize="20sp"
+            android:textSize="14sp"
             android:text=""
-            android:textStyle="bold"
+            app:font="Bold"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"/>
 
@@ -35,8 +36,8 @@
 
             <ImageView
                 android:id="@+id/mapClose"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_x"/>
 

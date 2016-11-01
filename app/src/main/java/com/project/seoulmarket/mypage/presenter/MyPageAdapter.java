@@ -55,21 +55,31 @@ public class MyPageAdapter extends RecyclerView.Adapter<MyPageViewHolder> {
 
         if( state > 0){
             holder.mProgress.setText("D-" + state);
+            holder.mProgress.setBackgroundResource(R.drawable.progress_background);
         }
         else if(state == 0){
-            holder.mProgress.setText("D-day");
+            holder.mProgress.setText("진행중");
+            holder.mProgress.setBackgroundResource(R.drawable.progress_background);
         }
         else{
             holder.mProgress.setText("만료");
+            holder.mProgress.setBackgroundResource(R.drawable.progress_background);
         }
 
-        holder.mDate.setText(itemDatas.get(position).market_startdate +"\n~"+itemDatas.get(position).market_enddate);
+        String startTemp = itemDatas.get(position).market_startdate.replace("-",".");
+        String endTemp = itemDatas.get(position).market_enddate.replace("-",".");
+
+        holder.mDate.setText(startTemp +"~" + endTemp);
 
         ImageView imageView = (ImageView)itemView.findViewById(R.id.image);
 
         Glide.with(parent.getContext())
                 .load(itemDatas.get(position).image)
-                .into(imageView);
+                .thumbnail(0.3f)
+                .error(R.drawable.ic_default)
+                .into(holder.getImageView());
+
+//        Glide.clear(imageView);
 
     }
 
@@ -78,4 +88,6 @@ public class MyPageAdapter extends RecyclerView.Adapter<MyPageViewHolder> {
     public int getItemCount() {
         return (itemDatas != null) ? itemDatas.size() : 0;
     }
+
+
 }

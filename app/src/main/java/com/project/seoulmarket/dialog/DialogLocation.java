@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.project.seoulmarket.R;
+import com.project.seoulmarket.main.view.MainView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,8 +39,13 @@ public class DialogLocation extends Dialog {
     TextView item7;
     @BindView(R.id.item8)
     TextView item8;
+    @BindView(R.id.item9)
+    TextView item9;
+    @BindView(R.id.item10)
+    TextView item10;
 
     String address = "null";
+    MainView view;
 
     private View.OnClickListener sendLocationEvent;
 
@@ -60,13 +66,21 @@ public class DialogLocation extends Dialog {
         item6.setOnClickListener(getAddress);
         item7.setOnClickListener(getAddress);
         item8.setOnClickListener(getAddress);
+        item9.setOnClickListener(getAddress);
+//        item10.setOnClickListener(getAddress);
 
     }
 
-    public DialogLocation(Context context, View.OnClickListener BtnEvent) {
+    public void onBackPressed() {
+//        Log.i("myTag","cancel");
+        view.cancelLocationDialog();
+    }
+
+    public DialogLocation(Context context, View.OnClickListener BtnEvent,MainView view) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
 
         this.sendLocationEvent = BtnEvent;
+        this.view = view;
 
     }
 
@@ -82,6 +96,8 @@ public class DialogLocation extends Dialog {
             item6.setBackgroundColor(0);
             item7.setBackgroundColor(0);
             item8.setBackgroundColor(0);
+            item9.setBackgroundColor(0);
+            item10.setBackgroundColor(0);
 
             v.setBackgroundColor(Color.rgb(179,191,205));
 
@@ -90,26 +106,33 @@ public class DialogLocation extends Dialog {
                     address = "강남";
                     break;
                 case R.id.item2:
-                    address = "송파";
+                    address = "광진";
                     break;
                 case R.id.item3:
-                    address = "강서";
+                    address = "송파";
                     break;
 
                 case R.id.item4:
-                    address = "영등포";
-                    break;
-                case R.id.item5:
-                    address = "관악";
-                    break;
-                case R.id.item6:
-                    address = "광진";
-                    break;
-                case R.id.item7:
                     address = "노원";
                     break;
-                case R.id.item8:
+                case R.id.item5:
+                    address = "강서";
+                    break;
+                case R.id.item6:
                     address = "종로";
+                    break;
+                case R.id.item7:
+                    address = "영등포";
+                    break;
+                case R.id.item8:
+                    address = "마포";
+                    break;
+                case R.id.item9:
+                    address = "관악";
+                    break;
+                case R.id.item10:
+                    address = "전체";
+                    break;
                 default:
                     address = "null";
                     break;

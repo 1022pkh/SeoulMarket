@@ -1,12 +1,15 @@
 package com.project.seoulmarket.recruit.presenter;
 
+import android.util.Log;
+
 import com.project.seoulmarket.application.GlobalApplication;
+import com.project.seoulmarket.recruit.model.AddReview;
 import com.project.seoulmarket.recruit.model.DetailData;
 import com.project.seoulmarket.recruit.model.ResultRecruitDetail;
 import com.project.seoulmarket.recruit.view.RecruitDetailView;
 import com.project.seoulmarket.service.NetworkService;
-
-import java.util.ArrayList;
+import com.project.seoulmarket.splash.model.ConnectResult;
+import com.project.seoulmarket.splash.model.MessageResult;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,5 +49,31 @@ public class RecruitDetailPresenterImpl implements RecruitDetailPresenter {
             }
         });
 
+    }
+
+    @Override
+    public void addReview(String id, AddReview addReview) {
+        Call<ConnectResult> addSellerReview = networkService.addSellerReview(id,addReview);
+        addSellerReview.enqueue(new Callback<ConnectResult>() {
+            @Override
+            public void onResponse(Call<ConnectResult> call, Response<ConnectResult> response) {
+                Log.i("myTag","123");
+                if(response.isSuccessful()){
+                    MessageResult result = response.body().result;
+                    if(result.message.equals("Success"))
+                        view.addReviewArea();
+                    else
+                        view.NetworkError();
+                }
+                else
+                    view.NetworkError();
+            }
+
+            @Override
+            public void onFailure(Call<ConnectResult> call, Throwable t) {
+                view.NetworkError();
+                Log.i("myTag",t.toString());
+            }
+        });
     }
 }

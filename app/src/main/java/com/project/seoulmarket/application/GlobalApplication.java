@@ -6,7 +6,9 @@ package com.project.seoulmarket.application;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.multidex.MultiDex;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
@@ -14,6 +16,7 @@ import com.kakao.auth.KakaoSDK;
 import com.project.seoulmarket.login.adapter.KakaoSDKAdapter;
 import com.project.seoulmarket.login.cookies.PersistentCookieStore;
 import com.project.seoulmarket.service.NetworkService;
+import com.tsengvn.typekit.Typekit;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;
@@ -47,11 +50,25 @@ public class GlobalApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        MultiDex.install(this);
         instance = this;
 
+        /**
+         * 폰트 설정
+         */
+        Typekit.getInstance()
+                .addNormal(Typekit.createFromAsset(this, "OTF_R.otf"))
+                .addBold(Typekit.createFromAsset(this, "OTF_B.otf"))
+                .addCustom1(Typekit.createFromAsset(this, "OTF_L.otf"));
+        /**
+         * 쿠키 관리위한 부분
+         */
         cookieStore = new PersistentCookieStore(getApplicationContext());
         cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
 
+        /**
+         * 로그인 api 설정
+         */
         //facebook
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
@@ -117,6 +134,12 @@ public class GlobalApplication extends Application {
         if(instance == null)
             throw new IllegalStateException("this application does not inherit com.kakao.GlobalApplication");
         return instance;
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
 //    /**

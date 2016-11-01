@@ -1,8 +1,12 @@
 package com.project.seoulmarket.report.view;
 
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -15,6 +19,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.project.seoulmarket.R;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.text.SimpleDateFormat;
 
@@ -64,6 +69,10 @@ public class ReportStepTwoActivity extends AppCompatActivity implements com.ande
          * actionbar 설정
          */
 
+        if (Build.VERSION.SDK_INT >= 21) {   //상태바 색
+            getWindow().setStatusBarColor(Color.parseColor("#FFA700"));
+        }
+
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -77,6 +86,8 @@ public class ReportStepTwoActivity extends AppCompatActivity implements com.ande
 
         TextView actionbarTitle = (TextView)mCustomView.findViewById(R.id.mytext);
         actionbarTitle.setText("마켓 제보");
+        actionbarTitle.setTypeface(Typeface.createFromAsset(getAssets(),"OTF_B.otf"));
+
         ImageView backBtn = (ImageView) mCustomView.findViewById(R.id.backBtn);
 
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -96,6 +107,10 @@ public class ReportStepTwoActivity extends AppCompatActivity implements com.ande
 
     }
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
+    }
 
     @OnClick(R.id.startTimeArea)
     public void setStartTime(){
@@ -197,7 +212,7 @@ public class ReportStepTwoActivity extends AppCompatActivity implements com.ande
     public void onDateRangeSelected(com.andexert.calendarlistview.library.SimpleMonthAdapter.SelectedDays<com.andexert.calendarlistview.library.SimpleMonthAdapter.CalendarDay> selectedDays) {
 //        Log.i("myTag","Date range selected "+ selectedDays.getFirst().toString() + " --> " + selectedDays.getLast().toString());
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         startDate = dateFormat.format(selectedDays.getFirst().getDate());
         endDate = dateFormat.format(selectedDays.getLast().getDate());

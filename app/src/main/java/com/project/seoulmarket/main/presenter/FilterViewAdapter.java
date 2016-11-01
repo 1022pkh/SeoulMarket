@@ -44,7 +44,11 @@ public class FilterViewAdapter extends RecyclerView.Adapter<FilterViewHolder> {
         holder.mId = itemDatas.get(position).market_idx;
         holder.mName.setText(itemDatas.get(position).market_name);
         holder.mLocation.setText(itemDatas.get(position).market_address);
-        holder.mDate.setText(itemDatas.get(position).market_startdate + "\n~" + itemDatas.get(position).market_enddate);
+
+        String startTemp = itemDatas.get(position).market_startdate.replace("-",".");
+        String endTemp = itemDatas.get(position).market_enddate.replace("-",".");
+
+        holder.mDate.setText(startTemp + "~" + endTemp);
         holder.mLike.setText(itemDatas.get(position).market_count);
 
         // TODO: 2016. 10. 5. 아직 데이터가 없으므로 임시로 넣어주기로.
@@ -58,12 +62,15 @@ public class FilterViewAdapter extends RecyclerView.Adapter<FilterViewHolder> {
 
         if( state > 0){
             holder.mProgress.setText("D-" + state);
+            holder.mProgress.setBackgroundResource(R.drawable.progress_background);
         }
         else if(state == 0){
             holder.mProgress.setText("D-day");
+            holder.mProgress.setBackgroundResource(R.drawable.progress_background);
         }
         else{
             holder.mProgress.setText("만료");
+            holder.mProgress.setBackgroundResource(R.drawable.progress_background);
         }
 
         ImageView imageView = (ImageView)itemView.findViewById(R.id.image);
@@ -72,7 +79,12 @@ public class FilterViewAdapter extends RecyclerView.Adapter<FilterViewHolder> {
 
         Glide.with(parent.getContext())
                 .load(itemDatas.get(position).image_url)
-                .into(imageView);
+                .thumbnail(0.3f)
+                .error(R.drawable.ic_default)
+                .into(holder.getImageView());
+
+
+//        Glide.clear(imageView);
 
     }
 

@@ -11,6 +11,8 @@ import com.project.seoulmarket.mypage.model.ReportDetailData;
 import com.project.seoulmarket.mypage.model.ReportResult;
 import com.project.seoulmarket.mypage.view.MyPageView;
 import com.project.seoulmarket.service.NetworkService;
+import com.project.seoulmarket.splash.model.ConnectResult;
+import com.project.seoulmarket.splash.model.MessageResult;
 
 import java.util.ArrayList;
 
@@ -30,10 +32,11 @@ public class MyPagePresenterImpl implements MyPagePresenter{
         networkService = GlobalApplication.getInstance().getNetworkService();
     }
 
-    @Override
-    public void getMyLikeMarketData() {
 
-        Call<LikeResult> getLikeData = networkService.getMyLikeMarketData();
+    @Override
+    public void getMyLikeMarketData(final String pageNum) {
+
+        Call<LikeResult> getLikeData = networkService.getMyLikeMarketData(pageNum);
 
         getLikeData.enqueue(new Callback<LikeResult>() {
             @Override
@@ -48,8 +51,12 @@ public class MyPagePresenterImpl implements MyPagePresenter{
 
                     if(getDatas.size() > 0 )
                         view.setLikeData(getDatas);
-                    else
-                        view.dataNull();
+                    else{
+                        if (Integer.valueOf(pageNum) > 0)
+                            ;
+                        else
+                            view.dataNull();
+                    }
                 }
             }
 
@@ -61,8 +68,8 @@ public class MyPagePresenterImpl implements MyPagePresenter{
     }
 
     @Override
-    public void getMyReportMarketData() {
-        Call<ReportResult> getReportData = networkService.getMyReportMarketData();
+    public void getMyReportMarketData(final String pageNum) {
+        Call<ReportResult> getReportData = networkService.getMyReportMarketData(pageNum);
         getReportData.enqueue(new Callback<ReportResult>() {
             @Override
             public void onResponse(Call<ReportResult> call, Response<ReportResult> response) {
@@ -75,8 +82,12 @@ public class MyPagePresenterImpl implements MyPagePresenter{
 
                     if(getDatas.size() > 0 )
                         view.setReportData(getDatas);
-                    else
-                        view.dataNull();
+                    else{
+                        if (Integer.valueOf(pageNum) > 0)
+                            ;
+                        else
+                            view.dataNull();
+                    }
                 }
             }
 
@@ -88,8 +99,8 @@ public class MyPagePresenterImpl implements MyPagePresenter{
     }
 
     @Override
-    public void getMyRecruitSellerData() {
-        Call<RecruitResult> getRecruitData = networkService.getMyRecruitSellerData();
+    public void getMyRecruitSellerData(final String pageNum) {
+        Call<RecruitResult> getRecruitData = networkService.getMyRecruitSellerData(pageNum);
         getRecruitData.enqueue(new Callback<RecruitResult>() {
             @Override
             public void onResponse(Call<RecruitResult> call, Response<RecruitResult> response) {
@@ -98,18 +109,73 @@ public class MyPagePresenterImpl implements MyPagePresenter{
                 if (response.isSuccessful()){
                     ArrayList<RecruitDetailData> getDatas = response.body().result;
 
-                    Log.i("myTag idx",String.valueOf(getDatas.get(0).recruitment_idx));
+//                    Log.i("myTag idx",String.valueOf(getDatas.get(0).recruitment_idx));
 
                     if(getDatas.size() > 0 )
                         view.setRecruitData(getDatas);
-                    else
-                        view.dataNull();
+                    else{
+                        if (Integer.valueOf(pageNum) > 0)
+                            ;
+                        else
+                            view.dataNull();
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<RecruitResult> call, Throwable t) {
 
+            }
+        });
+    }
+
+    @Override
+    public void deleteMyReportMarket(String mId) {
+        Call<ConnectResult> requestDelete = networkService.requestDeleteMarket(mId);
+        requestDelete.enqueue(new Callback<ConnectResult>() {
+            @Override
+            public void onResponse(Call<ConnectResult> call, Response<ConnectResult> response) {
+                if (response.isSuccessful()){
+                    MessageResult result = response.body().result;
+                    Log.i("myTag",String.valueOf(result));
+
+                    if(result.message.equals("Success"))
+                        view.successDeleteReport();
+                    else
+                        view.NetworkError();
+                }
+                else
+                    view.NetworkError();
+            }
+
+            @Override
+            public void onFailure(Call<ConnectResult> call, Throwable t) {
+
+            }
+        });
+    }
+
+    @Override
+    public void deleteMyRecruitMarket(String mId) {
+        Call<ConnectResult> requestDelete = networkService.requestDeleteSeller(mId);
+        requestDelete.enqueue(new Callback<ConnectResult>() {
+            @Override
+            public void onResponse(Call<ConnectResult> call, Response<ConnectResult> response) {
+                if (response.isSuccessful()){
+                    MessageResult result = response.body().result;
+                    Log.i("myTag", String.valueOf(result));
+                    if(result.message.equals("Success"))
+                        view.successDeleteRecruit();
+                    else
+                        view.NetworkError();
+                }
+                else
+                    view.NetworkError();
+            }
+
+            @Override
+            public void onFailure(Call<ConnectResult> call, Throwable t) {
+                Log.i("myTag", String.valueOf(t));
             }
         });
     }

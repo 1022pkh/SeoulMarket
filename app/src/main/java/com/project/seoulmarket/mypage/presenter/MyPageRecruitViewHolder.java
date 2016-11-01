@@ -14,6 +14,7 @@ public class MyPageRecruitViewHolder extends RecyclerView.ViewHolder implements 
 
     private MyPageView myView;
 
+    public int position;
     public String mId;
     public TextView mTitle;
     public TextView mDate;
@@ -38,7 +39,7 @@ public class MyPageRecruitViewHolder extends RecyclerView.ViewHolder implements 
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.deleteRecruit:
-                myView.deleteRecruit(mId);
+                myView.deleteRecruit(position,mId);
                 break;
             default:
                 myView.moveRecruitPage(mId);

@@ -25,7 +25,7 @@ public class RecruitPresenterImpl implements RecruitPresenter {
     }
 
     @Override
-    public void getRecruitListDatas(String pageNum) {
+    public void getRecruitListDatas(final String pageNum) {
         Call<RecruitResult> getListData = networkService.getRecruitSellerListData(pageNum);
         getListData.enqueue(new Callback<RecruitResult>() {
             @Override
@@ -36,8 +36,12 @@ public class RecruitPresenterImpl implements RecruitPresenter {
 
                     if(getDatas.size() > 0 )
                         view.setRecruitData(getDatas);
-                    else
-                        view.DataNull();
+                    else {
+                        if (Integer.valueOf(pageNum) > 0)
+                            ;
+                        else
+                            view.DataNull();
+                    }
                 }
             }
 

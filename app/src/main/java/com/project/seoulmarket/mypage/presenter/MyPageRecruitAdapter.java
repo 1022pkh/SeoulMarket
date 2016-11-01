@@ -43,7 +43,7 @@ public class MyPageRecruitAdapter extends RecyclerView.Adapter<MyPageRecruitView
 
     @Override
     public void onBindViewHolder(MyPageRecruitViewHolder holder, int position) {
-
+        holder.position = position;
         holder.mId = itemDatas.get(position).recruitment_idx;
         holder.mTitle.setText(itemDatas.get(position).recruitment_title);
         holder.mDate.setText(itemDatas.get(position).recruitment_uploadtime);

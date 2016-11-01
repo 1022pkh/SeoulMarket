@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.main.view.MainTabActivity;
@@ -20,8 +19,10 @@ public class SplashAcitivty extends AppCompatActivity implements SplashView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_acitivty);
 
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         if (Build.VERSION.SDK_INT >= 21) {   //상태바 색
-            getWindow().setStatusBarColor(Color.parseColor("#F6D03F"));
+            getWindow().setStatusBarColor(Color.parseColor("#FFA700"));
         }
 
         final SplashPresenterImpl splashPresenterImpl = new SplashPresenterImpl(this);

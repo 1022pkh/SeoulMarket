@@ -1,123 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="160dp"
+    android:layout_height="100dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardLinear">
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp"
         >
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:weightSum="10"
             android:orientation="vertical">
 
+
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="3">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp">
 
-                <RelativeLayout
-                    android:id="@+id/titleArea"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="10dp">
-                    <TextView
-                        android:layout_centerVertical="true"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="#000000"
-                        android:textSize="15sp"
-                        android:text="셀러모집"/>
 
-                    <TextView
-                        android:id="@+id/deleteRecruit"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="15sp"
-                        android:textColor="@color/red"
-                        android:text="삭제 하기"/>
-                </RelativeLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/mainBlack"
+                    app:font="Bold"
+                    android:textSize="18sp"
+                    android:text="제목 : "/>
+
+                <TextView
+                    android:id="@+id/recruitTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/mainBlack"
+                    app:font="Bold"
+                    android:textSize="18sp"
+                    android:text="셀러 모집해요!"/>
+
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#E7E7E7"/>
-
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="7"
-                android:orientation="vertical"
-                android:weightSum="4">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="2"
-                    android:gravity="center_vertical"
-                    android:padding="10dp">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="#000000"
-                        android:textSize="14sp"
-                        android:text="제목 : "/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/mainPupple"
+                    android:textSize="10sp"
+                    android:text="날짜 : "/>
 
-                    <TextView
-                        android:id="@+id/recruitTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="#000000"
-                        android:textSize="14sp"
-                        android:text="셀러 모집해요!"/>
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/recruitDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/mainPupple"
+                    android:textSize="10sp"
+                    android:text=""/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="2"
-                    android:padding="10dp"
-                    android:gravity="center_vertical|right">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/mainPupple"
+                    android:textSize="10sp"
+                    android:text=" / "/>
 
-                    <TextView
-                        android:id="@+id/recruitDate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="#000000"
-                        android:textSize="14sp"
-                        android:text="작성날짜"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/mainPupple"
+                    android:textSize="10sp"
+                    android:text="댓글수 : "/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="#000000"
-                        android:textSize="14sp"
-                        android:text=" / "/>
-
-                    <TextView
-                        android:id="@+id/recruitCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="#000000"
-                        android:textSize="14sp"
-                        android:text="댓글 수"/>
-                </LinearLayout>
-
+                <TextView
+                    android:id="@+id/recruitCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/mainPupple"
+                    android:textSize="10sp"
+                    android:text=""/>
             </LinearLayout>
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/deleteRecruit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="11dp"
+                android:textSize="10sp"
+                android:textColor="#ffffff"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                app:font="Custeom1"
+                android:text="삭제하기"
+                android:background="@drawable/dialog_location_background"/> 
+
+
+            <!--<TextView -->
+            <!--android:id="@+id/deleteRecruit" -->
+            <!--android:layout_alignParentRight="true" -->
+            <!--android:layout_centerVertical="true" -->
+            <!--android:layout_width="wrap_content" -->
+            <!--android:layout_height="wrap_content" -->
+            <!--android:textSize="10sp" -->
+            <!--android:textColor="@color/mainPupple" -->
+            <!--app:font="Bold" -->
+            <!--android:text="삭제"/>-->
+
+
+        </RelativeLayout>
 
 
 

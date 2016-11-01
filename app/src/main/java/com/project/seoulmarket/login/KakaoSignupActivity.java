@@ -20,6 +20,7 @@ import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.helper.log.Logger;
 import com.project.seoulmarket.application.GlobalApplication;
 import com.project.seoulmarket.join.JoinActivity;
+import com.project.seoulmarket.join.model.UserNickCheckResult;
 import com.project.seoulmarket.main.view.MainTabActivity;
 import com.project.seoulmarket.service.NetworkService;
 import com.project.seoulmarket.splash.model.ConnectResult;
@@ -38,6 +39,8 @@ public class KakaoSignupActivity extends AppCompatActivity {
      * @param savedInstanceState 기존 session 정보가 저장된 객체
      */
     NetworkService networkService;
+
+    String thumnailImg = "";
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -72,6 +75,7 @@ public class KakaoSignupActivity extends AppCompatActivity {
                         Log.i("myTag",result );
 
                         if(result.equals("Success")){
+
                             requestMe();
 //                            requestAccessTokenInfo();
                         }
@@ -142,11 +146,12 @@ public class KakaoSignupActivity extends AppCompatActivity {
                 Log.i("myTag", String.valueOf(userProfile.getNickname()));
                 Logger.d("UserProfile : " + userProfile);
 
-
+                thumnailImg = userProfile.getProfileImagePath();
 //                GlobalApplication.editor.putBoolean("Login_check", true);
                 GlobalApplication.editor.putString("method", "kakao");
-                GlobalApplication.editor.putString("nickname", userProfile.getNickname());
+//                GlobalApplication.editor.putString("nickname", userProfile.getNickname());
                 GlobalApplication.editor.putString("thumbnail", userProfile.getProfileImagePath());
+                Log.i("myTag", String.valueOf(userProfile.getProfileImagePath()));
                 GlobalApplication.editor.commit();
 
 
@@ -155,7 +160,8 @@ public class KakaoSignupActivity extends AppCompatActivity {
                  * 닉네임 설정 페이지로 이동한다.
                  * 프로필 이미지, 카카오 로그인 토큰 전달
                  */
-                redirectJoinActivity();
+                checkUser();
+//                redirectJoinActivity();
 //                redirectMainActivity(); // 로그인 성공시 MainActivity로
             }
         });
@@ -215,5 +221,41 @@ public class KakaoSignupActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
         finish();
+    }
+
+    private void checkUser(){
+        Call<UserNickCheckResult> call = networkService.userCheck("nickname");
+        call.enqueue(new Callback<UserNickCheckResult>() {
+            @Override
+            public void onResponse(Call<UserNickCheckResult> call, Response<UserNickCheckResult> response) {
+                if (response.isSuccessful()){
+
+                    UserNickCheckResult.Result result = response.body().result;
+
+                    if(result.message.user_nickname == null)
+                        redirectJoinActivity();
+                    else{
+                        if (result.message.user_nickname.equals("")){
+                            redirectJoinActivity();
+                        }
+                        else{
+                            Log.i("myTag",result.message.user_nickname);
+                            GlobalApplication.editor.putBoolean("Login_check", true);
+                            GlobalApplication.editor.putString("method", "kakao");
+                            GlobalApplication.editor.putString("nickname", result.message.user_nickname);
+                            GlobalApplication.editor.putString("thumbnail", thumnailImg);
+                            GlobalApplication.editor.commit();
+                            redirectMainActivity();
+                        }
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserNickCheckResult> call, Throwable t) {
+
+            }
+        });
     }
 }

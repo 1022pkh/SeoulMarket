@@ -3,17 +3,23 @@ package com.project.seoulmarket.join;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
@@ -28,10 +34,12 @@ import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.helper.log.Logger;
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.application.GlobalApplication;
+import com.project.seoulmarket.join.model.JoinData;
 import com.project.seoulmarket.main.view.MainTabActivity;
 import com.project.seoulmarket.service.NetworkService;
 import com.project.seoulmarket.splash.model.ConnectResult;
 import com.project.seoulmarket.splash.model.MessageResult;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,15 +47,12 @@ import org.json.JSONObject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class JoinActivity extends AppCompatActivity {
 
-    @BindView(R.id.profile_image)
-    CircleImageView profile;
     @BindView(R.id.userNickname)
     EditText nickNameArea;
     @BindView(R.id.doubleCheck)
@@ -68,6 +73,75 @@ public class JoinActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        if (Build.VERSION.SDK_INT >= 21) {   //상태바 색
+            getWindow().setStatusBarColor(Color.parseColor("#FFA700"));
+        }
+
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        // ActionBar의 배경색 변경
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFFFFFFFF));
+
+        getSupportActionBar().setElevation(0); // 그림자 없애기
+
+        LayoutInflater mInflater = LayoutInflater.from(this);
+        View mCustomView = mInflater.inflate(R.layout.actionbar_back_layout, null);
+
+        TextView actionbarTitle = (TextView)mCustomView.findViewById(R.id.mytext);
+        actionbarTitle.setText("회원 가입");
+
+        actionbarTitle.setTypeface(Typeface.createFromAsset(getAssets(),"OTF_B.otf"));
+
+        ImageView backBtn = (ImageView) mCustomView.findViewById(R.id.backBtn);
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(JoinActivity.this);     // 여기서 this는 Activity의 this
+
+                // 여기서 부터는 알림창의 속성 설정
+                builder.setTitle("회원 가입을 취소하시겠습니까?")        // 메세지 설정
+                        //  .setMessage("취소 시 연동된 앱의 닉네임으로 설정됩니다.")
+                        .setCancelable(true)        // 뒤로 버튼 클릭시 취소 가능 설정
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener(){
+                            // 확인 버튼 클릭시 설정
+                            public void onClick(DialogInterface dialog, int whichButton){
+
+                                if(GlobalApplication.loginInfo.getString("method", "").equals("kakao")){
+                                    //kakao 로그아웃
+                                    UserManagement.requestLogout(new LogoutResponseCallback() {
+                                        @Override
+                                        public void onCompleteLogout() {
+                                        }
+                                    });
+                                }
+                                else{
+                                    LoginManager.getInstance().logOut();
+                                }
+
+                                GlobalApplication.editor.putBoolean("Login_check", false);
+                                GlobalApplication.editor.commit();
+
+                                finish();
+
+                            }
+                        })
+                        .setNegativeButton("취소", new DialogInterface.OnClickListener(){
+                            // 취소 버튼 클릭시 설정
+                            public void onClick(DialogInterface dialog, int whichButton){
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog dialog = builder.create();    // 알림창 객체 생성
+                dialog.show();    // 알림창 띄우기
+            }
+        });
+
+
+        getSupportActionBar().setCustomView(mCustomView);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
 
         imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
         networkService = GlobalApplication.getInstance().getNetworkService();
@@ -91,6 +165,10 @@ public class JoinActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
+    }
 
     @Override
     public void onBackPressed() {
@@ -159,11 +237,11 @@ public class JoinActivity extends AppCompatActivity {
 
 
 //                            nickNameArea.setText(name);
-
-                            String thumnailImg = "http://graph.facebook.com/"+ id +"/picture?type=large";
-                            Glide.with(JoinActivity.this)
-                                    .load(thumnailImg)
-                                    .into(profile);
+//
+//                            String thumnailImg = "http://graph.facebook.com/"+ id +"/picture?type=large";
+//                            Glide.with(JoinActivity.this)
+//                                    .load(thumnailImg)
+//                                    .into(profile);
 
 
                         } catch (JSONException e) {
@@ -226,9 +304,9 @@ public class JoinActivity extends AppCompatActivity {
                  * 받아온 User 데이터의 profileUrl을 Glide 라이브러리를 이용하여 이미지뷰에 삽입하는 코드입니다.
                  * Glide의 가장 기본적인 사용방법이니 익혀두시면 편합니다.
                  */
-                Glide.with(JoinActivity.this)
-                        .load(thumnailImg)
-                        .into(profile);
+//                Glide.with(JoinActivity.this)
+//                        .load(thumnailImg)
+//                        .into(profile);
 
             }
         });
@@ -323,7 +401,10 @@ public class JoinActivity extends AppCompatActivity {
 
         if(nickNameCheck){
 
-            Call<ConnectResult> requestJoin = networkService.joinPutNickName(nickNameArea.getText().toString());
+            JoinData data = new JoinData();
+            data.nickname = nickNameArea.getText().toString();
+
+            Call<ConnectResult> requestJoin = networkService.joinPutNickName(data);
             requestJoin.enqueue(new Callback<ConnectResult>() {
                 @Override
                 public void onResponse(Call<ConnectResult> call, Response<ConnectResult> response) {

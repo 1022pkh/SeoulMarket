@@ -3,6 +3,7 @@ package com.project.seoulmarket.report.view;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.dialog.DialogCancel;
 import com.project.seoulmarket.main.view.MainTabActivity;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,7 +49,7 @@ public class ReportMarketActivity extends AppCompatActivity {
         setContentView(R.layout.activity_report_market);
 
         if (Build.VERSION.SDK_INT >= 21) {   //상태바 색
-            getWindow().setStatusBarColor(Color.parseColor("#F6D03F"));
+            getWindow().setStatusBarColor(Color.parseColor("#FFA700"));
         }
 
         ButterKnife.bind(this);
@@ -70,6 +72,8 @@ public class ReportMarketActivity extends AppCompatActivity {
 
         TextView actionbarTitle = (TextView)mCustomView.findViewById(R.id.mytext);
         actionbarTitle.setText("마켓 제보");
+        actionbarTitle.setTypeface(Typeface.createFromAsset(getAssets(),"OTF_B.otf"));
+
         ImageView backBtn = (ImageView) mCustomView.findViewById(R.id.backBtn);
 
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +87,10 @@ public class ReportMarketActivity extends AppCompatActivity {
         getSupportActionBar().setCustomView(mCustomView);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
 
+    }
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
     }
 
     @Override
@@ -136,7 +144,9 @@ public class ReportMarketActivity extends AppCompatActivity {
 
     @OnClick(R.id.inputMarketContentArea)
     public void focusConentArea(){
-        inputMarketContent.hasFocus();
+        inputMarketContent.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
     @OnClick(R.id.nextBtn)

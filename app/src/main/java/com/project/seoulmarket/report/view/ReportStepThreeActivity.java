@@ -2,19 +2,22 @@ package com.project.seoulmarket.report.view;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,6 +33,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.project.seoulmarket.R;
 import com.project.seoulmarket.detail.model.MarkerItem;
+import com.project.seoulmarket.dialog.DialogChoose;
 import com.project.seoulmarket.report.model.JsonUtil;
 import com.project.seoulmarket.report.presenter.FindPresenter;
 import com.project.seoulmarket.report.presenter.FindPresenterImpl;
@@ -68,6 +72,10 @@ public class ReportStepThreeActivity extends AppCompatActivity implements OnMapR
 
     private FindPresenter presenter;
 
+    DialogChoose dialog_choose;
+
+    InputMethodManager imm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +86,10 @@ public class ReportStepThreeActivity extends AppCompatActivity implements OnMapR
         /**
          * actionbar 설정
          */
+
+        if (Build.VERSION.SDK_INT >= 21) {   //상태바 색
+            getWindow().setStatusBarColor(Color.parseColor("#FFA700"));
+        }
 
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -92,6 +104,7 @@ public class ReportStepThreeActivity extends AppCompatActivity implements OnMapR
 
         TextView actionbarTitle = (TextView)mCustomView.findViewById(R.id.mytext);
         actionbarTitle.setText("마켓 제보");
+        actionbarTitle.setTypeface(Typeface.createFromAsset(getAssets(),"OTF_B.otf"));
         ImageView backBtn = (ImageView) mCustomView.findViewById(R.id.backBtn);
 
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -110,6 +123,7 @@ public class ReportStepThreeActivity extends AppCompatActivity implements OnMapR
          *
          */
 
+        imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
         presenter  = new FindPresenterImpl(this);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -270,9 +284,12 @@ public class ReportStepThreeActivity extends AppCompatActivity implements OnMapR
 
                         presenter.getResultValue();
                         fristCheck = true;
+
+                        imm.hideSoftInputFromWindow(inputAddress.getWindowToken(), 0);
+
                     }
                     else
-                        presenter.nullDateValue();
+                        requestInputData();
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -313,36 +330,41 @@ public class ReportStepThreeActivity extends AppCompatActivity implements OnMapR
 
                 if(fristCheck == true){
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(ReportStepThreeActivity.this);     // 여기서 this는 Activity의 this
 
-                    // 여기서 부터는 알림창의 속성 설정
-                    builder.setMessage("해당 위치로 변경하시겠습니까?")        // 메세지 설정
-                            .setCancelable(true)        // 뒤로 버튼 클릭시 취소 가능 설정
-                            .setPositiveButton("확인", new DialogInterface.OnClickListener(){
-                                // 확인 버튼 클릭시 설정
-                                public void onClick(DialogInterface dialog, int whichButton){
-                                    getxlatlngToAddress();
-                                }
-                            })
-                            .setNegativeButton("취소", new DialogInterface.OnClickListener(){
-                                // 취소 버튼 클릭시 설정
-                                public void onClick(DialogInterface dialog, int whichButton){
-                                    ;
-                                }
-                            });
+                    WindowManager.LayoutParams registerParams;
+                    dialog_choose = new DialogChoose(ReportStepThreeActivity.this, chooseEvent,CancelEvent);
 
-                    AlertDialog dialog = builder.create();    // 알림창 객체 생성
-                    dialog.show();    // 알림창 띄우기
+                    registerParams = dialog_choose.getWindow().getAttributes();
 
+                    // Dialog 사이즈 조절 하기
+                    registerParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+                    registerParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+                    dialog_choose.getWindow().setAttributes(registerParams);
+
+                    dialog_choose.show();
 
                 }
             }
         });
 
-//        setCustomMarkerView();
-//        getSampleMarkerItems();
 
     }
+
+    private View.OnClickListener chooseEvent = new View.OnClickListener() {
+        public void onClick(View v) {
+            dialog_choose.dismiss();
+            getxlatlngToAddress();
+        }
+
+    };
+
+    private View.OnClickListener CancelEvent = new View.OnClickListener() {
+        public void onClick(View v) {
+            dialog_choose.dismiss();
+        }
+
+    };
+
 
     private void setCustomMarkerView() {
 
@@ -352,7 +374,7 @@ public class ReportStepThreeActivity extends AppCompatActivity implements OnMapR
 
     private void getSampleMarkerItems() {
 
-        MarkerItem markerItem = new MarkerItem(lat, log, R.drawable.ic_pin_01);
+        MarkerItem markerItem = new MarkerItem(lat, log, R.drawable.ic_picker);
         addMarker(markerItem, false);
 
     }
@@ -364,9 +386,9 @@ public class ReportStepThreeActivity extends AppCompatActivity implements OnMapR
         LatLng position = new LatLng(markerItem.getLat(), markerItem.getLon());
 
         if (isSelectedMarker) {
-            iv_marker.setBackgroundResource(R.drawable.ic_pin_01);
+            iv_marker.setBackgroundResource(R.drawable.ic_picker);
         } else {
-            iv_marker.setBackgroundResource(R.drawable.ic_pin_01);
+            iv_marker.setBackgroundResource(R.drawable.ic_picker);
         }
 
         MarkerOptions markerOptions = new MarkerOptions();
@@ -422,5 +444,16 @@ public class ReportStepThreeActivity extends AppCompatActivity implements OnMapR
 
         });
     }
+
+    public void requestInputData() {
+        runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(getApplicationContext(),"도로명 주소로 입력해주세요.",Toast.LENGTH_SHORT).show();
+                marketAddress.setText("검색 결과가 없습니다..");
+            }
+
+        });
+    }
+
 }
 

@@ -48,4 +48,8 @@ public class FilterViewHolder extends RecyclerView.ViewHolder implements View.On
 
         myView.moveDetailPage(mId);
     }
+
+    public ImageView getImageView(){
+        return mImageView;
+    }
 }

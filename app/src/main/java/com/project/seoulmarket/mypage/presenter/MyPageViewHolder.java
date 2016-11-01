@@ -22,7 +22,7 @@ public class MyPageViewHolder extends RecyclerView.ViewHolder implements View.On
     public TextView mProgress;
     public ImageView mImageView;
     public TextView mDate;
-    public TextView kakaoBtn;
+    public ImageView kakaoBtn;
 
     public MyPageViewHolder(View itemView,MyPageView myView) {
         super(itemView);
@@ -34,7 +34,7 @@ public class MyPageViewHolder extends RecyclerView.ViewHolder implements View.On
         mLocation = (TextView)itemView.findViewById(R.id.marketLocation);
         mProgress = (TextView)itemView.findViewById(R.id.progressRate);
         mDate = (TextView)itemView.findViewById(R.id.marketDate);
-        kakaoBtn = (TextView)itemView.findViewById(R.id.kakaoBtn);
+        kakaoBtn = (ImageView)itemView.findViewById(R.id.kakaoBtn);
 
         kakaoBtn.setOnClickListener(this);
         itemView.setOnClickListener(this);
@@ -51,5 +51,9 @@ public class MyPageViewHolder extends RecyclerView.ViewHolder implements View.On
                 break;
         }
 
+    }
+
+    public ImageView getImageView(){
+        return mImageView;
     }
 }

@@ -3,13 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#80000000"
     android:gravity="center">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/wd_login"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:background="@drawable/ic_window1"
         android:orientation="vertical"
         android:gravity="bottom|center"
         android:layout_marginBottom="30dp">
@@ -18,10 +21,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="등록하시겠습니까?"
-            android:layout_marginBottom="34dp"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="#E45033"/>
+            android:layout_marginBottom="20dp"
+            android:textSize="23sp"
+            android:textColor="#927DFF"
+            app:font="Bold"/>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -30,23 +34,24 @@
             >
             <Button
                 android:id="@+id/dialog_register"
-                android:layout_width="94dp"
-                android:layout_height="40dp"
-                android:layout_marginRight="12dp"
-                android:background="@drawable/button_dialog_login"
+                android:layout_width="110dp"
+                android:layout_height="38dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/dialog_location_background"
                 android:text="확인"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:textColor="#FFFFFF"/>
+                android:textSize="16sp"
+                android:textColor="#FFFFFF"
+                app:font="Bold"/>
+
             <Button
                 android:id="@+id/dialog_register_cancel"
-                android:layout_width="94dp"
-                android:layout_height="40dp"
-                android:background="@drawable/button_dialog_login_cancel"
+                android:layout_width="110dp"
+                android:layout_height="38dp"
+                android:background="@drawable/dialog_location_background"
                 android:text="취소"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:textColor="#FFFFFF"/>
+                android:textSize="16sp"
+                android:textColor="#FFFFFF"
+                app:font="Bold"/>
         </LinearLayout>
     </LinearLayout>
 

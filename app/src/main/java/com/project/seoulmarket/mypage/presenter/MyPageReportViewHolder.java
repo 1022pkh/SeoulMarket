@@ -16,12 +16,13 @@ public class MyPageReportViewHolder extends RecyclerView.ViewHolder implements V
 
     private MyPageView myView;
 
+    public int position;
     public String mId;
     public TextView mName;
     public TextView mLocation;
     public TextView mProgress;
     public ImageView mImageView;
-    public TextView kakaoBtn;
+    public ImageView kakaoBtn;
     public TextView deleteBtn;
     public TextView mDate;
 
@@ -33,8 +34,8 @@ public class MyPageReportViewHolder extends RecyclerView.ViewHolder implements V
         mImageView = (ImageView)itemView.findViewById(R.id.image);
         mName = (TextView)itemView.findViewById(R.id.marketName);
         mLocation = (TextView)itemView.findViewById(R.id.marketLocation);
-        mProgress = (TextView)itemView.findViewById(R.id.marketDate);
-        kakaoBtn = (TextView)itemView.findViewById(R.id.kakaoBtn);
+        mProgress = (TextView)itemView.findViewById(R.id.progressRate);
+        kakaoBtn = (ImageView)itemView.findViewById(R.id.kakaoBtn);
         deleteBtn = (TextView)itemView.findViewById(R.id.deleteReport);
         mDate = (TextView)itemView.findViewById(R.id.marketDate);
 
@@ -51,12 +52,15 @@ public class MyPageReportViewHolder extends RecyclerView.ViewHolder implements V
                 myView.sendKakao(mId);
                 break;
             case R.id.deleteReport:
-                myView.deleteReport(mId);
+                myView.deleteReport(position,mId);
                 break;
             default:
                 myView.moveDetailPage(mId);
                 break;
         }
 
+    }
+    public ImageView getImageView(){
+        return mImageView;
     }
 }

@@ -46,14 +46,15 @@ public class CardViewAdapter extends RecyclerView.Adapter<ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
+
         holder.mId = itemDatas.get(position).idx;
         holder.mName.setText(itemDatas.get(position).marketname);
         holder.mLocation.setText(itemDatas.get(position).address);
 
-        // TODO: 2016. 10. 5. 아직 데이터가 없으므로 임시로 넣어주기로.
+//        Log.i("myTag",String.valueOf(position));
         /**
          * state > 1 : 남은날자
-         * state = 0 : 당일
+         * state = 0 : 진행중
          * state < 0 만료
          */
 
@@ -61,19 +62,29 @@ public class CardViewAdapter extends RecyclerView.Adapter<ViewHolder> {
 
         if( state > 0){
             holder.mProgress.setText("D-" + state);
+            holder.mProgress.setBackgroundResource(R.drawable.progress_background);
+
         }
         else if(state == 0){
-            holder.mProgress.setText("D-day");
+            holder.mProgress.setText("진행중");
+            holder.mProgress.setBackgroundResource(R.drawable.progress_background);
+
         }
         else{
             holder.mProgress.setText("만료");
+            holder.mProgress.setBackgroundResource(R.drawable.progress_background);
+
         }
 
         ImageView imageView = (ImageView)itemView.findViewById(R.id.image);
 //        Log.i("myTag",itemDatas.get(position).image);
+
         Glide.with(parent.getContext())
                 .load(itemDatas.get(position).image)
-                .into(imageView);
+                .thumbnail(0.3f)
+                .error(R.drawable.ic_default)
+                .into(holder.getImageView());
+
 
     }
 
@@ -82,4 +93,11 @@ public class CardViewAdapter extends RecyclerView.Adapter<ViewHolder> {
     public int getItemCount() {
         return (itemDatas != null) ? itemDatas.size() : 0;
     }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+
 }
