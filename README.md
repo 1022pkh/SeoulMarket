@@ -23,3 +23,24 @@
 ---------
 
  ## 사용 라이브러리 정리
+
+1. cardview
+2. recyclerview
+3. gson
+4. retrofit2
+5. okhttp3
+6. typekit //  폰트적용
+7. circleimageview // 원 이미지
+8. calendarlistview  // 달력 
+9. kakao  // 카카오 서비스
+10. facebook // facebook 서비스
+11. firebase  //FCM
+13. glide
+14. tamlin  // viewpager DotIndicator
+15. navigationtabbar
+16. StickyScrollViewItems
+17. butterknife
+18. goole map
+
+
+
