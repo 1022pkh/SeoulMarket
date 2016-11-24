@@ -170,12 +170,13 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
                     findLocationBtn.setClickable(false);
                     findDateBtn.setClickable(false);
                     searchMarketArea.setVisibility(View.VISIBLE);
+                    requestInputEdit.requestFocus();
+
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
                     setNameSearch = true;
 
                 }
-
-                //findName();
-
 
             }
         });
@@ -856,7 +857,7 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
                     //이름검색일 경우
                     if(setNameFilterPage){
 
-                        presenter.requestNameFilterData(dialog_name.getName(), String.valueOf(currentPage++));
+                        presenter.requestNameFilterData(chooseName, String.valueOf(currentPage++));
                     }
                     //지역,날짜일 경우
                     else{
