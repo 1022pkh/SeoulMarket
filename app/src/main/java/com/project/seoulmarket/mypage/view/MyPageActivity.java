@@ -278,7 +278,8 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
                 int scrollExtend = recyclerView.computeVerticalScrollExtent();
                 int scrollRange = recyclerView.computeVerticalScrollRange();
 
-                if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
+//                if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
+                if (scrollOffset + scrollExtend >= scrollRange * 0.8) {
 
                     presenter.getMyLikeMarketData(String.valueOf(likeCurrentPage++));
 
@@ -325,7 +326,7 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
                 int scrollExtend = recyclerView.computeVerticalScrollExtent();
                 int scrollRange = recyclerView.computeVerticalScrollRange();
 
-                if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
+                if (scrollOffset + scrollExtend >= scrollRange * 0.8) {
 
                     presenter.getMyReportMarketData(String.valueOf(reportCurrentPage++));
 
@@ -372,7 +373,7 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
                 int scrollExtend = recyclerView.computeVerticalScrollExtent();
                 int scrollRange = recyclerView.computeVerticalScrollRange();
 
-                if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
+                if (scrollOffset + scrollExtend >= scrollRange * 0.8) {
 
                     presenter.getMyRecruitSellerData(String.valueOf(recruitCurrentPage++));
 
@@ -418,7 +419,10 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
                 .error(R.drawable.ic_blanket)
                 .into(thumbnail);
 
+        Log.i("myTag1",GlobalApplication.loginInfo.getString("method", ""));
+
         loginMethod.setText(GlobalApplication.loginInfo.getString("method", ""));
+
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

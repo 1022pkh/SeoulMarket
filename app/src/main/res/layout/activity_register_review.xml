@@ -67,6 +67,8 @@
                     android:id="@+id/contentArea"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:background="@drawable/content_background">
 
                     <EditText
@@ -75,7 +77,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        android:maxLength="200"
+                        android:maxLength="100"
                         android:padding="10dp"
                         android:hint="100자 이내"
                         android:background="@null"
@@ -87,20 +89,21 @@
             </LinearLayout>
 
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:weightSum="10">
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:weightSum="10"
+                android:gravity="center">
 
                 <TextView
                     android:id="@+id/imgName"
-                    android:layout_width="200dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="7"
                     android:layout_height="30dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:layout_marginLeft="20dp"
                     app:font="Custom1"
                     android:textColor="@color/mainGray"
                     android:gravity="center_vertical"
@@ -109,16 +112,16 @@
 
                 <Button
                     android:id="@+id/addImgBtn"
-                    android:layout_width="80dp"
+                    android:layout_width="0dp"
                     android:layout_height="30dp"
+                    android:layout_weight="3"
                     app:font="Bold"
                     android:textColor="#ffffff"
                     android:background="@drawable/dialog_location_background"
                     android:layout_alignParentRight="true"
-                    android:layout_marginRight="20dp"
                     android:text="사진 첨부"/>
 
-            </RelativeLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_marginTop="20dp"

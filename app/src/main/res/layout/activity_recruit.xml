@@ -16,21 +16,26 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#E7E7E7"
         >
 
 
         <LinearLayout
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:paddingBottom="10dp"
-            android:layout_width="340dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:background="@drawable/ic_window3"
-            android:elevation="10dp"
-            android:outlineProvider="bounds"
             android:layout_centerHorizontal="true"
+            android:background="@drawable/ic_window3"
             >
+<!--
+            android:elevation="10dp"
+            android:outlineProvider="bounds"-->
+
 
             <ListView
                 android:layout_marginTop="30dp"
@@ -40,6 +45,7 @@
                 android:layout_gravity="center_horizontal"
                 android:dividerHeight="1dp"
                 android:divider="#d6d6d6"
+
                 >
 
             </ListView>

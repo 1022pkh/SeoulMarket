@@ -4,13 +4,13 @@
     android:id="@+id/listview_comment"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="40dp"
+    android:layout_height="50dp"
     android:gravity="center_vertical"
     android:background="@drawable/recruit_review_background">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:orientation="vertical"
         android:gravity="center_vertical"
         android:layout_marginTop="1dp"
@@ -27,6 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
+                android:layout_marginTop="3dp"
                 android:layout_weight="1">
 
                 <TextView
@@ -42,9 +43,9 @@
                     android:id="@+id/reviewContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="18dp"
+                    android:layout_marginLeft="16dp"
                     android:textColor="@color/mainGray"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     app:font="Custom1"
                     android:text="gooooooooooood!"/>
 
@@ -55,7 +56,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="5dp"
                 android:gravity="right">
 
                 <TextView

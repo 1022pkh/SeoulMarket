@@ -3,6 +3,7 @@ package com.project.seoulmarket.report.presenter;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Handler;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -33,6 +34,8 @@ import retrofit2.Response;
 public class ReportStepFourPresenterImpl implements ReportStepFourPresenter {
     ReportStepFourView view;
     NetworkService networkService;
+    Handler hd;
+    Runnable runnable;
 
     public ReportStepFourPresenterImpl(ReportStepFourView view) {
         this.view = view;
@@ -47,6 +50,24 @@ public class ReportStepFourPresenterImpl implements ReportStepFourPresenter {
             , String market_startdate, String market_enddate, String market_url
             , ArrayList images, Intent dataList1, Intent dataList2, Intent dataList3
             , Intent dataList4, Intent dataList5, Intent dataList6) {
+
+
+
+
+        hd = new Handler();
+
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+
+                Log.i("myTag","timeout");
+                view.timeout();
+            }
+        };
+
+        hd.postDelayed(runnable, 10000);
+
+
 
         Log.i("myTag","report add");
 
@@ -140,7 +161,12 @@ public class ReportStepFourPresenterImpl implements ReportStepFourPresenter {
                         }
 
                     }
+                    else{
+                        view.errorMsg();
+                    }
 
+
+                    hd.removeCallbacks(runnable);
                 }
 
                 @Override
@@ -270,7 +296,12 @@ public class ReportStepFourPresenterImpl implements ReportStepFourPresenter {
                         }
 
                     }
+                    else{
+                        view.errorMsg();
+                    }
 
+
+                    hd.removeCallbacks(runnable);
                 }
 
                 @Override
@@ -404,6 +435,12 @@ public class ReportStepFourPresenterImpl implements ReportStepFourPresenter {
                         }
 
                     }
+                    else{
+                        view.errorMsg();
+                    }
+
+
+                    hd.removeCallbacks(runnable);
 
                 }
 
@@ -557,7 +594,12 @@ public class ReportStepFourPresenterImpl implements ReportStepFourPresenter {
                         }
 
                     }
+                    else{
+                        view.errorMsg();
+                    }
 
+
+                    hd.removeCallbacks(runnable);
                 }
 
                 @Override
@@ -729,6 +771,12 @@ public class ReportStepFourPresenterImpl implements ReportStepFourPresenter {
                         }
 
                     }
+                    else{
+                        view.errorMsg();
+                    }
+
+
+                    hd.removeCallbacks(runnable);
 
                 }
 
@@ -920,7 +968,12 @@ public class ReportStepFourPresenterImpl implements ReportStepFourPresenter {
                         }
 
                     }
+                    else{
+                        view.errorMsg();
+                    }
 
+
+                    hd.removeCallbacks(runnable);
                 }
 
                 @Override
@@ -929,6 +982,7 @@ public class ReportStepFourPresenterImpl implements ReportStepFourPresenter {
                 }
             });
         }
+
 
     }
 }

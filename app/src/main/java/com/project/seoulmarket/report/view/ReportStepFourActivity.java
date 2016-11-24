@@ -303,6 +303,8 @@ public class ReportStepFourActivity extends AppCompatActivity implements ReportS
             presenter.addReportMarket(market_name,market_address,market_host,market_contents,market_tag,market_longitude,market_latitude,
                     market_tell,market_startdate,market_enddate,market_url,imgURL,dataList1,dataList2,dataList3,dataList4,dataList5,dataList6);
 
+
+
         }
 
     };
@@ -426,7 +428,17 @@ public class ReportStepFourActivity extends AppCompatActivity implements ReportS
     @Override
     public void errorMsg() {
         Toast.makeText(getApplicationContext(),R.string.error_network,Toast.LENGTH_SHORT).show();
-        asyncDialog.dismiss();
+        if(asyncDialog != null) {
+            asyncDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void timeout() {
+        if(asyncDialog != null) {
+            asyncDialog.dismiss();
+            Toast.makeText(getApplicationContext(),R.string.error_network,Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

@@ -8,5 +8,6 @@ import android.content.Context;
 public interface ReportStepFourView {
     void successMsg();
     void errorMsg();
+    void timeout();
     Context getNowContext();
 }

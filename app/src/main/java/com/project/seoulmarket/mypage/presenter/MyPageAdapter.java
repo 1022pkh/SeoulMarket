@@ -1,6 +1,7 @@
 package com.project.seoulmarket.mypage.presenter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +18,15 @@ import java.util.ArrayList;
  * Created by kh on 2016. 10. 5..
  */
 
-public class MyPageAdapter extends RecyclerView.Adapter<MyPageViewHolder> {
+public class MyPageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<LikeDetailData> itemDatas;
     private View itemView;
     private ViewGroup parent;
 
     private MyPageView myView;
+
+    private static final int FOOTER_VIEW = 1;
 
     public MyPageAdapter(ArrayList<LikeDetailData> itemDatas, MyPageView myView){
         this.itemDatas = itemDatas;
@@ -32,7 +35,19 @@ public class MyPageAdapter extends RecyclerView.Adapter<MyPageViewHolder> {
 
     //ViewHolder 생성
     @Override
-    public MyPageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+
+//        Log.i("myTag", String.valueOf(viewType));
+
+        if (viewType == FOOTER_VIEW) {
+            Log.i("myTag","footer");
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.main_cardview_footer, parent, false);
+
+            FooterViewHolder vh = new FooterViewHolder(itemView);
+
+            return vh;
+        }
 
         this.parent = parent;
         itemView = LayoutInflater.from(parent.getContext())
@@ -45,48 +60,84 @@ public class MyPageAdapter extends RecyclerView.Adapter<MyPageViewHolder> {
 
     //ListView의 getView()랑 동일
     @Override
-    public void onBindViewHolder(MyPageViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        holder.mId = itemDatas.get(position).idx;
-        holder.mName.setText(itemDatas.get(position).marketname);
-        holder.mLocation.setText(itemDatas.get(position).address);
 
-        int state = Integer.valueOf(itemDatas.get(position).state);
+        try {
+            if (holder instanceof MyPageViewHolder) {
+                MyPageViewHolder vh = (MyPageViewHolder) holder;
 
-        if( state > 0){
-            holder.mProgress.setText("D-" + state);
-            holder.mProgress.setBackgroundResource(R.drawable.progress_background);
-        }
-        else if(state == 0){
-            holder.mProgress.setText("진행중");
-            holder.mProgress.setBackgroundResource(R.drawable.progress_background);
-        }
-        else{
-            holder.mProgress.setText("만료");
-            holder.mProgress.setBackgroundResource(R.drawable.progress_background);
-        }
+                vh.mId = itemDatas.get(position).idx;
+                vh.mName.setText(itemDatas.get(position).marketname);
+                vh.mLocation.setText(itemDatas.get(position).address);
 
-        String startTemp = itemDatas.get(position).market_startdate.replace("-",".");
-        String endTemp = itemDatas.get(position).market_enddate.replace("-",".");
+                int state = Integer.valueOf(itemDatas.get(position).state);
 
-        holder.mDate.setText(startTemp +"~" + endTemp);
+                if( state > 0){
+                    vh.mProgress.setText("D-" + state);
+                    vh.mProgress.setBackgroundResource(R.drawable.progress_background);
+                }
+                else if(state == 0){
+                    vh.mProgress.setText("진행중");
+                    vh.mProgress.setBackgroundResource(R.drawable.progress_background);
+                }
+                else{
+                    vh.mProgress.setText("만료");
+                    vh.mProgress.setBackgroundResource(R.drawable.progress_background);
+                }
 
-        ImageView imageView = (ImageView)itemView.findViewById(R.id.image);
+                String startTemp = itemDatas.get(position).market_startdate.replace("-",".");
+                String endTemp = itemDatas.get(position).market_enddate.replace("-",".");
 
-        Glide.with(parent.getContext())
-                .load(itemDatas.get(position).image)
-                .thumbnail(0.3f)
-                .error(R.drawable.ic_default)
-                .into(holder.getImageView());
+                vh.mDate.setText(startTemp +"~" + endTemp);
+
+                ImageView imageView = (ImageView)itemView.findViewById(R.id.image);
+
+                Glide.with(parent.getContext())
+                        .load(itemDatas.get(position).image)
+                        .thumbnail(0.3f)
+                        .error(R.drawable.ic_default)
+                        .into(vh.getImageView());
 
 //        Glide.clear(imageView);
+
+            } else if (holder instanceof FooterViewHolder) {
+                FooterViewHolder vh = (FooterViewHolder) holder;
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
 
     }
 
 
     @Override
     public int getItemCount() {
-        return (itemDatas != null) ? itemDatas.size() : 0;
+        if (itemDatas == null) {
+            return 0;
+        }
+
+        if (itemDatas.size() == 0) {
+            //Return 1 here to show nothing
+            return 1;
+        }
+
+        // Add extra view to show the footer view
+        return itemDatas.size() + 1;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == itemDatas.size()) {
+            // This is where we'll add footer.
+            return FOOTER_VIEW;
+        }
+
+        return super.getItemViewType(position);
     }
 
 

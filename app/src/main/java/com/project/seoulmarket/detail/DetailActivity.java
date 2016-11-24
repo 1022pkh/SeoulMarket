@@ -416,7 +416,13 @@ public class DetailActivity extends AppCompatActivity implements DetailView{
 
     @Override
     public void setDetailData(Result itemDatas) {
+
+        if(itemDatas.market_name.length() > 7){
+            marketName.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+        }
+
         marketName.setText(itemDatas.market_name);
+
 
 
 //        marketTag.setText(itemDatas.market_tag.replace(","," "));

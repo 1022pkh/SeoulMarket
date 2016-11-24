@@ -14,8 +14,8 @@
         android:layout_marginRight="25dp"
         android:background="@drawable/ic_window1"
         android:orientation="vertical"
-        android:gravity="bottom|center"
-        android:layout_marginBottom="30dp">
+        android:gravity="bottom|center">
+
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"

@@ -13,9 +13,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -240,18 +242,39 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
                 else {
                     mainArea.setEnabled(true);
                 }
-            }
 
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 int scrollOffset = recyclerView.computeVerticalScrollOffset();
                 int scrollExtend = recyclerView.computeVerticalScrollExtent();
                 int scrollRange = recyclerView.computeVerticalScrollRange();
 
-                if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
+                int temp = scrollOffset + scrollExtend;
+
+                Log.i("myTag",">>"+temp+"//"+scrollRange);
+
+                if (scrollOffset + scrollExtend >= scrollRange * 0.8) {
+//                if (scrollOffset + scrollExtend + 200 <= scrollRange) {
 
                     presenter.requestMainData(String.valueOf(currentPage++));
                 }
+
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+
+//                int scrollOffset = recyclerView.computeVerticalScrollOffset();
+//                int scrollExtend = recyclerView.computeVerticalScrollExtent();
+//                int scrollRange = recyclerView.computeVerticalScrollRange();
+//
+//                int temp = scrollOffset + scrollExtend;
+//
+//                Log.i("myTag",">>"+temp+"//"+scrollRange);
+//
+//                if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
+//
+//                    presenter.requestMainData(String.valueOf(currentPage++));
+//                }
+
             }
 
         });
@@ -263,6 +286,22 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
          */
         //String idx; String address; String state; String image; String marketname;
         presenter.requestMainData(String.valueOf(currentPage++));
+
+
+        requestInputEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                switch (actionId) {
+                    case EditorInfo.IME_ACTION_SEARCH:
+                        searchName();
+                        break;
+
+                    default:
+                        return false;
+                }
+                return true;
+            }
+        });
 
     }
 
