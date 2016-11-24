@@ -43,10 +43,36 @@
         android:layout_height="1dp"
         android:background="#dfdfdf"/>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/pager"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/dataNullIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_launcher"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"/>
+
+        <TextView
+            android:id="@+id/dataNullText"
+            android:layout_below="@id/dataNullIcon"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:font="Custom1"
+            android:textSize="14sp"
+            android:text="해당 게시물이 없어요!"
+            android:visibility="invisible"/>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </RelativeLayout>
 
 
 </LinearLayout>

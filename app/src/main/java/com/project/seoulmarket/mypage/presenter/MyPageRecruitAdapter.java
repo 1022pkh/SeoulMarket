@@ -1,7 +1,6 @@
 package com.project.seoulmarket.mypage.presenter;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +37,6 @@ public class MyPageRecruitAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.parent = parent;
 
         if (viewType == FOOTER_VIEW) {
-            Log.i("myTag","footer");
             itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.main_cardview_footer, parent, false);
 
             FooterViewHolder vh = new FooterViewHolder(itemView);
@@ -50,6 +48,9 @@ public class MyPageRecruitAdapter extends RecyclerView.Adapter<RecyclerView.View
         itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.main_cardview_recruit, parent,false);
         MyPageRecruitViewHolder viewHolder = new MyPageRecruitViewHolder(itemView, myView);
+
+
+
 
         return viewHolder;
 

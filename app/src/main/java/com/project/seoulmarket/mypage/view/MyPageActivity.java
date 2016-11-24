@@ -64,6 +64,11 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
     ViewPager pager;
     @BindView(R.id.ntb)
     NavigationTabBar navigationTabBar;
+    @BindView(R.id.dataNullIcon)
+    ImageView dataNullIcon;
+    @BindView(R.id.dataNullText)
+    TextView dataNullText;
+
 
     MyPageAdapter mLikeAdapter;
 
@@ -94,6 +99,10 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
 
     int recruitPosition;
     String recruitMId;
+
+    LinearLayout view_like;
+    LinearLayout view_report;
+    LinearLayout view_recruit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,6 +165,74 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
         MyPageViewPagerAdapter adapter = new MyPageViewPagerAdapter(getSupportFragmentManager(),this);
         pager.setAdapter(adapter);
 
+        pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//                if(likeItemDatas.size() == 0){
+//                    dataNullIcon.setVisibility(View.VISIBLE);
+//                    dataNullText.setVisibility(View.VISIBLE);
+//                }
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+//                Log.i("myTag", String.valueOf(position));
+
+                ImageView moveTop;
+
+                switch (position){
+                    case 0 :
+                        moveTop = (ImageView)view_like.findViewById(R.id.moveTopBtn);
+
+                        if(likeItemDatas.size() == 0){
+                            dataNullIcon.setVisibility(View.VISIBLE);
+                            dataNullText.setVisibility(View.VISIBLE);
+                            moveTop.setVisibility(View.INVISIBLE);
+                        }
+                        else{
+                            dataNullIcon.setVisibility(View.INVISIBLE);
+                            dataNullText.setVisibility(View.INVISIBLE);
+                            moveTop.setVisibility(View.VISIBLE);
+                        }
+                    break;
+
+                    case 1 :
+                        moveTop = (ImageView)view_report.findViewById(R.id.moveTopBtn);
+
+                        if(reportItemDatas.size() == 0){
+                            dataNullIcon.setVisibility(View.VISIBLE);
+                            dataNullText.setVisibility(View.VISIBLE);
+                            moveTop.setVisibility(View.INVISIBLE);
+                        }
+                        else{
+                            dataNullIcon.setVisibility(View.INVISIBLE);
+                            dataNullText.setVisibility(View.INVISIBLE);
+                            moveTop.setVisibility(View.VISIBLE);
+                        }
+                        break;
+
+                    case 2 :
+                        moveTop = (ImageView)view_recruit.findViewById(R.id.moveTopBtn);
+                        if(recruitItemDatas.size() == 0){
+                            dataNullIcon.setVisibility(View.VISIBLE);
+                            dataNullText.setVisibility(View.VISIBLE);
+                            moveTop.setVisibility(View.INVISIBLE);
+                        }
+                        else{
+                            dataNullIcon.setVisibility(View.INVISIBLE);
+                            dataNullText.setVisibility(View.INVISIBLE);
+                            moveTop.setVisibility(View.VISIBLE);
+                        }
+                        break;
+
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
 
         presenter.getMyLikeMarketData(String.valueOf(likeCurrentPage++));
@@ -229,6 +306,7 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
         super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
     }
 
+
     @Override
     protected void onRestart(){
         super.onRestart();
@@ -255,6 +333,8 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
 
     @Override
     public void makeLikeView(LinearLayout view) {
+
+        view_like = view;
 
         final RecyclerView recyclerView = (RecyclerView)view.findViewById(R.id.likeMarketList);
         TextView nickNameTitle = (TextView)view.findViewById(R.id.userNickName);
@@ -290,6 +370,7 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
         recyclerView.setAdapter(mLikeAdapter);
 
         ImageView moveTop = (ImageView)view.findViewById(R.id.moveTopBtn);
+
         moveTop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -297,11 +378,15 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
             }
         });
 
+
+
     }
 
 
     @Override
     public void makeReportView(LinearLayout view) {
+
+        view_report = view;
 
         final RecyclerView recyclerView = (RecyclerView)view.findViewById(R.id.reportMarketList);
         TextView nickNameTitle = (TextView)view.findViewById(R.id.userNickName);
@@ -337,6 +422,7 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
         recyclerView.setAdapter(mReportAdapter);
 
         ImageView moveTop = (ImageView)view.findViewById(R.id.moveTopBtn);
+
         moveTop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -348,6 +434,8 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
 
     @Override
     public void makeRecruitView(LinearLayout view) {
+
+        view_recruit = view;
 
         final RecyclerView recyclerView = (RecyclerView)view.findViewById(R.id.recruitMarketList);
         TextView nickNameTitle = (TextView)view.findViewById(R.id.userNickName);
@@ -385,6 +473,7 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
         recyclerView.setAdapter(mRecruitAdapter);
 
         ImageView moveTop = (ImageView)view.findViewById(R.id.moveTopBtn);
+
         moveTop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -392,7 +481,6 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
             }
         });
 
-//        recruitItemDatas.add(new RecruitDetailData("12","프리마켓1 셀러모집","","nick","2016.10.22","1"));
 
     }
 
