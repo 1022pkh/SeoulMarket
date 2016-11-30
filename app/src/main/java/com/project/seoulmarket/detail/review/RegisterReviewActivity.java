@@ -270,6 +270,8 @@ public class RegisterReviewActivity extends AppCompatActivity implements Registe
         /**
          * 성공시  이동한다.
          */
+        Intent intent = getIntent();
+        setResult(RESULT_OK,intent);
         finish();
     }
 

@@ -51,6 +51,25 @@ public class DetailPresenterImpl implements DetailPresenter {
     }
 
     @Override
+    public void updateReview(String id, final String pageNum) {
+        Call<DetailResultData> detailData = networkService.getDetailData(id,pageNum);
+        detailData.enqueue(new Callback<DetailResultData>() {
+            @Override
+            public void onResponse(Call<DetailResultData> call, Response<DetailResultData> response) {
+                if(response.isSuccessful()){
+                    Result getDatas = response.body().result;
+                    view.addReviewData(getDatas.review);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DetailResultData> call, Throwable t) {
+                Log.i("myTag fail",t.toString());
+            }
+        });
+    }
+
+    @Override
     public void requestLikeFavorite(String id) {
 
         Call<FavoriteResult> requestLike = networkService.requestLikeFavorite(id);

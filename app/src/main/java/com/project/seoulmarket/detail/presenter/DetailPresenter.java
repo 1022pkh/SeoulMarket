@@ -5,6 +5,7 @@ package com.project.seoulmarket.detail.presenter;
  */
 public interface DetailPresenter {
     void getDetail(String id,String pageNum);
+    void updateReview(String id,String pageNum);
     void requestLikeFavorite(String id);
     void requestDeleteFavorite(String id);
 }

@@ -156,22 +156,23 @@ public class DetailActivity extends AppCompatActivity implements DetailView{
     protected void onRestart() {
         super.onRestart();
 
-        //부모 뷰
-        LinearLayout listview = (LinearLayout)findViewById(R.id.reviewList);
-
-        imgUrl.clear();
-
-        if(pageInfo.equals("review")) {
-            listview.removeAllViews();
-        }
-        else{
-            ;
-        }
-
-
-        reviewDatas.clear();
-        currentPage = 0;
-        presenter.getDetail(marketId,String.valueOf(currentPage++));
+//        //부모 뷰
+//        LinearLayout listview = (LinearLayout)findViewById(R.id.reviewList);
+//
+//        imgUrl.clear();
+//
+//        if(pageInfo.equals("review")) {
+//            if(reviewDatas.size() != 0)
+//                listview.removeAllViews();
+//        }
+//        else{
+//            ;
+//        }
+//
+//
+//        reviewDatas.clear();
+//        currentPage = 0;
+//        presenter.getDetail(marketId,String.valueOf(currentPage++));
 
     }
 
@@ -222,6 +223,39 @@ public class DetailActivity extends AppCompatActivity implements DetailView{
         startActivity(intent);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK) // 액티비티가 정상적으로 종료되었을 경우
+        {
+            Log.i("myTag","REsult_ok");
+
+            /**
+             * 리뷰를 등록 후 왔다면...
+             * 다시 재로딩할 필요가 있음
+             */
+            //부모 뷰
+            LinearLayout listview = (LinearLayout)findViewById(R.id.reviewList);
+
+//            imgUrl.clear();
+
+            if(pageInfo.equals("review")) {
+                if(reviewDatas.size() != 0)
+                    listview.removeAllViews();
+            }
+
+            reviewDatas.clear();
+            currentPage = 0;
+            presenter.updateReview(marketId,String.valueOf(currentPage++));
+
+        }
+        else{
+            Log.i("myTag","REsult_no");
+
+        }
+    }
+
+
     @OnClick(R.id.marketReview)
     public void moveRigisterReview(){
 
@@ -229,7 +263,9 @@ public class DetailActivity extends AppCompatActivity implements DetailView{
             Intent intent = new Intent(getApplicationContext(), RegisterReviewActivity.class);
             intent.putExtra("market_name",mName);
             intent.putExtra("market_id",marketId);
-            startActivity(intent);
+//            startActivity(intent);
+            startActivityForResult(intent, 1);
+
         }
         else{
             WindowManager.LayoutParams loginParams;
@@ -331,95 +367,113 @@ public class DetailActivity extends AppCompatActivity implements DetailView{
         reviewInfoArea.setVisibility(View.VISIBLE);
 
         pageInfo = "review";
-        moveTopBtn.setVisibility(View.VISIBLE);
-
         inflatedLayout.removeAllViews();
+//        moveTopBtn.setVisibility(View.VISIBLE);
 
-        /**
-         * 미리 정보를 받아와서 객체로 저장해놓고 있어야함!
-         */
+        if(reviewDatas.size() == 0) {
+            moveTopBtn.setVisibility(View.INVISIBLE);
 
-        LayoutInflater inflater =  (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        // Inflated_Layout.xml로 구성한 레이아웃을 inflatedLayout 영역으로 확장
-        inflater.inflate(R.layout.content_reviewinfo, inflatedLayout);
+            LayoutInflater inflater =  (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            // Inflated_Layout.xml로 구성한 레이아웃을 inflatedLayout 영역으로 확장
+            inflater.inflate(R.layout.content_review_null, inflatedLayout);
 
-        //부모 뷰
-        LinearLayout listview = (LinearLayout)findViewById(R.id.reviewList);
+        }
+        else {
+            moveTopBtn.setVisibility(View.VISIBLE);
+            /**
+             * 미리 정보를 받아와서 객체로 저장해놓고 있어야함!
+             */
 
-        LayoutInflater child;
-        LinearLayout childLayout;
+            LayoutInflater inflater =  (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            // Inflated_Layout.xml로 구성한 레이아웃을 inflatedLayout 영역으로 확장
+            inflater.inflate(R.layout.content_reviewinfo, inflatedLayout);
 
-        TextView reviewNickname;
-        TextView reviewDate;
-        TextView reviewContent;
+            //부모 뷰
+            LinearLayout listview = (LinearLayout)findViewById(R.id.reviewList);
+
+            LayoutInflater child;
+            LinearLayout childLayout;
+
+            TextView reviewNickname;
+            TextView reviewDate;
+            TextView reviewContent;
 
 
-        for(int i=0; i<reviewDatas.size();i++){
+            for(int i=0; i<reviewDatas.size();i++){
 
-            child = (LayoutInflater) getSystemService (Context.LAYOUT_INFLATER_SERVICE);
-            childLayout = (LinearLayout) child.inflate(R.layout.detail_market_review_item, null);
+                child = (LayoutInflater) getSystemService (Context.LAYOUT_INFLATER_SERVICE);
+                childLayout = (LinearLayout) child.inflate(R.layout.detail_market_review_item, null);
 
-            reviewNickname =  (TextView)childLayout.findViewById(R.id.reviewNickname);
-            reviewDate = (TextView)childLayout.findViewById(R.id.reviewDate);
-            reviewContent =  (TextView)childLayout.findViewById(R.id.reviewContent);
+                reviewNickname =  (TextView)childLayout.findViewById(R.id.reviewNickname);
+                reviewDate = (TextView)childLayout.findViewById(R.id.reviewDate);
+                reviewContent =  (TextView)childLayout.findViewById(R.id.reviewContent);
 
-            final String nick = reviewDatas.get(i).user_nickname;
-            final String uploadTime = reviewDatas.get(i).review_uploadtime;
-            final String contents = reviewDatas.get(i).review_contents;
-            final String imgUrl = reviewDatas.get(i).review_img;
+                final String nick = reviewDatas.get(i).user_nickname;
+                final String uploadTime = reviewDatas.get(i).review_uploadtime;
+                final String contents = reviewDatas.get(i).review_contents;
+                final String imgUrl = reviewDatas.get(i).review_img;
 
-            reviewNickname.setText(nick);
-            reviewDate.setText(uploadTime);
-            if (contents.length() > 25)
-                reviewContent.setText(contents.substring(0,25)+"...");
+                reviewNickname.setText(nick);
+                reviewDate.setText(uploadTime);
+                if (contents.length() > 25)
+                    reviewContent.setText(contents.substring(0,25)+"...");
+                else
+                    reviewContent.setText(contents);
+
+
+                childLayout.setId(Integer.parseInt(reviewDatas.get(i).review_idx));
+                childLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+//                    Log.i("myTag : ", String.valueOf(v.getId()));
+                        Intent intent = new Intent(getApplicationContext(), ReviewDetailActivity.class);
+                        intent.putExtra("review_id",String.valueOf(v.getId()));
+                        intent.putExtra("review_nick",nick);
+                        intent.putExtra("review_uploadtime",uploadTime);
+                        intent.putExtra("review_content",contents);
+                        intent.putExtra("review_img",imgUrl);
+                        startActivity(intent);
+                    }
+                });
+
+                listview.addView(childLayout);
+
+            }
+
+
+            LinearLayout requestReview = (LinearLayout)findViewById(R.id.requestReview);
+
+            if (reviewDatas.size() == 10)
+                requestReview.setVisibility(View.VISIBLE);
             else
-                reviewContent.setText(contents);
+                requestReview.setVisibility(View.INVISIBLE);
 
 
-            childLayout.setId(Integer.parseInt(reviewDatas.get(i).review_idx));
-            childLayout.setOnClickListener(new View.OnClickListener() {
+
+            requestReview.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Log.i("myTag : ", String.valueOf(v.getId()));
-                    Intent intent = new Intent(getApplicationContext(), ReviewDetailActivity.class);
-                    intent.putExtra("review_id",String.valueOf(v.getId()));
-                    intent.putExtra("review_nick",nick);
-                    intent.putExtra("review_uploadtime",uploadTime);
-                    intent.putExtra("review_content",contents);
-                    intent.putExtra("review_img",imgUrl);
-                    startActivity(intent);
+                    presenter.getDetail(marketId,String.valueOf(currentPage++));
                 }
             });
-
-            listview.addView(childLayout);
-
         }
 
 
-        LinearLayout requestReview = (LinearLayout)findViewById(R.id.requestReview);
-
-        if (reviewDatas.size() == 10)
-            requestReview.setVisibility(View.VISIBLE);
-        else
-            requestReview.setVisibility(View.INVISIBLE);
 
 
-
-        requestReview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.getDetail(marketId,String.valueOf(currentPage++));
-            }
-        });
 
     }
 
     @Override
     public void setDetailData(Result itemDatas) {
 
+        Log.i("myTag", "length"+String.valueOf(itemDatas.market_name.length()));
+
         if(itemDatas.market_name.length() > 7){
             marketName.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
         }
+        else
+            marketName.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
 
         marketName.setText(itemDatas.market_name);
 
@@ -538,6 +592,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView{
 
         reviewDatas.addAll(itemDatas.review);
 
+
         mFavorite = itemDatas.favorite;
         heartStat =  Integer.valueOf(mFavorite);
 
@@ -559,6 +614,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView{
         /**
          * 미리 정보를 받아와서 객체로 저장해놓고 있어야함!
          */
+        this.reviewDatas.addAll(reviewDatas);
 
         LayoutInflater inflater =  (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         // Inflated_Layout.xml로 구성한 레이아웃을 inflatedLayout 영역으로 확장
@@ -573,6 +629,8 @@ public class DetailActivity extends AppCompatActivity implements DetailView{
         TextView reviewNickname;
         TextView reviewDate;
         TextView reviewContent;
+
+
 
         for(int i=0; i<reviewDatas.size();i++) {
 

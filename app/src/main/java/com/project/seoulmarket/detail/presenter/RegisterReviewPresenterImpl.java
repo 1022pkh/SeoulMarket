@@ -58,7 +58,7 @@ public class RegisterReviewPresenterImpl implements RegisterReviewPresenter {
          */
 
         if(imgUrl.equals("")){
-            Log.i("myTag","img null");
+//            Log.i("myTag","img null");
 
             Call<ResponseBody> call = networkService.addMarketReview(marketId, marketContents, null );
             call.enqueue(new Callback<ResponseBody>() {
@@ -70,11 +70,11 @@ public class RegisterReviewPresenterImpl implements RegisterReviewPresenter {
                         try {
                             String getResult = response.body().string();
 
-                            Log.i("myTag",getResult);
+//                            Log.i("myTag",getResult);
 
                             ConnectResult result = gson.fromJson(getResult, ConnectResult.class);
 
-                            Log.i("myTag", String.valueOf(result));
+//                            Log.i("myTag", String.valueOf(result));
 
                             if(result.result.message.equals("Success"))
                                 view.successMsg();
