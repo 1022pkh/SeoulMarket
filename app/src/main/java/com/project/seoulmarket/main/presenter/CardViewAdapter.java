@@ -29,6 +29,12 @@ public class CardViewAdapter extends RecyclerView.Adapter<ViewHolder> {
         this.myView = myView;
     }
 
+    public void refreshData(ArrayList<MarketFirstData> itemDatas){
+        this.itemDatas = itemDatas;
+        notifyDataSetChanged();
+    }
+
+
     //ViewHolder 생성
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

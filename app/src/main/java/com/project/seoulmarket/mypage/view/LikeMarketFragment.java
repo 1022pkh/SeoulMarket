@@ -22,7 +22,10 @@ public class LikeMarketFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
         LinearLayout view = (LinearLayout)inflater.inflate(R.layout.content_my_page_likemarket, container, false);
+
+
         myView.makeLikeView(view);
 
         return view;

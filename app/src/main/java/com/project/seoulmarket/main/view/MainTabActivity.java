@@ -83,7 +83,7 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
     @BindView(R.id.findDateArea)
     View findDateArea;
 
-    RecyclerView.Adapter mAdapter;
+    CardViewAdapter mAdapter;
     ArrayList<MarketFirstData> itemDatas;
     LinearLayoutManager mLayoutManager;
 
@@ -230,6 +230,8 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(mLayoutManager);
 
+        recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+
         recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -250,9 +252,10 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
 
                 int temp = scrollOffset + scrollExtend;
 
-                Log.i("myTag",">>"+temp+"//"+scrollRange);
+//                Log.i("myTag",">>"+temp+"//"+scrollRange);
 
-                if (scrollOffset + scrollExtend >= scrollRange * 0.8) {
+                if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
+                //if (scrollOffset + scrollExtend >= scrollRange * 0.8) {
 //                if (scrollOffset + scrollExtend + 200 <= scrollRange) {
 
                     presenter.requestMainData(String.valueOf(currentPage++));
@@ -731,6 +734,47 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
     }
 
     @Override
+    public void firstSetRefreshData(ArrayList<MarketFirstData> getDatas) {
+
+        recyclerView.smoothScrollToPosition(0);
+        itemDatas = getDatas;
+        mAdapter.refreshData(getDatas);
+
+
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+                int firstPos=mLayoutManager.findFirstCompletelyVisibleItemPosition();
+
+                if (firstPos>0)
+                {
+                    mainArea.setEnabled(false);
+                }
+                else {
+                    mainArea.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int scrollOffset = recyclerView.computeVerticalScrollOffset();
+                int scrollExtend = recyclerView.computeVerticalScrollExtent();
+                int scrollRange = recyclerView.computeVerticalScrollRange();
+
+
+                if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
+
+                    presenter.requestMainData(String.valueOf(currentPage++));
+
+                }
+            }
+        });
+
+    }
+
+    @Override
     public void filterSetData(String fName, ArrayList<MarketFilterData> getDatas) {
 
         Log.i("myTag",String.valueOf(currentPage));
@@ -763,9 +807,7 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
                     int scrollRange = recyclerView.computeVerticalScrollRange();
 
                     if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
-//                    Toast.makeText(getApplicationContext(),"get",Toast.LENGTH_SHORT).show();
                         presenter.requestNameFilterData(middleUserName.getText().toString(), String.valueOf(currentPage++));
-//                    Toast.makeText(getApplicationContext(),String.valueOf(currentPage),Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -844,7 +886,9 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
 //        Toast.makeText(getApplicationContext(),"fresh",Toast.LENGTH_SHORT).show();
 
         mainArea.setRefreshing(true);
-        //3초후에 해당 adapoter를 갱신하고 동글뱅이를 닫아준다.setRefreshing(false);
+        //2초후에 해당 adapoter를 갱신하고 동글뱅이를 닫아준다.setRefreshing(false);
+
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -856,24 +900,23 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
 
                     //이름검색일 경우
                     if(setNameFilterPage){
-
                         presenter.requestNameFilterData(chooseName, String.valueOf(currentPage++));
                     }
                     //지역,날짜일 경우
                     else{
                         presenter.requestLocationFilterData(chooseAddress,chooseStartDate,chooseEndDate,String.valueOf(currentPage++));
-
                     }
                 }
                 else{
-                    itemDatas.clear();
+//                    itemDatas.clear();
                     currentPage = 0;
-                    presenter.requestMainData(String.valueOf(currentPage++));
+                    presenter.requestMainData(String.valueOf(currentPage++),true);
 
                 }
 
+                Toast.makeText(getApplicationContext(),"최신 정보로 업데이트!",Toast.LENGTH_SHORT).show();
                 mainArea.setRefreshing(false);
             }
-        },1500);
+        },2000);
     }
 }

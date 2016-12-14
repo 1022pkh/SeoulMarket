@@ -194,6 +194,7 @@ public class ReportStepFourActivity extends AppCompatActivity implements ReportS
                         ViewParent child = v.getParent();
                         //hashCode 가 같은 뷰를 삭제함
                         for(int a=0; a<inflatedLayout.getChildCount(); a++){
+
                             if(inflatedLayout.getChildAt(a).hashCode() == child.hashCode()){
                                 tagList.remove(a);
                                 inflatedLayout.removeViewAt(a);

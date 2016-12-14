@@ -61,6 +61,40 @@ public class MainPresenterImpl implements MainPresenter {
 
     }
 
+
+    @Override
+    public void requestMainData(final String pageNum, Boolean refresh) {
+
+        Call<ResultData> getFirstData = networkService.getMainData(pageNum);
+        getFirstData.enqueue(new Callback<ResultData>() {
+            @Override
+            public void onResponse(Call<ResultData> call, Response<ResultData> response) {
+
+                if (response.isSuccessful()){
+                    //result[0],[1].....
+                    ArrayList<MarketFirstData> getDatas = response.body().result;
+
+                    if(getDatas.size() > 0 )
+                        view.firstSetRefreshData(getDatas);
+                    else
+                    {
+                        if (Integer.valueOf(pageNum) > 0)
+                            ;
+                        else
+                            view.DataNull();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResultData> call, Throwable t) {
+
+            }
+        });
+
+    }
+
     @Override
     public void requestNameFilterData(final String mName, final String pageNum) {
         Call<ResultFilter> getFilterData = networkService.getNameFilterData(mName,pageNum);

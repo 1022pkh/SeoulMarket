@@ -17,7 +17,11 @@ public interface MainView {
     void FilterDataNull();
     void moveDetailPage(String id);
     void firstSetData(ArrayList<MarketFirstData> getDatas);
+    void firstSetRefreshData(ArrayList<MarketFirstData> getDatas);
+
     void filterSetData(String fName, ArrayList<MarketFilterData> getDatas);
+
+
     void filterSetData(String address,String startDate, String endDate, ArrayList<MarketFilterData> getDatas);
     void cancelLocationDialog();
     void cancelDateDialog();

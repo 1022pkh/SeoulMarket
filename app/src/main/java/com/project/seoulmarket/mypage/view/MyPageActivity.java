@@ -358,8 +358,8 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
                 int scrollExtend = recyclerView.computeVerticalScrollExtent();
                 int scrollRange = recyclerView.computeVerticalScrollRange();
 
-//                if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
-                if (scrollOffset + scrollExtend >= scrollRange * 0.8) {
+                if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
+//                if (scrollOffset + scrollExtend >= scrollRange * 0.8) {
 
                     presenter.getMyLikeMarketData(String.valueOf(likeCurrentPage++));
 
@@ -411,8 +411,8 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
                 int scrollExtend = recyclerView.computeVerticalScrollExtent();
                 int scrollRange = recyclerView.computeVerticalScrollRange();
 
-                if (scrollOffset + scrollExtend >= scrollRange * 0.8) {
-
+//                if (scrollOffset + scrollExtend >= scrollRange * 0.8) {
+                if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
                     presenter.getMyReportMarketData(String.valueOf(reportCurrentPage++));
 
                 }
@@ -461,8 +461,8 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
                 int scrollExtend = recyclerView.computeVerticalScrollExtent();
                 int scrollRange = recyclerView.computeVerticalScrollRange();
 
-                if (scrollOffset + scrollExtend >= scrollRange * 0.8) {
-
+                //if (scrollOffset + scrollExtend >= scrollRange * 0.8) {
+                if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
                     presenter.getMyRecruitSellerData(String.valueOf(recruitCurrentPage++));
 
                 }
