@@ -40,7 +40,7 @@ public class GlobalApplication extends Application {
     public static SharedPreferences loginInfo;
     public static SharedPreferences.Editor editor;
 
-    private static String baseUrl = "http://52.78.94.112:3000";
+    private static String baseUrl = "";
     private NetworkService networkService;
 
 
