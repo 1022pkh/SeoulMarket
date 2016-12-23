@@ -17,12 +17,14 @@ import java.util.ArrayList;
  * Created by kh on 2016. 10. 5..
  */
 
-public class CardViewAdapter extends RecyclerView.Adapter<ViewHolder> {
+public class CardViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<MarketFirstData> itemDatas;
     MainView myView;
     private View itemView;
     private ViewGroup parent;
+
+    private static final int FOOTER_VIEW = 1;
 
     public CardViewAdapter(ArrayList<MarketFirstData> itemDatas, MainView myView){
         this.itemDatas = itemDatas;
@@ -37,9 +39,19 @@ public class CardViewAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     //ViewHolder 생성
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         this.parent = parent;
+
+        if (viewType == FOOTER_VIEW) {
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_footer, parent, false);
+
+            FooterViewHolder vh = new FooterViewHolder(itemView);
+
+            return vh;
+        }
+
+
         this.itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.main_cardview_basic, parent,false);
         ViewHolder viewHolder = new ViewHolder(itemView,myView);
@@ -50,60 +62,97 @@ public class CardViewAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     //ListView의 getView()랑 동일
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
 
-        holder.mId = itemDatas.get(position).idx;
-        holder.mName.setText(itemDatas.get(position).marketname);
-        holder.mLocation.setText(itemDatas.get(position).address);
+        try {
+            if (holder instanceof ViewHolder) {
+                ViewHolder vh = (ViewHolder) holder;
 
-//        Log.i("myTag",String.valueOf(position));
-        /**
-         * state > 1 : 남은날자
-         * state = 0 : 진행중
-         * state < 0 만료
-         */
+                vh.mId = itemDatas.get(position).idx;
+                vh.mName.setText(itemDatas.get(position).marketname);
+                vh.mLocation.setText(itemDatas.get(position).address);
 
-        int state = Integer.valueOf(itemDatas.get(position).state);
+                /**
+                 * state > 1 : 남은날자
+                 * state = 0 : 진행중
+                 * state < 0 만료
+                 */
 
-        if( state > 0){
-            holder.mProgress.setText("D-" + state);
-            holder.mProgress.setBackgroundResource(R.drawable.progress_background);
+                int state = Integer.valueOf(itemDatas.get(position).state);
 
+                if( state > 0){
+                    vh.mProgress.setText("D-" + state);
+                    vh.mProgress.setBackgroundResource(R.drawable.progress_background);
+
+                }
+                else if(state == 0){
+                    vh.mProgress.setText("진행중");
+                    vh.mProgress.setBackgroundResource(R.drawable.progress_background);
+
+                }
+                else{
+                    vh.mProgress.setText("만료");
+                    vh.mProgress.setBackgroundResource(R.drawable.progress_background);
+
+                }
+
+                ImageView imageView = (ImageView)itemView.findViewById(R.id.image);
+
+                Glide.with(parent.getContext())
+                        .load(itemDatas.get(position).image)
+                        .thumbnail(0.3f)
+                        .error(R.drawable.ic_default)
+                        .into(vh.getImageView());
+
+            } else if (holder instanceof FooterViewHolder) {
+                FooterViewHolder vh = (FooterViewHolder) holder;
+
+                if(itemDatas.size() % 10 == 0 ){
+                    Glide.with(parent.getContext())
+                            .load(R.drawable.gif_loading)
+                            .into(vh.getGifLoadingView());
+                }
+                else {
+                    vh.getGifLoadingView().setImageResource(0);
+                    vh.getRelativeLayout().setVisibility(View.GONE);
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        else if(state == 0){
-            holder.mProgress.setText("진행중");
-            holder.mProgress.setBackgroundResource(R.drawable.progress_background);
 
-        }
-        else{
-            holder.mProgress.setText("만료");
-            holder.mProgress.setBackgroundResource(R.drawable.progress_background);
 
-        }
-
-        ImageView imageView = (ImageView)itemView.findViewById(R.id.image);
-//        Log.i("myTag",itemDatas.get(position).image);
-
-        Glide.with(parent.getContext())
-                .load(itemDatas.get(position).image)
-                .thumbnail(0.3f)
-                .error(R.drawable.ic_default)
-                .into(holder.getImageView());
 
 
     }
 
-
     @Override
     public int getItemCount() {
-        return (itemDatas != null) ? itemDatas.size() : 0;
+        if (itemDatas == null) {
+            return 0;
+        }
+
+        if (itemDatas.size() == 0) {
+            //Return 1 here to show nothing
+            return 1;
+        }
+
+        // Add extra view to show the footer view
+        return itemDatas.size() + 1;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return position;
+        if (position == itemDatas.size()) {
+            // This is where we'll add footer.
+            return FOOTER_VIEW;
+        }
+
+        return super.getItemViewType(position);
     }
+
 
 
 }

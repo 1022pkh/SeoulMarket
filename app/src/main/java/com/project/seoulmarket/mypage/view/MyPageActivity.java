@@ -503,7 +503,6 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
          */
         Glide.with(this)
                 .load(GlobalApplication.loginInfo.getString("thumbnail", ""))
-                .placeholder(R.drawable.ic_blanket)
                 .error(R.drawable.ic_blanket)
                 .into(thumbnail);
 
@@ -599,6 +598,9 @@ public class MyPageActivity extends AppCompatActivity implements MyPageView{
         /**
          * 성공시 메인페이지로 이동한다.
          */
+
+        Toast.makeText(getApplicationContext(),"Good Bye ~",Toast.LENGTH_SHORT).show();
+
         Intent intent = new Intent(this, MainTabActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

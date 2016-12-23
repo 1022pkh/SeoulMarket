@@ -61,8 +61,15 @@
             android:id="@+id/TopAddress"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:paddingLeft="60dp"
+            android:paddingLeft="10dp"
             android:background="#80ffffff">
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/ic_picker_small"
+                android:layout_gravity="center_vertical"/>
 
             <TextView
                 android:id="@+id/marketAddress"

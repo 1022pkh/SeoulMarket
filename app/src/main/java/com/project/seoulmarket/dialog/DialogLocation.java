@@ -67,7 +67,7 @@ public class DialogLocation extends Dialog {
         item7.setOnClickListener(getAddress);
         item8.setOnClickListener(getAddress);
         item9.setOnClickListener(getAddress);
-//        item10.setOnClickListener(getAddress);
+        item10.setOnClickListener(getAddress);
 
     }
 

@@ -26,4 +26,6 @@ public interface MainView {
     void cancelLocationDialog();
     void cancelDateDialog();
 
+    void scrollRequestCheck(Boolean check);
+
 }

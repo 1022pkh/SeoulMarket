@@ -37,7 +37,7 @@ public class MainPresenterImpl implements MainPresenter {
             public void onResponse(Call<ResultData> call, Response<ResultData> response) {
 
                 if (response.isSuccessful()){
-                    //result[0],[1].....
+                    view.scrollRequestCheck(false);
                     ArrayList<MarketFirstData> getDatas = response.body().result;
 
                     if(getDatas.size() > 0 )
@@ -72,6 +72,7 @@ public class MainPresenterImpl implements MainPresenter {
 
                 if (response.isSuccessful()){
                     //result[0],[1].....
+                    view.scrollRequestCheck(false);
                     ArrayList<MarketFirstData> getDatas = response.body().result;
 
                     if(getDatas.size() > 0 )
@@ -102,7 +103,7 @@ public class MainPresenterImpl implements MainPresenter {
             @Override
             public void onResponse(Call<ResultFilter> call, Response<ResultFilter> response) {
                 if (response.isSuccessful()){
-                    //result[0],[1].....
+                    view.scrollRequestCheck(false);
                     ArrayList<MarketFilterData> getDatas = response.body().result;
 
                     if(getDatas.size() > 0 )
@@ -132,6 +133,7 @@ public class MainPresenterImpl implements MainPresenter {
             public void onResponse(Call<ResultFilter> call, Response<ResultFilter> response) {
 
                 if(response.isSuccessful()){
+                    view.scrollRequestCheck(false);
                     ArrayList<MarketFilterData> getDatas = response.body().result;
                     if(getDatas.size() > 0)
                         view.filterSetData(address,startDate,endDate,getDatas);
@@ -160,6 +162,7 @@ public class MainPresenterImpl implements MainPresenter {
             public void onResponse(Call<ResultFilter> call, Response<ResultFilter> response) {
 
                 if(response.isSuccessful()){
+                    view.scrollRequestCheck(false);
                     ArrayList<MarketFilterData> getDatas = response.body().result;
                     if(getDatas.size() > 0)
                         view.filterSetData(address,startDate,endDate,getDatas);

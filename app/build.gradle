@@ -9,8 +9,8 @@ android {
         applicationId "com.project.seoulmarket"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.0.1"
         multiDexEnabled true
     }
     buildTypes {
@@ -81,7 +81,11 @@ dependencies {
 
     // 구글 지도
     compile 'com.google.android.gms:play-services:9.0.0'
-    
+
+
+    //애니메이션
+//    compile 'com.github.2359media:EasyAndroidAnimations:0.8'
+
     //
     compile 'com.jakewharton:butterknife:8.1.0'
     apt 'com.jakewharton:butterknife-compiler:8.1.0'

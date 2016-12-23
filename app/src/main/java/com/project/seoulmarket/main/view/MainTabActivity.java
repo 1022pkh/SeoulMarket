@@ -52,6 +52,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING;
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
+
 
 public class MainTabActivity extends AppCompatActivity implements MainView, SwipeRefreshLayout.OnRefreshListener {
 
@@ -117,6 +120,8 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
     Boolean setNameSearch = false;
 
     InputMethodManager imm;
+
+    Boolean requestCheck = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -213,6 +218,8 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
 
 
 
+        moveTopBtn.setVisibility(View.INVISIBLE);
+
         /**
          * recyclerview
          */
@@ -238,46 +245,38 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
 //                super.onScrollStateChanged(recyclerView, newState);
                 int firstPos=mLayoutManager.findFirstCompletelyVisibleItemPosition();
 
+
+                if (newState == SCROLL_STATE_DRAGGING){
+                    moveTopBtn.setVisibility(View.INVISIBLE);
+                }
+                else if(newState == SCROLL_STATE_IDLE)
+                    moveTopBtn.setVisibility(View.VISIBLE);
+
                 if (firstPos>0)
                 {
                     mainArea.setEnabled(false);
                 }
                 else {
                     mainArea.setEnabled(true);
+                    moveTopBtn.setVisibility(View.INVISIBLE);
                 }
 
                 int scrollOffset = recyclerView.computeVerticalScrollOffset();
                 int scrollExtend = recyclerView.computeVerticalScrollExtent();
                 int scrollRange = recyclerView.computeVerticalScrollRange();
 
-                int temp = scrollOffset + scrollExtend;
-
-//                Log.i("myTag",">>"+temp+"//"+scrollRange);
-
-                if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
-                //if (scrollOffset + scrollExtend >= scrollRange * 0.8) {
-//                if (scrollOffset + scrollExtend + 200 <= scrollRange) {
-
-                    presenter.requestMainData(String.valueOf(currentPage++));
+//                if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
+                if (scrollOffset + scrollExtend >= scrollRange * 0.8) {
+                    if(!requestCheck) {
+                        requestCheck = true;
+                        presenter.requestMainData(String.valueOf(currentPage++));
+                    }
                 }
 
             }
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-
-//                int scrollOffset = recyclerView.computeVerticalScrollOffset();
-//                int scrollExtend = recyclerView.computeVerticalScrollExtent();
-//                int scrollRange = recyclerView.computeVerticalScrollRange();
-//
-//                int temp = scrollOffset + scrollExtend;
-//
-//                Log.i("myTag",">>"+temp+"//"+scrollRange);
-//
-//                if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
-//
-//                    presenter.requestMainData(String.valueOf(currentPage++));
-//                }
 
             }
 
@@ -289,7 +288,11 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
          * 데이터 삽입
          */
         //String idx; String address; String state; String image; String marketname;
-        presenter.requestMainData(String.valueOf(currentPage++));
+        if(!requestCheck) {
+            requestCheck = true;
+            presenter.requestMainData(String.valueOf(currentPage++));
+        }
+
 
 
         requestInputEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -455,16 +458,25 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
 
 //                Toast.makeText(getApplicationContext(),chooseAddress,Toast.LENGTH_SHORT).show();
 
+                if(chooseAddress.equals("전체")&& chooseStartDate.equals("*") && chooseEndDate.equals("*")){
+                    Toast.makeText(getApplicationContext(),"현재 '전체' 검색 상태입니다.",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 findLocationBtn.setText(chooseAddress);
                 middleTitle.setText("검색된 마켓");
+
+                if(chooseAddress.equals("전체")) {
+                    chooseAddress = "*";
+                }
+
 
                 dialog_location.dismiss();
                 findLocationArea.setVisibility(View.INVISIBLE);
 
 
-                if(chooseAddress.equals("전체"))
-                    chooseAddress = "*";
 
+                Log.i("myTag",String.valueOf(chooseAddress));
                 setFilterPage = true;
                 setNameFilterPage = false;
 
@@ -472,7 +484,14 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
                 recyclerView.removeAllViews();
 
                 filterDatas.clear();
-                presenter.requestLocationFilterData(chooseAddress,chooseStartDate,chooseEndDate,String.valueOf(currentPage++));
+
+                if(!requestCheck) {
+                    requestCheck = true;
+                    presenter.requestDateFilterData(chooseAddress,chooseStartDate,chooseEndDate,String.valueOf(currentPage++));
+
+//                    presenter.requestLocationFilterData(chooseAddress,chooseStartDate,chooseEndDate,String.valueOf(currentPage++));
+                }
+
 
             }
         }
@@ -521,7 +540,12 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
                 recyclerView.removeAllViews();
 
                 filterDatas.clear();
-                presenter.requestDateFilterData(chooseAddress,chooseStartDate,chooseEndDate,String.valueOf(currentPage++));
+                if(!requestCheck) {
+                    requestCheck = true;
+                    Log.i("myTag",String.valueOf(chooseAddress));
+
+                    presenter.requestDateFilterData(chooseAddress,chooseStartDate,chooseEndDate,String.valueOf(currentPage++));
+                }
 
             }
 
@@ -553,7 +577,13 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
                 recyclerView.removeAllViews();
 
                 filterDatas.clear();
-                presenter.requestNameFilterData(dialog_name.getName(), String.valueOf(currentPage++));
+
+                if(!requestCheck) {
+                    requestCheck = true;
+                    presenter.requestNameFilterData(dialog_name.getName(), String.valueOf(currentPage++));
+                }
+
+
 
             }
 
@@ -585,7 +615,11 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
             setNameFilterPage = true;
 
             filterDatas.clear();
-            presenter.requestNameFilterData(chooseName, String.valueOf(currentPage++));
+            if(!requestCheck) {
+                requestCheck = true;
+                presenter.requestNameFilterData(chooseName, String.valueOf(currentPage++));
+            }
+
 
             imm.hideSoftInputFromWindow(requestInputEdit.getWindowToken(), 0);
         }
@@ -644,26 +678,46 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
                         else {
                             mainArea.setEnabled(true);
                         }
-                    }
 
-                    @Override
-                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                        if (newState == SCROLL_STATE_DRAGGING){
+                            moveTopBtn.setVisibility(View.INVISIBLE);
+                        }
+                        else if(newState == SCROLL_STATE_IDLE)
+                            moveTopBtn.setVisibility(View.VISIBLE);
+
+
                         int scrollOffset = recyclerView.computeVerticalScrollOffset();
                         int scrollExtend = recyclerView.computeVerticalScrollExtent();
                         int scrollRange = recyclerView.computeVerticalScrollRange();
 
 
-                        if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
+                        if (scrollOffset + scrollExtend >= scrollRange * 0.8) {
 
-                            presenter.requestMainData(String.valueOf(currentPage++));
+                            if(!requestCheck) {
+                                requestCheck = true;
+                                presenter.requestMainData(String.valueOf(currentPage++));
+                            }
 
                         }
+
+                    }
+
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+
+
+
                     }
                 });
 
 
                 itemDatas.clear();
-                presenter.requestMainData(String.valueOf(currentPage++));
+                if(!requestCheck) {
+                    requestCheck = true;
+                    presenter.requestMainData(String.valueOf(currentPage++));
+                }
+
+
 
             }
             else{
@@ -731,6 +785,11 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
 
         itemDatas.addAll(getDatas);
         mAdapter.notifyDataSetChanged();
+
+        if(getDatas.size() < 10){
+
+        }
+
     }
 
     @Override
@@ -748,27 +807,38 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
 //                super.onScrollStateChanged(recyclerView, newState);
                 int firstPos=mLayoutManager.findFirstCompletelyVisibleItemPosition();
 
+
+                if (newState == SCROLL_STATE_DRAGGING){
+                    moveTopBtn.setVisibility(View.INVISIBLE);
+                }
+                else if(newState == SCROLL_STATE_IDLE)
+                    moveTopBtn.setVisibility(View.VISIBLE);
+
                 if (firstPos>0)
                 {
                     mainArea.setEnabled(false);
                 }
                 else {
                     mainArea.setEnabled(true);
+                    moveTopBtn.setVisibility(View.INVISIBLE);
+                }
+
+                int scrollOffset = recyclerView.computeVerticalScrollOffset();
+                int scrollExtend = recyclerView.computeVerticalScrollExtent();
+                int scrollRange = recyclerView.computeVerticalScrollRange();
+
+//                if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
+                if (scrollOffset + scrollExtend >= scrollRange * 0.8) {
+                    if(!requestCheck) {
+                        requestCheck = true;
+                        presenter.requestMainData(String.valueOf(currentPage++));
+                    }
                 }
             }
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                int scrollOffset = recyclerView.computeVerticalScrollOffset();
-                int scrollExtend = recyclerView.computeVerticalScrollExtent();
-                int scrollRange = recyclerView.computeVerticalScrollRange();
 
-
-                if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
-
-                    presenter.requestMainData(String.valueOf(currentPage++));
-
-                }
             }
         });
 
@@ -791,6 +861,13 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
 //                super.onScrollStateChanged(recyclerView, newState);
                     int firstPos=mLayoutManager.findFirstCompletelyVisibleItemPosition();
 
+
+                    if (newState == SCROLL_STATE_DRAGGING){
+                        moveTopBtn.setVisibility(View.INVISIBLE);
+                    }
+                    else if(newState == SCROLL_STATE_IDLE)
+                        moveTopBtn.setVisibility(View.VISIBLE);
+
                     if (firstPos>0)
                     {
                         mainArea.setEnabled(false);
@@ -798,17 +875,24 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
                     else {
                         mainArea.setEnabled(true);
                     }
-                }
 
-                @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     int scrollOffset = recyclerView.computeVerticalScrollOffset();
                     int scrollExtend = recyclerView.computeVerticalScrollExtent();
                     int scrollRange = recyclerView.computeVerticalScrollRange();
 
-                    if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
-                        presenter.requestNameFilterData(middleUserName.getText().toString(), String.valueOf(currentPage++));
+                    if (scrollOffset + scrollExtend >= scrollRange * 0.8) {
+                        if(!requestCheck) {
+                            requestCheck = true;
+                            presenter.requestNameFilterData(middleUserName.getText().toString(), String.valueOf(currentPage++));
+                        }
+
                     }
+
+                }
+
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+
                 }
             });
         }
@@ -844,18 +928,29 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
                     else {
                         mainArea.setEnabled(true);
                     }
-                }
 
-                @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    if (newState == SCROLL_STATE_DRAGGING){
+                        moveTopBtn.setVisibility(View.INVISIBLE);
+                    }
+                    else if(newState == SCROLL_STATE_IDLE)
+                        moveTopBtn.setVisibility(View.VISIBLE);
+
                     int scrollOffset = recyclerView.computeVerticalScrollOffset();
                     int scrollExtend = recyclerView.computeVerticalScrollExtent();
                     int scrollRange = recyclerView.computeVerticalScrollRange();
 
-                    if (scrollOffset + scrollExtend == scrollRange || scrollOffset + scrollExtend - 1 == scrollRange) {
-                        Log.i("myTag","dfd");
-                        presenter.requestLocationFilterData(chooseAddress,chooseStartDate,chooseEndDate,String.valueOf(currentPage++));
+                    if (scrollOffset + scrollExtend >= scrollRange * 0.8) {
+                        if(!requestCheck) {
+                            requestCheck = true;
+                            presenter.requestLocationFilterData(chooseAddress,chooseStartDate,chooseEndDate,String.valueOf(currentPage++));
+                        }
+
                     }
+                }
+
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+
                 }
             });
         }
@@ -878,6 +973,11 @@ public class MainTabActivity extends AppCompatActivity implements MainView, Swip
     public void cancelDateDialog() {
         dialog_date.cancel();
         findDateArea.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void scrollRequestCheck(Boolean check) {
+        requestCheck = check;
     }
 
 
